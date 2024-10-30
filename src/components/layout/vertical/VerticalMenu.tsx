@@ -81,45 +81,13 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
         renderExpandedMenuItemIcon={{ icon: <i className='tabler-circle text-xs' /> }}
         menuSectionStyles={menuSectionStyles(verticalNavOptions, theme)}
       >
-        <SubMenu
-          label={dictionary['navigation'].dashboards}
-          icon={<i className='tabler-smart-home' />}
-          suffix={<CustomChip label='5' size='small' color='error' round='true' />}
-        >
-          <MenuItem href={`/${locale}/dashboards/crm`}>{dictionary['navigation'].crm}</MenuItem>
-          <MenuItem href={`/${locale}/dashboards/analytics`}>{dictionary['navigation'].analytics}</MenuItem>
-          <MenuItem href={`/${locale}/dashboards/ecommerce`}>{dictionary['navigation'].eCommerce}</MenuItem>
-          <MenuItem href={`/${locale}/dashboards/academy`}>{dictionary['navigation'].academy}</MenuItem>
-          <MenuItem href={`/${locale}/dashboards/logistics`}>{dictionary['navigation'].logistics}</MenuItem>
-        </SubMenu>
-        <SubMenu label={dictionary['navigation'].frontPages} icon={<i className='tabler-files' />}>
-          <MenuItem href='/front-pages/landing-page' target='_blank'>
-            {dictionary['navigation'].landing}
-          </MenuItem>
-          <MenuItem href='/front-pages/pricing' target='_blank'>
-            {dictionary['navigation'].pricing}
-          </MenuItem>
-          <MenuItem href='/front-pages/payment' target='_blank'>
-            {dictionary['navigation'].payment}
-          </MenuItem>
-          <MenuItem href='/front-pages/checkout' target='_blank'>
-            {dictionary['navigation'].checkout}
-          </MenuItem>
-          <MenuItem href='/front-pages/help-center' target='_blank'>
-            {dictionary['navigation'].helpCenter}
-          </MenuItem>
-        </SubMenu>
-        <MenuSection label={dictionary['navigation'].appsPages}>
-          <SubMenu label={dictionary['navigation'].eCommerce} icon={<i className='tabler-shopping-cart' />}>
-            <MenuItem href={`/${locale}/apps/ecommerce/dashboard`}>{dictionary['navigation'].dashboard}</MenuItem>
-            <SubMenu label={dictionary['navigation'].products}>
-              <MenuItem href={`/${locale}/apps/ecommerce/products/list`}>{dictionary['navigation'].list}</MenuItem>
-              <MenuItem href={`/${locale}/apps/ecommerce/products/add`}>{dictionary['navigation'].add}</MenuItem>
-              <MenuItem href={`/${locale}/apps/ecommerce/products/category`}>
-                {dictionary['navigation'].category}
-              </MenuItem>
+        <MenuItem href={`/${locale}/dashboards/logistics`} icon={<i className='tabler-calendar' />}>Dashboard</MenuItem>
+
+        <MenuSection label="Patient Story">
+          <SubMenu label="Patient Story" icon={<i className='tabler-users-group' />}>
+            <MenuItem href={`/${locale}/patient-story/stories`}>Stories</MenuItem>
             </SubMenu>
-            <SubMenu label={dictionary['navigation'].orders}>
+            {/* <SubMenu label={dictionary['navigation'].orders}>
               <MenuItem href={`/${locale}/apps/ecommerce/orders/list`}>{dictionary['navigation'].list}</MenuItem>
               <MenuItem
                 href={`/${locale}/apps/ecommerce/orders/details/5434`}
@@ -288,104 +256,9 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
             </MenuItem>
             <MenuItem href={`/${locale}/pages/widget-examples/charts`}>{dictionary['navigation'].charts}</MenuItem>
             <MenuItem href={`/${locale}/pages/widget-examples/actions`}>{dictionary['navigation'].actions}</MenuItem>
-          </SubMenu>
+          </SubMenu> */}
         </MenuSection>
-        <MenuSection label={dictionary['navigation'].formsAndTables}>
-          <MenuItem href={`/${locale}/forms/form-layouts`} icon={<i className='tabler-layout' />}>
-            {dictionary['navigation'].formLayouts}
-          </MenuItem>
-          <MenuItem href={`/${locale}/forms/form-validation`} icon={<i className='tabler-checkup-list' />}>
-            {dictionary['navigation'].formValidation}
-          </MenuItem>
-          <MenuItem href={`/${locale}/forms/form-wizard`} icon={<i className='tabler-git-merge' />}>
-            {dictionary['navigation'].formWizard}
-          </MenuItem>
-          <MenuItem href={`/${locale}/react-table`} icon={<i className='tabler-table' />}>
-            {dictionary['navigation'].reactTable}
-          </MenuItem>
-          <MenuItem
-            icon={<i className='tabler-checkbox' />}
-            href={`${process.env.NEXT_PUBLIC_DOCS_URL}/docs/user-interface/form-elements`}
-            suffix={<i className='tabler-external-link text-xl' />}
-            target='_blank'
-          >
-            {dictionary['navigation'].formELements}
-          </MenuItem>
-          <MenuItem
-            icon={<i className='tabler-layout-board-split' />}
-            href={`${process.env.NEXT_PUBLIC_DOCS_URL}/docs/user-interface/mui-table`}
-            suffix={<i className='tabler-external-link text-xl' />}
-            target='_blank'
-          >
-            {dictionary['navigation'].muiTables}
-          </MenuItem>
-        </MenuSection>
-        <MenuSection label={dictionary['navigation'].chartsMisc}>
-          <SubMenu label={dictionary['navigation'].charts} icon={<i className='tabler-chart-donut-2' />}>
-            <MenuItem href={`/${locale}/charts/apex-charts`}>{dictionary['navigation'].apex}</MenuItem>
-            <MenuItem href={`/${locale}/charts/recharts`}>{dictionary['navigation'].recharts}</MenuItem>
-          </SubMenu>
-          <MenuItem
-            icon={<i className='tabler-cards' />}
-            href={`${process.env.NEXT_PUBLIC_DOCS_URL}/docs/user-interface/foundation`}
-            suffix={<i className='tabler-external-link text-xl' />}
-            target='_blank'
-          >
-            {dictionary['navigation'].foundation}
-          </MenuItem>
-          <MenuItem
-            icon={<i className='tabler-atom' />}
-            href={`${process.env.NEXT_PUBLIC_DOCS_URL}/docs/user-interface/components`}
-            suffix={<i className='tabler-external-link text-xl' />}
-            target='_blank'
-          >
-            {dictionary['navigation'].components}
-          </MenuItem>
-          <MenuItem
-            icon={<i className='tabler-list-search' />}
-            href={`${process.env.NEXT_PUBLIC_DOCS_URL}/docs/menu-examples/overview`}
-            suffix={<i className='tabler-external-link text-xl' />}
-            target='_blank'
-          >
-            {dictionary['navigation'].menuExamples}
-          </MenuItem>
-          <MenuItem
-            icon={<i className='tabler-lifebuoy' />}
-            suffix={<i className='tabler-external-link text-xl' />}
-            target='_blank'
-            href='https://pixinvent.ticksy.com'
-          >
-            {dictionary['navigation'].raiseSupport}
-          </MenuItem>
-          <MenuItem
-            icon={<i className='tabler-book-2' />}
-            suffix={<i className='tabler-external-link text-xl' />}
-            target='_blank'
-            href={`${process.env.NEXT_PUBLIC_DOCS_URL}`}
-          >
-            {dictionary['navigation'].documentation}
-          </MenuItem>
-          <SubMenu label={dictionary['navigation'].others} icon={<i className='tabler-box' />}>
-            <MenuItem suffix={<CustomChip label='New' size='small' color='info' round='true' />}>
-              {dictionary['navigation'].itemWithBadge}
-            </MenuItem>
-            <MenuItem
-              href='https://pixinvent.com'
-              target='_blank'
-              suffix={<i className='tabler-external-link text-xl' />}
-            >
-              {dictionary['navigation'].externalLink}
-            </MenuItem>
-            <SubMenu label={dictionary['navigation'].menuLevels}>
-              <MenuItem>{dictionary['navigation'].menuLevel2}</MenuItem>
-              <SubMenu label={dictionary['navigation'].menuLevel2}>
-                <MenuItem>{dictionary['navigation'].menuLevel3}</MenuItem>
-                <MenuItem>{dictionary['navigation'].menuLevel3}</MenuItem>
-              </SubMenu>
-            </SubMenu>
-            <MenuItem disabled>{dictionary['navigation'].disabledMenu}</MenuItem>
-          </SubMenu>
-        </MenuSection>
+
       </Menu>
       {/* <Menu
         popoutMenuOffset={{ mainAxis: 23 }}

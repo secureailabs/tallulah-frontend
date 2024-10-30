@@ -8,8 +8,7 @@ import {
   GetFormData_Out,
   GetFormTemplate_Out,
   GetMultipleFormData_Out,
-  GetMultipleFormTemplate_Out,
-  OpenAPI
+  GetMultipleFormTemplate_Out
 } from '@/tallulah-ts-client';
 import SearchBar from '@/components/SearchBar';
 import PatientDetailViewModal from './components/PatientDetailViewModal';
@@ -19,7 +18,6 @@ import Filter from './components/Filter';
 import FilterChip from './components/FilterChip';
 import Sort from './components/Sort';
 import {AdvancedMarker, APIProvider, CollisionBehavior, InfoWindow, Map, Marker, Pin, useAdvancedMarkerRef} from '@vis.gl/react-google-maps';
-import { useQuery } from '@tanstack/react-query';
 
 
 export interface IPatientStory {}
@@ -143,36 +141,29 @@ const PatientStory: React.FC<IPatientStory> = ({}) => {
     setIsFormDataFetching(false);
   };
 
-  const fetchPunblishedFormTempaateQuery = useQuery({
-    queryKey: ['publishedFormTemplate'],
-    queryFn: FormTemplatesService.getAllFormTemplates,
-  })
+  const fetchPublishedFormTemplate = async () => {
 
-  console.log("fetchPunblishedFormTempaateQuery", fetchPunblishedFormTempaateQuery.data)
+    console.log("fetching published form template")
+    setIsFormTemplateFetching(true);
+    try {
+      const res: GetMultipleFormTemplate_Out = await FormTemplatesService.getAllFormTemplates();
 
-  // const fetchPublishedFormTemplate = async () => {
-
-  //   console.log("fetching published form template")
-  //   setIsFormTemplateFetching(true);
-  //   try {
-  //     const res: GetMultipleFormTemplate_Out = await FormTemplatesService.getAllFormTemplates();
-
-  //     console.log("res", res)
-  //     // filter the published state
-  //     const filteredData = res.templates.filter((formTemplate: any) => formTemplate.state === 'PUBLISHED');
-  //     setPublishedTemplateList(filteredData);
-  //     setSelectedTemplateId(filteredData[0].id);
-  //     fetchZipCodes(filteredData[0].id);
-  //     setFormTemplate(filteredData[0]);
-  //     fetchFormData(filteredData[0].id);
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  //   setIsFormTemplateFetching(false);
-  // };
+      console.log("res", res)
+      // filter the published state
+      const filteredData = res.templates.filter((formTemplate: any) => formTemplate.state === 'PUBLISHED');
+      setPublishedTemplateList(filteredData);
+      setSelectedTemplateId(filteredData[0].id);
+      fetchZipCodes(filteredData[0].id);
+      setFormTemplate(filteredData[0]);
+      fetchFormData(filteredData[0].id);
+    } catch (err) {
+      console.log(err);
+    }
+    setIsFormTemplateFetching(false);
+  };
 
   const handleRefresh = () => {
-    fetchPunblishedFormTempaateQuery.refetch()
+    fetchPublishedFormTemplate();
   };
 
   const fetchSearchResults = async (text: string) => {
@@ -221,7 +212,7 @@ const PatientStory: React.FC<IPatientStory> = ({}) => {
   };
 
   useEffect(() => {
-    fetchPunblishedFormTempaateQuery.refetch()
+    fetchPublishedFormTemplate();
   }, []);
 
   useEffect(() => {

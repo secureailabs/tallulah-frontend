@@ -4,6 +4,8 @@
 import { useEffect, useRef } from 'react'
 import type { CSSProperties } from 'react'
 
+import Image from 'next/image'
+
 // Third-party Imports
 import styled from '@emotion/styled'
 
@@ -12,6 +14,7 @@ import type { VerticalNavContextProps } from '@menu/contexts/verticalNavContext'
 
 // Component Imports
 import VuexyLogo from '@core/svg/Logo'
+import ArrayLogo from '@assets/images/array_insights_small.png'
 
 // Config Imports
 import themeConfig from '@configs/themeConfig'
@@ -71,7 +74,13 @@ const Logo = ({ color }: { color?: CSSProperties['color'] }) => {
 
   return (
     <div className='flex items-center'>
-      <VuexyLogo className='text-2xl text-primary' />
+      <Image
+            src={ArrayLogo}
+            alt="Description of the image"
+            width={30}
+            height={30}
+            priority
+        />
       <LogoText
         color={color}
         ref={logoTextRef}
@@ -80,7 +89,7 @@ const Logo = ({ color }: { color?: CSSProperties['color'] }) => {
         transitionDuration={transitionDuration}
         isBreakpointReached={isBreakpointReached}
       >
-        {themeConfig.templateName}
+        Tallulah
       </LogoText>
     </div>
   )

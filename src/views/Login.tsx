@@ -46,7 +46,7 @@ import { useSettings } from '@core/hooks/useSettings'
 
 // Util Imports
 import { getLocalizedUrl } from '@/utils/i18n'
-import { AuthenticationService, Body_login, OpenAPI } from '@/tallulah-ts-client'
+import { AuthenticationService, Body_login, LoginSuccess_Out, OpenAPI } from '@/tallulah-ts-client'
 import chat from '@/redux-store/slices/chat'
 import auth, { setToken } from '@/redux-store/slices/auth'
 import { store } from '@/redux-store'
@@ -123,8 +123,8 @@ const Login = ({ mode }: { mode: SystemMode }) => {
   } = useForm<FormData>({
     resolver: valibotResolver(schema),
     defaultValues: {
-      email: 'admin@vuexy.com',
-      password: 'admin'
+      email: 'aman@example.com',
+      password: 'string'
     }
   })
 
@@ -141,10 +141,10 @@ const Login = ({ mode }: { mode: SystemMode }) => {
 
   const LoginQuery = useMutation({
     mutationFn: AuthenticationService.login,
-    onSuccess: (data) => {
-      console.log("data", data);
+    onSuccess: (data:LoginSuccess_Out) => {
+      OpenAPI.TOKEN = data.access_token
       dispatch(setToken(data))
-      const redirectURL = searchParams.get('redirectTo') ?? '/'
+      const redirectURL = searchParams.get('redirectTo') ?? '/patient-story/stories'
       router.replace(getLocalizedUrl(redirectURL, locale as Locale))
     },
     onError: (error) => {

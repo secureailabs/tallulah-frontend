@@ -1,0 +1,92 @@
+.container {
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  position: relative;
+}
+
+.image {
+  width: 134px;
+  height: 160px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.cardHeaderLayout {
+  display: flex;
+  flex-direction: row;
+  padding: 12px;
+  gap: 20px;
+}
+
+.name {
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.age {
+  font-size: 14px;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.section1 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 12px;
+}
+
+.section2 {
+  display: flex;
+  flex-direction: row;
+  gap: 40px;
+}
+
+.tag {
+  background-color: rgba(234, 179, 8, 0.1);
+  border-radius: 20px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-right: 10px;
+  color: #ca8a04;
+}
+
+.tag2 {
+  border-radius: 20px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-right: 10px;
+  color: #ca8a04;
+}
+
+.footer1 {
+  position: absolute;
+  bottom: 0;
+  margin-top: 20px;
+  align-self: flex-end;
+  align-content: flex-end;
+  align-items: flex-end;
+}
+
+.valueContainer {
+  margin-top: 5px;
+}
+
+.label {
+  font-weight: bold;
+  font-size: 0.76rem;
+  color: #898989;
+}
+
+.value {
+  font-size: 0.86rem;
+  font-style: italic;
+  font-weight: 400;
+}

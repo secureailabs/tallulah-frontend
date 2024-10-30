@@ -1,0 +1,31 @@
+.container {
+}
+
+.searchContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.patientStoryContainer {
+  margin-top: 20px;
+}
+
+.templateListContainer {
+  flex: 1;
+  margin-top: 50px;
+  margin-right: 20px;
+}
+
+.templateSelectorDiv {
+  width: 300px;
+}
+
+.filterContainer {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 20px;
+}

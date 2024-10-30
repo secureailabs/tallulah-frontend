@@ -1,0 +1,126 @@
+.container {
+  padding: 40px;
+}
+
+.modalContent {
+  overflow-y: auto;
+  max-height: 100%;
+}
+
+.cardHeaderLayout {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.name {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.age {
+  font-size: 14px;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.profileImageContainer {
+  width: 220px;
+  height: 260px;
+  display: flex;
+  justify-content: center;
+}
+
+.profileImage {
+  width: 200px;
+  height: 240px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+
+.video {
+  width: 200px;
+  height: 100px;
+  object-fit: cover;
+}
+
+.section1 {
+  margin-top: 30px;
+}
+
+.section2 {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.tag {
+  background-color: #fcc69a;
+  border-radius: 20px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 400;
+  margin-right: 10px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.link {
+  color: #007bff;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.mediaImage {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+}
+
+.consentDiv {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+}
+
+.tagsDiv {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+}
+
+.containerDiv {
+  display: flex;
+  gap: 20px;
+}
+
+.tag {
+  background-color: rgba(234, 179, 8, 0.1);
+  border-radius: 20px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-right: 10px;
+  color: #ca8a04;
+}
+
+.section2 {
+  display: flex;
+  flex-direction: row;
+  gap: 40px;
+}

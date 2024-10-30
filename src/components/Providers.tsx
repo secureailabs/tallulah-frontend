@@ -15,6 +15,7 @@ import AppReactToastify from '@/libs/styles/AppReactToastify'
 import { getMode, getSettingsFromCookie, getSystemMode } from '@core/utils/serverHelpers'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import QueryProvider from './QueryProvider'
+import OpenAPIInitializer from './OpenAPIInitializer'
 
 type Props = ChildrenType & {
   direction: Direction
@@ -37,6 +38,7 @@ const Providers = (props: Props) => {
           <ThemeProvider direction={direction} systemMode={systemMode}>
             <ReduxProvider>
             <QueryProvider>
+            <OpenAPIInitializer />
               {children}
             </QueryProvider>
               </ReduxProvider>

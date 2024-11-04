@@ -1,13 +1,15 @@
-'use client';
+'use client'
 
-import { OpenAPI } from '@/tallulah-ts-client';
-import { useEffect } from 'react';
+import { useEffect } from 'react'
+
+import { OpenAPI } from '@/tallulah-ts-client'
 
 const OpenAPIInitializer = () => {
   useEffect(() => {
-    OpenAPI.BASE = process.env.NEXT_PUBLIC_BASE_URL || '';
-  }, []);
-  return null;
-};
+    OpenAPI.BASE = process.env.NEXT_PUBLIC_API_URL || ''
+  }, [])
 
-export default OpenAPIInitializer;
+  return null
+}
+
+export default OpenAPIInitializer

@@ -176,8 +176,8 @@ const Footer = ({ mode }: { mode: Mode }) => {
             <span>{`© ${new Date().getFullYear()}, Made with `}</span>
             <span>{`❤️`}</span>
             <span>{` by `}</span>
-            <Link href='https://pixinvent.com/' target='_blank' className='font-medium text-white'>
-              Pixinvent
+            <Link href='https://arrayinsights.com/' target='_blank' className='font-medium text-white'>
+              ArrayInsights
             </Link>
           </Typography>
           <div className='flex gap-1.5 items-center'>

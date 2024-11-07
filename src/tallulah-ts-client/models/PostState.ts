@@ -3,8 +3,8 @@
 /* eslint-disable */
 
 export enum PostState {
-    REQUESTED = 'REQUESTED',
-    IN_PROGRESS = 'IN_PROGRESS',
-    APPROVED = 'APPROVED',
-    DENIED = 'DENIED',
+  REQUESTED = 'REQUESTED',
+  IN_PROGRESS = 'IN PROGRESS',
+  APPROVED = 'APPROVED',
+  DENIED = 'DENIED'
 }

@@ -1,0 +1,43 @@
+.resultsTitle {
+  margin-block: 20px;
+  margin-block-end: 20px;
+  font-size: 20px;
+  color: black;
+  font-weight: bold;
+}
+
+.card {
+  padding: 10px;
+  margin-block-end: 20px;
+  margin-block-start: 20px;
+  /* border-block-end: 1px solid #777; */
+}
+
+.mainCard {
+  padding: 10px;
+}
+
+.titleText {
+  text-decoration: none;
+  color: black;
+  block-size: 100%;
+  margin-block-start: 10px;
+  margin-inline-start: 5px;
+  font-weight: 'bold';
+}
+
+.moreText {
+  text-decoration: none;
+  color: black;
+  block-size: 100%;
+  margin-block-start: 10px;
+  margin-inline-start: 5px;
+}
+
+.title:hover {
+  cursor: pointer;
+}
+
+.reddit_image {
+  border-radius: 5px;
+}

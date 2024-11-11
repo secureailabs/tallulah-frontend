@@ -125,7 +125,7 @@ const ReferEarn = ({ open, setOpen }: ReferEarnProps) => {
               fullWidth
               size='small'
               id='refer-social'
-              placeholder='http://pixinvent.link'
+              placeholder='https://www.arrayinsights.com'
               label='You can also copy and send it or share it on your social media. 🚀'
               InputProps={{
                 endAdornment: (

@@ -81,13 +81,27 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
         renderExpandedMenuItemIcon={{ icon: <i className='tabler-circle text-xs' /> }}
         menuSectionStyles={menuSectionStyles(verticalNavOptions, theme)}
       >
-        <MenuItem href={`/${locale}/dashboards/logistics`} icon={<i className='tabler-calendar' />}>Dashboard</MenuItem>
+        <MenuItem href={`/${locale}/dashboards/logistics`} icon={<i className='tabler-calendar' />}>
+          Dashboard
+        </MenuItem>
 
-        <MenuSection label="Patient Story">
-          <SubMenu label="Patient Story" icon={<i className='tabler-users-group' />}>
+        <MenuSection label='Social Search'>
+          <MenuItem icon={<i className='tabler-history' />} href={`/${locale}/social-search/history`}>
+            Search History
+          </MenuItem>
+          <MenuItem icon={<i className='tabler-plug-connected' />} href={`/${locale}/social-search/connects`}>
+            Patient Connects
+          </MenuItem>
+          <MenuItem icon={<i className='tabler-brand-reddit' />} href={`/${locale}/social-search/reddit`}>
+            Reddit
+          </MenuItem>
+        </MenuSection>
+
+        <MenuSection label='Patient Story'>
+          <SubMenu label='Patient Story' icon={<i className='tabler-users-group' />}>
             <MenuItem href={`/${locale}/patient-story/stories`}>Stories</MenuItem>
-            </SubMenu>
-            {/* <SubMenu label={dictionary['navigation'].orders}>
+          </SubMenu>
+          {/* <SubMenu label={dictionary['navigation'].orders}>
               <MenuItem href={`/${locale}/apps/ecommerce/orders/list`}>{dictionary['navigation'].list}</MenuItem>
               <MenuItem
                 href={`/${locale}/apps/ecommerce/orders/details/5434`}
@@ -258,7 +272,6 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
             <MenuItem href={`/${locale}/pages/widget-examples/actions`}>{dictionary['navigation'].actions}</MenuItem>
           </SubMenu> */}
         </MenuSection>
-
       </Menu>
       {/* <Menu
         popoutMenuOffset={{ mainAxis: 23 }}

@@ -1,4 +1,6 @@
 // Type Imports
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
 import type { ChildrenType, Direction } from '@core/types'
 
 // Context Imports
@@ -13,7 +15,6 @@ import AppReactToastify from '@/libs/styles/AppReactToastify'
 
 // Util Imports
 import { getMode, getSettingsFromCookie, getSystemMode } from '@core/utils/serverHelpers'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import QueryProvider from './QueryProvider'
 import OpenAPIInitializer from './OpenAPIInitializer'
 
@@ -30,18 +31,17 @@ const Providers = (props: Props) => {
   const settingsCookie = getSettingsFromCookie()
   const systemMode = getSystemMode()
 
-
   return (
     <NextAuthProvider basePath={process.env.NEXTAUTH_BASEPATH}>
       <VerticalNavProvider>
         <SettingsProvider settingsCookie={settingsCookie} mode={mode}>
           <ThemeProvider direction={direction} systemMode={systemMode}>
             <ReduxProvider>
-            <QueryProvider>
-            <OpenAPIInitializer />
-              {children}
-            </QueryProvider>
-              </ReduxProvider>
+              <QueryProvider>
+                <OpenAPIInitializer />
+                {children}
+              </QueryProvider>
+            </ReduxProvider>
             <AppReactToastify direction={direction} hideProgressBar />
           </ThemeProvider>
         </SettingsProvider>

@@ -27,9 +27,11 @@ import { email, object, minLength, string, pipe, nonEmpty } from 'valibot'
 import type { SubmitHandler } from 'react-hook-form'
 import type { InferInput } from 'valibot'
 import classnames from 'classnames'
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query'
 
 // Type Imports
+import { useDispatch } from 'react-redux'
+
 import type { SystemMode } from '@core/types'
 import type { Locale } from '@/configs/i18n'
 
@@ -46,11 +48,11 @@ import { useSettings } from '@core/hooks/useSettings'
 
 // Util Imports
 import { getLocalizedUrl } from '@/utils/i18n'
-import { AuthenticationService, Body_login, LoginSuccess_Out, OpenAPI } from '@/tallulah-ts-client'
+import type { Body_login, LoginSuccess_Out } from '@/tallulah-ts-client'
+import { AuthenticationService, OpenAPI } from '@/tallulah-ts-client'
 import chat from '@/redux-store/slices/chat'
 import auth, { setToken } from '@/redux-store/slices/auth'
 import { store } from '@/redux-store'
-import { useDispatch } from 'react-redux'
 
 // Styled Custom Components
 const LoginIllustration = styled('img')(({ theme }) => ({
@@ -138,16 +140,16 @@ const Login = ({ mode }: { mode: SystemMode }) => {
 
   const handleClickShowPassword = () => setIsPasswordShown(show => !show)
 
-
   const LoginQuery = useMutation({
     mutationFn: AuthenticationService.login,
-    onSuccess: (data:LoginSuccess_Out) => {
+    onSuccess: (data: LoginSuccess_Out) => {
       OpenAPI.TOKEN = data.access_token
       dispatch(setToken(data))
       const redirectURL = searchParams.get('redirectTo') ?? '/patient-story/stories'
+
       router.replace(getLocalizedUrl(redirectURL, locale as Locale))
     },
-    onError: (error) => {
+    onError: error => {
       setErrorState({
         message: [error.message]
       })
@@ -155,17 +157,14 @@ const Login = ({ mode }: { mode: SystemMode }) => {
   })
 
   const onSubmit: SubmitHandler<FormData> = async (data: FormData) => {
-
-    OpenAPI.BASE = "https://test.tallulah.ai"
+    //OpenAPI.BASE = "https://test.tallulah.ai"
 
     const formData: Body_login = {
       username: data.email,
       password: data.password
-
     }
 
     const res = await LoginQuery.mutateAsync(formData)
-
   }
 
   return (

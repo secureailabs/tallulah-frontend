@@ -1,0 +1,19 @@
+.filterChipContainer {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  padding: 4px 8px;
+  padding-left: 13px;
+  margin: 4px;
+}
+
+.filterChip {
+  font-size: 13px;
+  font-color: #ffffff;
+}
+
+.filterChipIcon {
+  font-size: 12px;
+}

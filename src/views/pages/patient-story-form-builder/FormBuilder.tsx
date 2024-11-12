@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useState } from 'react';
 import styles from './FormBuilder.module.css';
 import {
@@ -21,11 +23,13 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import FormPreviewModal from './FormPreviewModal';
-import { useParams } from 'react-router-dom';
-import { FormTemplatesService } from 'src/tallulah-ts-client';
-import useNotification from 'src/hooks/useNotification';
+// import { useParams } from 'react-router-dom';
+import { FormTemplatesService } from '@/tallulah-ts-client';
+// import useNotification from '@/hooks/useNotification';
+// @ts-ignore
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import DragHandleIcon from '@mui/icons-material/DragHandle';
+import { useParams } from 'next/navigation';
 
 export interface IFormBuilder {}
 
@@ -77,9 +81,10 @@ const FormBuilder: React.FC<IFormBuilder> = () => {
     private: false
   });
 
-  const [sendNotification] = useNotification();
+  // const [sendNotification] = useNotification();
 
-  let { id } = useParams();
+  const params = useParams();
+  const id = params.id;
 
   const fetchFormTemplate = async (id: any) => {
     setIsFetching(true);
@@ -177,10 +182,10 @@ const FormBuilder: React.FC<IFormBuilder> = () => {
     setIsLoading(true);
     try {
       const res = await FormTemplatesService.addNewFormTemplate(form);
-      sendNotification({
-        msg: 'Form Template created successfully.',
-        variant: 'success'
-      });
+      // sendNotification({
+      //   msg: 'Form Template created successfully.',
+      //   variant: 'success'
+      // });
     } catch (err) {
       console.log(err);
     }
@@ -191,10 +196,10 @@ const FormBuilder: React.FC<IFormBuilder> = () => {
     setIsLoading(true);
     try {
       const res = await FormTemplatesService.updateFormTemplate(id as string, form);
-      sendNotification({
-        msg: 'Form Template updated successfully.',
-        variant: 'success'
-      });
+      // sendNotification({
+      //   msg: 'Form Template updated successfully.',
+      //   variant: 'success'
+      // });
     } catch (err) {
       console.log(err);
     }

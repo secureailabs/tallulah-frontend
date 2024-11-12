@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useState } from 'react';
 import styles from './PatientStoryForm.module.css';
 import {
@@ -28,12 +30,13 @@ import {
 
 import ImageUpload from './components/ImageUpload';
 import DocumentUpload from './components/DocumentUpload';
-import { useParams } from 'react-router-dom';
+// import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import VideoUpload from './components/VideoUpload';
-import useNotification from '@/hooks/useNotification';
+// import useNotification from '@/hooks/useNotification';
 import Lottie from 'lottie-react';
 import checkMarkAnimation from '@/assets/lottie/check_mark.json';
+import { useParams, useRouter } from 'next/navigation';
 
 export interface IPatientStoryForm {}
 
@@ -70,7 +73,8 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
   const [formTemplates, setFormTemplates] = useState<GetFormTemplate_Out[]>();
 
   // const [sendNotification] = useNotification();
-  let { id } = useParams();
+
+  const params = useParams();
 
   const getCorrespondingLabel = (fieldName: string) => {
     const field = formLayout?.field_groups?.flatMap((fieldGroup: any) => fieldGroup.fields).find((field: any) => field?.name === fieldName);
@@ -433,10 +437,10 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
   };
 
   useEffect(() => {
-    if (id === undefined) {
+    if (params.id === undefined) {
       fetchFormTemplate();
     } else {
-      fetchFormTemplateById(id);
+      fetchFormTemplateById(params.id as string);
     }
 
     const viewportMeta = document.createElement('meta');
@@ -687,7 +691,7 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
         </Box>
       )}
       {/* id undefined means the form is being accessed via NON public link */}
-      {id === undefined ? (
+      {params.id === undefined ? (
         <Box>
           <Box
             sx={{
@@ -728,7 +732,7 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
           </Box>
         </Box>
       ) : null}
-      {id !== undefined && formLayout?.logo && (
+      {params.id !== undefined && formLayout?.logo && (
         <Box className={styles.logoContainer}>
           <img src={formLayout?.logo} alt="logo" className={styles.logo} />
         </Box>

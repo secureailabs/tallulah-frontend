@@ -1,4 +1,13 @@
+// next.config.mjs
+import path from 'path';
+import { fileURLToPath } from 'url';
+
 /** @type {import('next').NextConfig} */
+
+// Define __dirname in ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const nextConfig = {
   basePath: process.env.BASEPATH,
   redirects: async () => {
@@ -7,22 +16,29 @@ const nextConfig = {
         source: '/',
         destination: '/en/dashboards/crm',
         permanent: true,
-        locale: false
+        locale: false,
       },
       {
         source: '/:lang(en|fr|ar)',
         destination: '/:lang/dashboards/crm',
         permanent: true,
-        locale: false
+        locale: false,
       },
       {
-        source: '/((?!(?:en|fr|ar|front-pages|favicon.ico)\\b)):path',
+        source: '/((?!(?:en|fr|ar|front-pages|favicon.ico)\b)):path',
         destination: '/en/:path',
         permanent: true,
-        locale: false
-      }
-    ]
-  }
-}
+        locale: false,
+      },
+    ];
+  },
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
+      'core/request': path.resolve(__dirname, 'src/libs/requestWrapper.ts'),
+    };
+    return config;
+  },
+};
 
-export default nextConfig
+export default nextConfig;

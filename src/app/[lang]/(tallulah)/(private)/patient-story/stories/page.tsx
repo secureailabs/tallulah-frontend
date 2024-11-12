@@ -1,4 +1,4 @@
-import PatientStory from '@/views/pages/PatientStory'
+import PatientStory from '@/views/pages/patient-story'
 
 const PatientStoryPage = async () => {
 

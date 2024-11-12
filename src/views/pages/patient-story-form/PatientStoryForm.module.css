@@ -1,0 +1,29 @@
+.container {
+  padding: 50px;
+  background-color: white;
+}
+
+.inputStyle {
+}
+
+.gridContainer {
+  display: grid;
+  grid-template-columns: minmax(200px, 1fr) minmax(200px, 1fr);
+  gap: 15px; /* Adjust the gap between grid items */
+}
+.gridItem {
+}
+
+.fullWidth {
+  grid-column: 1 / -1; /* This will make the item take full width */
+}
+
+.logo {
+  width: 100px;
+  height: 100px;
+}
+
+.logoContainer {
+  display: flex;
+  justify-content: center;
+}

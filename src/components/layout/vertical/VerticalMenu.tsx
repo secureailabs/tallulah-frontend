@@ -102,15 +102,21 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
             <MenuItem href={`/${locale}/patient-story/stories`}>Stories</MenuItem>
             <MenuItem href={`/${locale}/patient-story/patient-story-form`}>Story Form</MenuItem>
             <MenuItem href={`/${locale}/patient-story/form-templates`}>Form Templates</MenuItem>
-
-            </SubMenu>
-            <SubMenu label="Email Assistant" icon={<i className='tabler-users-group' />}>
-            <MenuItem href={`/${locale}/email-assistant`}>Email Assistant</MenuItem>
             </SubMenu>
 
-            <SubMenu label="Patient Chat" icon={<i className='tabler-users-group' />}>
+            <SubMenu label="Patient Chat" icon={<i className='tabler-message-2-code' />}>
             <MenuItem href={`/${locale}/patient-chat`}>Patients</MenuItem>
             </SubMenu>
+
+        </MenuSection>
+
+        <MenuSection label='Email Assistant'>
+        <SubMenu label="Email Assistant" icon={<i className='tabler-message-chatbot' />}>
+            <MenuItem href={`/${locale}/email-assistant`}>Email Assistant</MenuItem>
+            </SubMenu>
+        </MenuSection>
+
+
 
 
             {/* <SubMenu label={dictionary['navigation'].orders}>
@@ -285,7 +291,6 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
             <MenuItem href={`/${locale}/pages/widget-examples/charts`}>{dictionary['navigation'].charts}</MenuItem>
             <MenuItem href={`/${locale}/pages/widget-examples/actions`}>{dictionary['navigation'].actions}</MenuItem>
           </SubMenu> */}
-        </MenuSection>
       </Menu>
       {/* <Menu
         popoutMenuOffset={{ mainAxis: 23 }}

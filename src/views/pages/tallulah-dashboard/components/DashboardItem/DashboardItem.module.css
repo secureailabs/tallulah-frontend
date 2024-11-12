@@ -1,0 +1,38 @@
+.component {
+}
+
+.dashboardItem {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.dashboardItemTitleDiv {
+  display: flex;
+  flex-direction: column;
+  align-self: flex-start;
+  justify-content: flex-start;
+  align-items: flex-start;
+  background-color: rgb(97, 172, 210);
+  width: 100%;
+  padding: 10px;
+}
+
+.dashboardItemContentDiv {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.dashboardItemTitle {
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+}

@@ -9,7 +9,8 @@ import type { ApiRequestOptions } from './ApiRequestOptions';
 import type { ApiResult } from './ApiResult';
 import { CancelablePromise } from './CancelablePromise';
 import type { OnCancel } from './CancelablePromise';
-import type { OpenAPIConfig } from './OpenAPI';
+import { OpenAPI, type OpenAPIConfig } from './OpenAPI';
+import { AuthenticationService } from '../services/AuthenticationService';
 
 const isDefined = <T>(value: T | null | undefined): value is Exclude<T, null | undefined> => {
     return value !== undefined && value !== null;
@@ -176,6 +177,26 @@ const getRequestBody = (options: ApiRequestOptions): any => {
     return;
 };
 
+const refreshAccessToken = async (): Promise<string> => {
+    const refreshToken = localStorage.getItem('refresh_token');
+    if (refreshToken) {
+        try {
+            const response = await AuthenticationService.getRefreshToken({ refresh_token: refreshToken });
+            if (response.access_token) {
+                localStorage.setItem('access_token', response.access_token);
+                localStorage.setItem('refresh_token', response.refresh_token);
+                OpenAPI.TOKEN = async () => response.access_token;
+                return response.access_token;
+            }
+        } catch (error) {
+            console.error('Failed to refresh token', error);
+            throw error;
+        }
+    }
+    throw new Error('Refresh token not available');
+};
+
+// Wrapper function to send requests with retry logic
 const sendRequest = async <T>(
     config: OpenAPIConfig,
     options: ApiRequestOptions,
@@ -198,15 +219,43 @@ const sendRequest = async <T>(
 
     onCancel(() => source.cancel('The user aborted a request.'));
 
-    try {
-        return await axios.request(requestConfig);
-    } catch (error) {
-        const axiosError = error as AxiosError;
-        if (axiosError.response) {
-            return axiosError.response;
+    let retryAttempt = 0;
+    let shouldRetry = true;
+
+    while (retryAttempt < 2 && shouldRetry) {
+        try {
+            return await axios.request(requestConfig);
+        } catch (error) {
+            const axiosError = error as AxiosError;
+
+            if (axiosError.response && axiosError.response.status === 401) {
+                retryAttempt++;
+                if (retryAttempt < 2 && shouldRetry) {
+                    try {
+                        const newAccessToken = await refreshAccessToken();
+                        // @ts-ignore
+                        requestConfig.headers['Authorization'] = `Bearer ${newAccessToken}`;
+                        continue;
+                    } catch (refreshError) {
+                        console.error('Error refreshing token', refreshError);
+                        shouldRetry = false;
+                        throw refreshError;
+                    }
+                } else {
+                    shouldRetry = false;
+                }
+            } else {
+                shouldRetry = false;
+            }
+
+            if (axiosError.response) {
+                return axiosError.response as AxiosResponse<T>;
+            }
+            throw error;
         }
-        throw error;
     }
+
+    throw new Error('Request failed after retry attempt');
 };
 
 const getResponseHeader = (response: AxiosResponse<any>, responseHeader?: string): string | undefined => {

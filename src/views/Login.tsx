@@ -145,6 +145,8 @@ const Login = ({ mode }: { mode: SystemMode }) => {
     onSuccess: (data: LoginSuccess_Out) => {
       OpenAPI.TOKEN = data.access_token
       dispatch(setToken(data))
+      localStorage.setItem('access_token', data.access_token)
+      localStorage.setItem('refresh_token', data.refresh_token)
       const redirectURL = searchParams.get('redirectTo') ?? '/patient-story/stories'
 
       router.replace(getLocalizedUrl(redirectURL, locale as Locale))

@@ -100,6 +100,20 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
         <MenuSection label='Patient Story'>
           <SubMenu label='Patient Story' icon={<i className='tabler-users-group' />}>
             <MenuItem href={`/${locale}/patient-story/stories`}>Stories</MenuItem>
+            <MenuItem href={`/${locale}/patient-story/patient-story-form`}>Story Form</MenuItem>
+            <MenuItem href={`/${locale}/patient-story/form-templates`}>Form Templates</MenuItem>
+
+            </SubMenu>
+            <SubMenu label="Email Assistant" icon={<i className='tabler-users-group' />}>
+            <MenuItem href={`/${locale}/email-assistant`}>Email Assistant</MenuItem>
+            </SubMenu>
+
+            <SubMenu label="Patient Chat" icon={<i className='tabler-users-group' />}>
+            <MenuItem href={`/${locale}/patient-chat`}>Patients</MenuItem>
+            </SubMenu>
+
+
+            {/* <SubMenu label={dictionary['navigation'].orders}>
           </SubMenu>
           {/* <SubMenu label={dictionary['navigation'].orders}>
               <MenuItem href={`/${locale}/apps/ecommerce/orders/list`}>{dictionary['navigation'].list}</MenuItem>

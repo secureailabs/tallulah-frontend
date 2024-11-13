@@ -81,9 +81,14 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
         renderExpandedMenuItemIcon={{ icon: <i className='tabler-circle text-xs' /> }}
         menuSectionStyles={menuSectionStyles(verticalNavOptions, theme)}
       >
-        <MenuItem href={`/${locale}/dashboards/logistics`} icon={<i className='tabler-calendar' />}>
-          Dashboard
-        </MenuItem>
+        <MenuSection label='Dashboards'>
+          <MenuItem href={`/${locale}/dashboards/logistics`} icon={<i className='tabler-calendar' />}>
+            Dashboard
+          </MenuItem>
+          <MenuItem href={`/${locale}/dashboards/cro-pr`} icon={<i className='tabler-user-pentagon' />}>
+            CRO / PR Dashboard
+          </MenuItem>
+        </MenuSection>
 
         <MenuSection label='Social Search'>
           <MenuItem icon={<i className='tabler-history' />} href={`/${locale}/social-search/history`}>
@@ -102,18 +107,16 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
             <MenuItem href={`/${locale}/patient-story/stories`}>Stories</MenuItem>
             <MenuItem href={`/${locale}/patient-story/patient-story-form`}>Story Form</MenuItem>
             <MenuItem href={`/${locale}/patient-story/form-templates`}>Form Templates</MenuItem>
-
-            </SubMenu>
-            <SubMenu label="Email Assistant" icon={<i className='tabler-users-group' />}>
+          </SubMenu>
+          <SubMenu label='Email Assistant' icon={<i className='tabler-users-group' />}>
             <MenuItem href={`/${locale}/email-assistant`}>Email Assistant</MenuItem>
-            </SubMenu>
+          </SubMenu>
 
-            <SubMenu label="Patient Chat" icon={<i className='tabler-users-group' />}>
+          <SubMenu label='Patient Chat' icon={<i className='tabler-users-group' />}>
             <MenuItem href={`/${locale}/patient-chat`}>Patients</MenuItem>
-            </SubMenu>
+          </SubMenu>
 
-
-            {/* <SubMenu label={dictionary['navigation'].orders}>
+          {/* <SubMenu label={dictionary['navigation'].orders}>
           </SubMenu>
           {/* <SubMenu label={dictionary['navigation'].orders}>
               <MenuItem href={`/${locale}/apps/ecommerce/orders/list`}>{dictionary['navigation'].list}</MenuItem>

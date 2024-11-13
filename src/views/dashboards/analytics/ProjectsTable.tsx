@@ -97,7 +97,7 @@ const DebouncedInput = ({
 // Column Definitions
 const columnHelper = createColumnHelper<ProjectTableRowType>()
 
-const ProjectTables = ({ projectTable }: { projectTable?: ProjectTableRowType[] }) => {
+const ProjectTables = ({ projectTable, className }: { projectTable?: ProjectTableRowType[]; className?: string }) => {
   // States
   const [rowSelection, setRowSelection] = useState({})
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -217,7 +217,7 @@ const ProjectTables = ({ projectTable }: { projectTable?: ProjectTableRowType[] 
   })
 
   return (
-    <Card>
+    <Card className={className ? className : ''}>
       <CardHeader
         className='flex-wrap gap-x-4 gap-y-2'
         title='Project List'

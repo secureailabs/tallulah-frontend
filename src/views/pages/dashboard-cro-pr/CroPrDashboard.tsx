@@ -462,7 +462,7 @@ const SentimentTable = (props: any) => {
       demographics: ['40-50 years old', 'Female'],
       frequency: '834 Mentions',
       avatarIcon: 'tabler-microphone-2',
-      avatarColor: 'secondary'
+      avatarColor: 'info'
     },
     {
       sentiment: 'Hope',
@@ -546,48 +546,6 @@ const SentimentTable = (props: any) => {
       <CardHeader title='' subheader='' action={<OptionMenu options={['Refresh', 'Update', 'Share']} />} />
       <CardContent className='fullWidth'>
         <TableCard data={data} />
-        {/* <TableContainer component={Paper}> */}
-        {/* <Table className='fullWidth' aria-label='simple table'>
-          <TableHead>
-            <TableRow>
-              <TableCell>a</TableCell>
-              <TableCell>Top Sentiment</TableCell>
-              <TableCell>Related Sentiment</TableCell>
-              <TableCell>Demographics</TableCell>
-              <TableCell>Frequency</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {data.map((item, index) => (
-              <TableRow key={index} className='flex items-center gap-4'>
-                <TableCell>
-                  <CustomAvatar skin='light' variant='rounded' color={item.avatarColor} size={34}>
-                    <i className={classnames(item.avatarIcon, 'text-[22px]')} />
-                  </CustomAvatar>
-                </TableCell>
-                <TableCell>
-                  {item.sentiment}
-                </TableCell>
-                <TableCell>
-                  {item.related}
-                </TableCell>
-                <TableCell>
-                  <div className='flex gap-2 flex-wrap'>
-                    {item.demographics.map((demo, index) => (
-                      <Chip key={index} label={demo} color={item.avatarColor} variant='tonal' size='small' />
-                    ))}
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <Typography variant='body2' color='text.primary'>
-                    {item.frequency}
-                  </Typography>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table> */}
-        {/* </TableContainer> */}
       </CardContent>
     </Card>
   )

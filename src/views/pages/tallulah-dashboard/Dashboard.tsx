@@ -16,9 +16,9 @@ const Dashboard: React.FC<IDashboard> = ({}) => {
       {/* ------------- */}
 
       <Box
-      sx={{
-        marginBottom:'100px'
-      }}
+        sx={{
+          marginBottom:'100px'
+        }}
       >
       <StaticDashboard />
       </Box>

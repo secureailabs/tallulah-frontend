@@ -1,47 +1,17 @@
 import { useEffect, useState, useMemo } from 'react'
 
-import { useSearchParams } from 'next/navigation'
-
 import {
-  Button,
   Card,
   CardContent,
   CardHeader,
-  Checkbox,
-  ChipProps,
-  CircularProgress,
-  Collapse,
   FormControl,
   Grid,
   InputLabel,
   MenuItem,
-  Paper,
   Select,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TextField,
   Typography
 } from '@mui/material'
-import {
-  AdvancedMarker,
-  APIProvider,
-  CollisionBehavior,
-  InfoWindow,
-  Map,
-  Marker,
-  Pin,
-  useAdvancedMarkerRef,
-  useMap,
-  useMapsLibrary
-} from '@vis.gl/react-google-maps'
-import { Controller, Form, useForm } from 'react-hook-form'
-import type { FeatureCollection, Point, GeoJsonProperties } from 'geojson'
-
-import { toast } from 'react-toastify'
+import { APIProvider, Map, useMap, useMapsLibrary } from '@vis.gl/react-google-maps'
 
 import classnames from 'classnames'
 

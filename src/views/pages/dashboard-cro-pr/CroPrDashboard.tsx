@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 
 import { useSearchParams } from 'next/navigation'
 
@@ -26,7 +26,20 @@ import {
   TextField,
   Typography
 } from '@mui/material'
+import {
+  AdvancedMarker,
+  APIProvider,
+  CollisionBehavior,
+  InfoWindow,
+  Map,
+  Marker,
+  Pin,
+  useAdvancedMarkerRef,
+  useMap,
+  useMapsLibrary
+} from '@vis.gl/react-google-maps'
 import { Controller, Form, useForm } from 'react-hook-form'
+import type { FeatureCollection, Point, GeoJsonProperties } from 'geojson'
 
 import { toast } from 'react-toastify'
 
@@ -490,10 +503,8 @@ const SentimentTable = (props: any) => {
     }
   ]
 
-  const TableCard = (props: any[]) => {
-    const data = props.data
-
-    console.log(data)
+  const TableCard = (props: any) => {
+    const data = props.data ?? null
 
     if (!data || data.length === 0) {
       return <div>No data</div>
@@ -513,7 +524,7 @@ const SentimentTable = (props: any) => {
               </tr>
             </thead>
             <tbody className='border-0'>
-              {data.map((item, index) => (
+              {data.map((item: any, index: number) => (
                 <tr key={index}>
                   <td className='text-textPrimary'>
                     <CustomAvatar skin='light' variant='rounded' color={item.avatarColor} size={34}>
@@ -524,7 +535,7 @@ const SentimentTable = (props: any) => {
                   <td>{item.related}</td>
                   <td>
                     <div className='flex gap-2 flex-wrap'>
-                      {item.demographics.map((demo, index) => (
+                      {item.demographics.map((demo: any, index: number) => (
                         <Chip key={index} label={demo} color={item.avatarColor} variant='tonal' size='small' />
                       ))}
                     </div>
@@ -551,9 +562,86 @@ const SentimentTable = (props: any) => {
   )
 }
 
+type PatientLocation = {
+  coordinates: [number, number]
+  mag: number
+}
+
+type HeatmapProps = {
+  data: PatientLocation[]
+  radius: number
+  opacity: number
+}
+
+const Heatmap = ({ data, radius, opacity }: HeatmapProps) => {
+  const map = useMap()
+  const visualization = useMapsLibrary('visualization')
+
+  const heatmap = useMemo(() => {
+    if (!visualization) return null
+
+    return new google.maps.visualization.HeatmapLayer({
+      radius: radius,
+      opacity: opacity
+    })
+  }, [visualization, radius, opacity])
+
+  useEffect(() => {
+    if (!heatmap) return
+
+    heatmap.setData(
+      data.map(point => {
+        const [lat, lng] = point.coordinates
+
+        return {
+          location: new google.maps.LatLng(lat, lng),
+          weight: point.mag
+        }
+      })
+    )
+  }, [heatmap, data, radius, opacity])
+
+  useEffect(() => {
+    if (!heatmap) return
+
+    heatmap.setMap(map)
+
+    return () => {
+      heatmap.setMap(null)
+    }
+  }, [heatmap, map])
+
+  return null
+}
+
 const CroPrDashboard = () => {
   const [filterValue, setFilterValue] = useState('')
   const [sortValue, setSortValue] = useState('')
+
+  const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? ''
+
+  const patientLocations: PatientLocation[] = [
+    {
+      coordinates: [40.7045402, -74.1573085],
+      mag: 100
+    },
+    {
+      coordinates: [38.8936509, -77.1704621],
+      mag: 75
+    },
+    {
+      coordinates: [33.7672695, -84.5760179],
+      mag: 40
+    },
+    {
+      coordinates: [47.6082926, -122.651595],
+      mag: 110
+    },
+    {
+      coordinates: [37.7575973, -122.5934864],
+      mag: 90
+    }
+  ]
 
   return (
     <div>
@@ -591,6 +679,20 @@ const CroPrDashboard = () => {
           </FormControl>
         </div>
       </Card>
+      <div className='flex gap-6 fullWidth' style={{ marginBlockEnd: '20px', borderRadius: '10px' }}>
+        <APIProvider apiKey={API_KEY}>
+          <Map
+            defaultCenter={{ lat: 44.5, lng: -89.5 }}
+            defaultZoom={4}
+            gestureHandling={'greedy'}
+            disableDefaultUI={true}
+            mapId={'429d97a6790fbaa6'}
+            style={{ height: '400px', width: '100%', display: 'inline-block' }}
+          >
+            {patientLocations && <Heatmap data={patientLocations} radius={25} opacity={0.8} />}
+          </Map>
+        </APIProvider>
+      </div>
       <div className='flex gap-6 fullWidth' style={{ marginBlockEnd: '20px' }}>
         <TopDiagnosesCard className='flex-none w-1/3' />
         <ProjectTables projectTable={projectList} className='flex-none w-2/3' />

@@ -2,6 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { Body_login } from '../models/Body_login';
+import type { ChartToken_Out } from '../models/ChartToken_Out';
 import type { LoginSuccess_Out } from '../models/LoginSuccess_Out';
 import type { RefreshToken_In } from '../models/RefreshToken_In';
 import type { ResetPassword_In } from '../models/ResetPassword_In';
@@ -103,7 +104,7 @@ export class AuthenticationService {
             body: requestBody,
             mediaType: 'application/json',
             errors: {
-                401: `Incorrect current password`,
+                400: `User not found in firebase`,
                 422: `Validation Error`,
             },
         });
@@ -163,6 +164,19 @@ export class AuthenticationService {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/auth/migrate-users',
+        });
+    }
+
+    /**
+     * Get Chart Token Api
+     * Get the chart token
+     * @returns ChartToken_Out Successful Response
+     * @throws ApiError
+     */
+    public static getChartTokenApi(): CancelablePromise<ChartToken_Out> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/auth/chart-token',
         });
     }
 

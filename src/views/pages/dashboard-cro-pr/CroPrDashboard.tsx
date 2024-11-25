@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo, useRef, Suspense } from 'react'
 
 import {
   Card,
@@ -20,6 +20,7 @@ import { green } from '@mui/material/colors'
 import { useTheme } from '@mui/material/styles'
 
 import type { ApexOptions } from 'apexcharts'
+import ChartsEmbedSDK from '@mongodb-js/charts-embed-dom'
 
 import styles from './CroPrDashboard.module.css'
 import Chip from '@/@core/components/mui/Chip'
@@ -31,6 +32,7 @@ import ProjectTables from '@/views/dashboards/analytics/ProjectsTable'
 import AppReactApexCharts from '@/libs/styles/AppReactApexCharts'
 import tableStyles from '@core/styles/table.module.css'
 import HorizontalWithSubtitle from '@/components/card-statistics/HorizontalWithSubtitle'
+import { AuthenticationService } from '@/tallulah-ts-client'
 
 const projectList = [
   {
@@ -584,9 +586,102 @@ const Heatmap = ({ data, radius, opacity }: HeatmapProps) => {
   return null
 }
 
+const Dashboard = ({
+  filter,
+  dashboardId,
+  height,
+  width,
+  chartSdk
+}: {
+  filter: any
+  dashboardId: string
+  height: string
+  width: string
+  chartSdk: ChartsEmbedSDK
+}) => {
+  const chartDiv = useRef(null)
+  const [rendered, setRendered] = useState(false)
+
+  const [chart] = useState(
+    chartSdk.createDashboard({ dashboardId: dashboardId, height: height, width: width, theme: 'light' })
+  )
+
+  useEffect(() => {
+    if (chartDiv && chartDiv.current) {
+      chart
+        .render(chartDiv.current)
+        .then(() => setRendered(true))
+        .catch(err => console.log('Error during Charts rendering.', err))
+    }
+  }, [chart, height, width])
+
+  useEffect(() => {
+    if (rendered && filter) {
+      chart.setFilter(filter).catch(err => console.log('Error while filtering.', err))
+    }
+  }, [chart, filter, rendered])
+
+  return chartDiv ? <div className='dashboard' ref={chartDiv}></div> : null
+}
+
+const Chart = ({
+  filter,
+  chartId,
+  height,
+  width,
+  chartSdk
+}: {
+  filter: any
+  chartId: string
+  height: string
+  width: string
+  chartSdk: ChartsEmbedSDK
+}) => {
+  const chartDiv = useRef(null)
+  const [rendered, setRendered] = useState(false)
+
+  const [chart] = useState(chartSdk.createChart({ chartId: chartId, height: height, width: width, theme: 'light' }))
+
+  useEffect(() => {
+    if (chartDiv && chartDiv.current) {
+      chart
+        .render(chartDiv.current)
+        .then(() => setRendered(true))
+        .catch(err => console.log('Error during Charts rendering.', err))
+    }
+  }, [chart, height, width])
+
+  useEffect(() => {
+    if (rendered && filter) {
+      chart.setFilter(filter).catch(err => console.log('Error while filtering.', err))
+    }
+  }, [chart, filter, rendered])
+
+  return chartDiv ? <div className='chart' ref={chartDiv}></div> : null
+
+  // return <div className='chart'></div>
+}
+
 const CroPrDashboard = () => {
   const [filterValue, setFilterValue] = useState('')
   const [sortValue, setSortValue] = useState('')
+  const [chartToken, setChartToken] = useState('')
+
+  const [chartSdk] = useState(
+    new ChartsEmbedSDK({
+      baseUrl: 'https://charts.mongodb.com/charts-tallulah-dev-qbykdfm',
+      getUserToken: getToken
+    })
+  )
+
+  async function getToken() {
+    if (chartToken) return chartToken
+    const token = (await AuthenticationService.getChartTokenApi()).chart_token
+
+    setChartToken(token)
+
+    return token
+  }
 
   const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? ''
 
@@ -615,6 +710,22 @@ const CroPrDashboard = () => {
 
   return (
     <div>
+      <Suspense fallback={<div />}>
+        <Chart
+          height={'600px'}
+          width={'full-width'}
+          filter={null}
+          chartId={'985b9f36-9360-4e3c-b11b-c72952d0f9b3'}
+          chartSdk={chartSdk}
+        />
+        <Dashboard
+          height={'600px'}
+          width={'full-width'}
+          filter={null}
+          dashboardId={'673b5e40-a897-4f8f-8060-b78c8f6e6e9a'}
+          chartSdk={chartSdk}
+        />
+      </Suspense>
       {/* <h2>Reddit Search</h2> */}
       <Card className={styles.mainCard} component='form' noValidate sx={{ mt: 1, width: '100%' }}>
         <div className='flex gap-6'>

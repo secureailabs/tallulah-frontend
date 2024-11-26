@@ -88,6 +88,9 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
           <MenuItem href={`/${locale}/dashboards/cro-pr`} icon={<i className='tabler-user-pentagon' />}>
             CRO / PR Dashboard
           </MenuItem>
+          <MenuItem href={`/${locale}/dashboards/patients`} icon={<i className='tabler-percentage-20' />}>
+            Patients Dashboard
+          </MenuItem>
         </MenuSection>
 
         <MenuSection label='Social Search'>

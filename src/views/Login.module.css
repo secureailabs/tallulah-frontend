@@ -1,0 +1,16 @@
+.container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgb(169, 165, 242);
+  background: linear-gradient(90deg, rgba(169, 165, 242, 1) 0%, rgba(52, 109, 246, 1) 35%, rgba(179, 231, 241, 1) 100%);
+}
+
+.stack {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}

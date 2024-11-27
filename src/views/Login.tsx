@@ -1,296 +1,480 @@
 'use client'
 
-// React Imports
-import { useState } from 'react'
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import Link from '@mui/material/Link';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import { MuiTelInput } from 'mui-tel-input';
+import { Divider, IconButton, InputAdornment, Stack } from '@mui/material';
+import styles from './Login.module.css';
+import { Controller, useForm } from 'react-hook-form';
+import { useState } from 'react';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { LoginSuccess_Out, OpenAPI, AuthenticationService, Body_login, UserRole } from '@/tallulah-ts-client';
 
-// Next Imports
-import Link from 'next/link'
-import { useParams, useRouter, useSearchParams } from 'next/navigation'
+// import useNotification from 'src/hooks/useNotification';
+import { activeAccessToken, activeRefreshToken, tokenType, updateAuthState } from '@/store/reducers/Auth';
+// import { useNavigate } from 'react-router-dom';
+import { Otptimer } from "otp-timer-ts";
 
-// MUI Imports
-import useMediaQuery from '@mui/material/useMediaQuery'
-import { styled, useTheme } from '@mui/material/styles'
-import Typography from '@mui/material/Typography'
-import IconButton from '@mui/material/IconButton'
-import InputAdornment from '@mui/material/InputAdornment'
-import Checkbox from '@mui/material/Checkbox'
-import Button from '@mui/material/Button'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Divider from '@mui/material/Divider'
-import Alert from '@mui/material/Alert'
+import {
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+  RecaptchaVerifier,
+  multiFactor,
+  getMultiFactorResolver,
+  PhoneMultiFactorGenerator,
+  PhoneAuthProvider,
+  User,
+  MultiFactorResolver
+} from 'firebase/auth';
+import { auth } from '@/firebase';
+import { Router } from 'next/router';
+import { useDispatch } from 'react-redux';
+import { setToken } from '@/redux-store/slices/auth';
+import { useRouter } from 'next/navigation';
 
-// Third-party Imports
-import { signIn } from 'next-auth/react'
-import { Controller, useForm } from 'react-hook-form'
-import { valibotResolver } from '@hookform/resolvers/valibot'
-import { email, object, minLength, string, pipe, nonEmpty } from 'valibot'
-import type { SubmitHandler } from 'react-hook-form'
-import type { InferInput } from 'valibot'
-import classnames from 'classnames'
-import { useMutation, useQuery } from '@tanstack/react-query'
-
-// Type Imports
-import { useDispatch } from 'react-redux'
-
-import type { SystemMode } from '@core/types'
-import type { Locale } from '@/configs/i18n'
-
-// Component Imports
-import Logo from '@components/layout/shared/Logo'
-import CustomTextField from '@core/components/mui/TextField'
-
-// Config Imports
-import themeConfig from '@configs/themeConfig'
-
-// Hook Imports
-import { useImageVariant } from '@core/hooks/useImageVariant'
-import { useSettings } from '@core/hooks/useSettings'
-
-// Util Imports
-import { getLocalizedUrl } from '@/utils/i18n'
-import type { Body_login, LoginSuccess_Out } from '@/tallulah-ts-client'
-import { AuthenticationService, OpenAPI } from '@/tallulah-ts-client'
-import chat from '@/redux-store/slices/chat'
-import auth, { setToken } from '@/redux-store/slices/auth'
-import { store } from '@/redux-store'
-
-// Styled Custom Components
-const LoginIllustration = styled('img')(({ theme }) => ({
-  zIndex: 2,
-  blockSize: 'auto',
-  maxBlockSize: 680,
-  maxInlineSize: '100%',
-  margin: theme.spacing(12),
-  [theme.breakpoints.down(1536)]: {
-    maxBlockSize: 550
-  },
-  [theme.breakpoints.down('lg')]: {
-    maxBlockSize: 450
-  }
-}))
-
-const MaskImg = styled('img')({
-  blockSize: 'auto',
-  maxBlockSize: 355,
-  inlineSize: '100%',
-  position: 'absolute',
-  insetBlockEnd: 0,
-  zIndex: -1
-})
-
-type ErrorType = {
-  message: string[]
+export interface IEmailAndPassword {
+  username: string;
+  password: string;
 }
 
-type FormData = InferInput<typeof schema>
+// export const storeLoginCredentials = (tokens: LoginSuccess_Out) => {
+//   dispatch(
+//     updateAuthState({
+//       accessToken: tokens.access_token,
+//       refreshToken: tokens.refresh_token,
+//       tokenType: tokens.token_type
+//     })
+//   );
+// };
 
-const schema = object({
-  email: pipe(string(), minLength(1, 'This field is required'), email('Email is invalid')),
-  password: pipe(
-    string(),
-    nonEmpty('This field is required'),
-    minLength(5, 'Password must be at least 5 characters long')
-  )
-})
+export const roleBasedHomeRouting = (roles: UserRole[]) => {
+  if (roles.includes(UserRole.TALLULAH_ADMIN) || roles.includes(UserRole.EMAIL_INTEGRATION_USER)) {
+    return '/email-assistant';
+  } else if (roles.includes(UserRole.FORM_INTAKE_USER)) {
+    return '/patient-story';
+  } else if (roles.includes(UserRole.CONTENT_GENERATION_USER)) {
+    return '/content-generation';
+  } else if (roles.includes(UserRole.PATIENT_PROFILE_USER)) {
+    return '/patient-profile';
+  } else {
+    return '/email-assistant';
+  }
+};
 
-const Login = ({ mode }: { mode: SystemMode }) => {
-  // States
-  const [isPasswordShown, setIsPasswordShown] = useState(false)
-  const [errorState, setErrorState] = useState<ErrorType | null>(null)
+const Login: React.FC = () => {
+  const { handleSubmit, control, getValues, formState, reset } = useForm({
+    mode: "onChange"
+  });
+  // const navigate = useNavigate();
 
-  // Vars
-  const darkImg = '/images/pages/auth-mask-dark.png'
-  const lightImg = '/images/pages/auth-mask-light.png'
-  const darkIllustration = '/images/illustrations/auth/v2-login-dark.png'
-  const lightIllustration = '/images/illustrations/auth/v2-login-light.png'
-  const borderedDarkIllustration = '/images/illustrations/auth/v2-login-dark-border.png'
-  const borderedLightIllustration = '/images/illustrations/auth/v2-login-light-border.png'
+   // Reducer
+   const dispatch = useDispatch()
+   const router = useRouter()
 
-  // Hooks
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const { lang: locale } = useParams()
-  const { settings } = useSettings()
-  const theme = useTheme()
-  const hidden = useMediaQuery(theme.breakpoints.down('md'))
-  const authBackground = useImageVariant(mode, lightImg, darkImg)
+  const onSubmit = (data: any) => {
+    postLogin(data);
+  };
+  const [showPassword, setShowPassword] = useState(false);
+  // const [sendNotification] = useNotification();
+  const [fuser, setFUser] = useState<User | null>(null);
+  const [verificationId, setVerificationId] = useState('');
+  const [resolver, setResolver] = useState<any>(null);
+  const [loginStep, setLoginStep] = useState("login");
 
-  // Reducer
-  const dispatch = useDispatch()
+  const handleShowPassword = () => {
+    setShowPassword((prev) => !prev);
+  };
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors }
-  } = useForm<FormData>({
-    resolver: valibotResolver(schema),
-    defaultValues: {
-      email: 'aman@example.com',
-      password: 'string'
+  const showInfoNotification = () => {
+    // sendNotification({
+    //   msg: 'Please contact your administrator',
+    //   variant: 'info'
+    // });
+  };
+
+  async function forgotPassword() {
+    const { username } = getValues();
+    if (!username) {
+      // sendNotification({
+      //   msg: 'Email is empty',
+      //   variant: 'error'
+      // });
+      return;
     }
-  })
-
-  const characterIllustration = useImageVariant(
-    mode,
-    lightIllustration,
-    darkIllustration,
-    borderedLightIllustration,
-    borderedDarkIllustration
-  )
-
-  const handleClickShowPassword = () => setIsPasswordShown(show => !show)
-
-  const LoginQuery = useMutation({
-    mutationFn: AuthenticationService.login,
-    onSuccess: (data: LoginSuccess_Out) => {
-      OpenAPI.TOKEN = data.access_token
-      dispatch(setToken(data))
-      localStorage.setItem('access_token', data.access_token)
-      localStorage.setItem('refresh_token', data.refresh_token)
-      const redirectURL = searchParams.get('redirectTo') ?? '/patient-story/stories'
-
-      router.replace(getLocalizedUrl(redirectURL, locale as Locale))
-    },
-    onError: error => {
-      setErrorState({
-        message: [error.message]
+    sendPasswordResetEmail(auth, username)
+      .then(() => {
+        // sendNotification({
+        //   msg: 'Password reset email sent',
+        //   variant: 'success'
+        // });
       })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+        // sendNotification({
+        //   msg: 'Invalid email or password',
+        //   variant: 'error'
+        // });
+      });
+  }
+
+  async function sendOtp(recaptchaVerifier: RecaptchaVerifier, resolver: MultiFactorResolver) {
+    const phoneAuthProvider = new PhoneAuthProvider(auth);
+    var idx = 0;
+    for (const hint of resolver.hints) {
+      if (hint.factorId === PhoneMultiFactorGenerator.FACTOR_ID) {
+        break;
+      }
+      idx++;
     }
-  })
+    if (idx >= resolver.hints.length) {
+      throw new Error('Multi-factor authentication not supported');
+    }
+    const verificationId = await phoneAuthProvider.verifyPhoneNumber(
+      {
+        multiFactorHint: resolver.hints[idx],
+        session: resolver.session
+      },
+      recaptchaVerifier
+    );
+    setLoginStep('verify-2fa');
+    setVerificationId(verificationId);
+  }
 
-  const onSubmit: SubmitHandler<FormData> = async (data: FormData) => {
-    //OpenAPI.BASE = "https://test.tallulah.ai"
+  async function handleResend() {
+    if (loginStep === 'enroll-2fa-verify') {
+      onPhone({ phone: getValues('phone') });
+    } else {
+      const recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container-id', undefined);
+      sendOtp(recaptchaVerifier, resolver);
+    }
+  }
 
-    const formData: Body_login = {
-      username: data.email,
+  async function onPhone(data: any) {
+    if (!fuser) {
+      return;
+    }
+    const recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container-id', undefined);
+    const phoneNumber = data.phone;
+
+    fuser.getIdToken(true).then((idToken) => {
+        OpenAPI.TOKEN = idToken;
+        return AuthenticationService.enable2Fa({ phone: phoneNumber });
+      })
+      .then((res) => {
+        return multiFactor(fuser).getSession();
+      })
+      .then((userSession) => {
+        const phoneAuthProvider = new PhoneAuthProvider(auth);
+        return phoneAuthProvider.verifyPhoneNumber(
+          {
+            phoneNumber: phoneNumber,
+            session: userSession
+          },
+          recaptchaVerifier
+        );
+      })
+      .then((verificationId) => {
+        setVerificationId(verificationId);
+        setLoginStep('enroll-2fa-verify');
+      })
+      .catch((error) => {
+        console.log(error);
+        reset();
+      });
+  }
+
+  async function onOtp(data: any) {
+    try {
+      if (loginStep === 'enroll-2fa-verify') {
+        const cred = PhoneAuthProvider.credential(verificationId, data.code);
+        const multiFactorAssertion = PhoneMultiFactorGenerator.assertion(cred);
+
+        // Complete enrollment.
+        if (fuser) {
+          await multiFactor(fuser).enroll(multiFactorAssertion, 'Phone');
+          continueLogin(fuser);
+          //setLoginStep('login');
+          //window.location.reload();
+        }
+      }
+      if (loginStep === 'verify-2fa') {
+        const cred = PhoneAuthProvider.credential(verificationId, data.code);
+        const multiFactorAssertion = PhoneMultiFactorGenerator.assertion(cred);
+        // Complete sign-in.
+        const userCredential = await resolver.resolveSignIn(multiFactorAssertion);
+        continueLogin(userCredential.user);
+      }
+    } catch (error) {
+      console.log(error);
+      // sendNotification({
+      //   msg: 'Invalid verification code',
+      //   variant: 'error'
+      // });
+      reset();
+    }
+  }
+
+  async function continueLogin(user: User) {
+    const idToken = await user.getIdToken(true);
+    OpenAPI.TOKEN = idToken;
+    const res = await AuthenticationService.ssologin();
+    OpenAPI.TOKEN = res.access_token;
+    localStorage.setItem('access_token', res.access_token);
+    localStorage.setItem('refresh_token', res.refresh_token);
+    dispatch(setToken(res))
+
+    const res2 = await AuthenticationService.getCurrentUserInfo();
+    // navigate('/home');
+    router.push('/en/dashboards');
+
+    return res;
+  }
+
+  async function postLogin(data: IEmailAndPassword) /*: Promise<LoginSuccess_Out | undefined>*/ {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    OpenAPI.TOKEN = '';
+    dispatch(setToken({
+      'access_token' : '',
+      'refresh_token' : '',
+      'token_type' : ''
+    }))
+
+    // if (!process.env.REACT_APP_SAIL_API_SERVICE_URL) throw new Error('REACT_APP_SAIL_API_SERVICE_URL not set');
+
+    // OpenAPI.BASE = process.env.REACT_APP_SAIL_API_SERVICE_URL;
+
+    const login_req: Body_login = {
+      username: data.username,
       password: data.password
-    }
+    };
 
-    const res = await LoginQuery.mutateAsync(formData)
+    try {
+      const recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container-id', undefined);
+      // const res = await AuthenticationService.login(login_req);
+
+      var userCredential = null;
+      try {
+        userCredential = await signInWithEmailAndPassword(auth, data.username, data.password);
+
+        // 2FA is not enabled
+        setLoginStep('enroll-2fa');
+        setFUser(userCredential.user);
+        reset();
+        return;
+      } catch (error: any) {
+        if (error.code === 'auth/multi-factor-auth-required') {
+          const resolver = getMultiFactorResolver(auth, error);
+          sendOtp(recaptchaVerifier, resolver);
+          setResolver(resolver);
+
+          return;
+        } else {
+          throw error;
+        }
+      }
+      continueLogin(userCredential.user);
+    } catch (error) {
+      console.log(error);
+      if (error) {
+        // sendNotification({
+        //   msg: 'Invalid email or password',
+        //   variant: 'error'
+        // });
+        reset();
+      }
+    }
   }
 
   return (
-    <div className='flex bs-full justify-center'>
-      <div
-        className={classnames(
-          'flex bs-full items-center justify-center flex-1 min-bs-[100dvh] relative p-6 max-md:hidden',
-          {
-            'border-ie': settings.skin === 'bordered'
-          }
-        )}
+    <Box className={styles.container}>
+      <Box
+        sx={{
+          mt: 6,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          border: '1px solid #e0e0e0',
+          borderRadius: 5,
+          p: 4,
+          backgroundColor: '#fff',
+          boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)'
+        }}
       >
-        <LoginIllustration src={characterIllustration} alt='character-illustration' />
-        {!hidden && <MaskImg alt='mask' src={authBackground} />}
-      </div>
-      <div className='flex justify-center items-center bs-full bg-backgroundPaper !min-is-full p-6 md:!min-is-[unset] md:p-12 md:is-[480px]'>
-        <div className='absolute block-start-5 sm:block-start-[33px] inline-start-6 sm:inline-start-[38px]'>
-          <Logo />
-        </div>
-        <div className='flex flex-col gap-6 is-full sm:is-auto md:is-full sm:max-is-[400px] md:max-is-[unset] mbs-8 sm:mbs-11 md:mbs-0'>
-          <div className='flex flex-col gap-1'>
-            <Typography variant='h4'>{`Welcome to ${themeConfig.templateName}! 👋🏻`}</Typography>
-            <Typography>Please sign-in to your account and start the adventure</Typography>
-          </div>
-          <Alert icon={false} className='bg-[var(--mui-palette-primary-lightOpacity)]'>
-            <Typography variant='body2' color='primary'>
-              Email: <span className='font-medium'>admin@vuexy.com</span> / Pass:{' '}
-              <span className='font-medium'>admin</span>
-            </Typography>
-          </Alert>
-          <form
-            noValidate
-            autoComplete='off'
-            action={() => {}}
-            onSubmit={handleSubmit(onSubmit)}
-            className='flex flex-col gap-6'
-          >
+        {loginStep === 'login' && (
+          <Box component="form" noValidate sx={{ mt: 1, width: 400 }} onSubmit={handleSubmit(onSubmit)}>
+            <Box className={styles.stack} sx={{ my: 3 }}>
+              <Typography variant="h3">Login</Typography>
+              <Link variant="subtitle2" href="#" underline="hover" onClick={showInfoNotification}>
+                Don't have an account?
+              </Link>
+            </Box>
+            <Typography variant="h6">Email Address</Typography>
             <Controller
-              name='email'
+              name="username"
               control={control}
-              rules={{ required: true }}
-              render={({ field }) => (
-                <CustomTextField
-                  {...field}
-                  autoFocus
+              defaultValue=""
+              render={({ field: { onChange, value }, fieldState: { error } }) => (
+                <TextField
+                  sx={{ mt: 1, mb: 4 }}
+                  value={value}
+                  onChange={onChange}
+                  error={!!error}
+                  helperText={error ? error.message : null}
+                  required
                   fullWidth
-                  type='email'
-                  label='Email'
-                  placeholder='Enter your email'
-                  onChange={e => {
-                    field.onChange(e.target.value)
-                    errorState !== null && setErrorState(null)
-                  }}
-                  {...((errors.email || errorState !== null) && {
-                    error: true,
-                    helperText: errors?.email?.message || errorState?.message[0]
-                  })}
+                  id="username"
+                  label="Enter email address"
+                  autoComplete="email"
+                  autoFocus
                 />
               )}
+              rules={{ required: 'Email address is required' }}
             />
+            <Typography variant="h6">Password</Typography>
             <Controller
-              name='password'
+              name="password"
               control={control}
-              rules={{ required: true }}
-              render={({ field }) => (
-                <CustomTextField
-                  {...field}
-                  fullWidth
-                  label='Password'
-                  placeholder='············'
-                  id='login-password'
-                  type={isPasswordShown ? 'text' : 'password'}
-                  onChange={e => {
-                    field.onChange(e.target.value)
-                    errorState !== null && setErrorState(null)
-                  }}
+              defaultValue=""
+              render={({ field: { onChange, value }, fieldState: { error } }) => (
+                <TextField
                   InputProps={{
                     endAdornment: (
-                      <InputAdornment position='end'>
-                        <IconButton edge='end' onClick={handleClickShowPassword} onMouseDown={e => e.preventDefault()}>
-                          <i className={isPasswordShown ? 'tabler-eye' : 'tabler-eye-off'} />
+                      <InputAdornment position="end">
+                        <IconButton onClick={handleShowPassword} edge="end">
+                          {showPassword ? <Visibility /> : <VisibilityOff />}
                         </IconButton>
                       </InputAdornment>
                     )
                   }}
-                  {...(errors.password && { error: true, helperText: errors.password.message })}
+                  sx={{ mt: 1, mb: 2 }}
+                  value={value}
+                  onChange={onChange}
+                  error={!!error}
+                  helperText={error ? error.message : null}
+                  required
+                  fullWidth
+                  id="password"
+                  label="Enter password"
+                  type={showPassword ? 'text' : 'password'}
+                  autoComplete="current-password"
                 />
               )}
+              rules={{ required: 'Password is required' }}
             />
-            <div className='flex justify-between items-center gap-x-3 gap-y-1 flex-wrap'>
-              <FormControlLabel control={<Checkbox defaultChecked />} label='Remember me' />
-              <Typography
-                className='text-end'
-                color='primary'
-                component={Link}
-                href={getLocalizedUrl('/forgot-password', locale as Locale)}
-              >
+            <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
+              <FormControlLabel control={<Checkbox value="stay_signedin" color="primary" />} label="Keep me signed in" />
+              <Link variant="subtitle2" href="#" underline="hover" onClick={forgotPassword}>
                 Forgot password?
-              </Typography>
-            </div>
-            <Button fullWidth variant='contained' type='submit'>
-              Login
-            </Button>
-            <div className='flex justify-center items-center flex-wrap gap-2'>
-              <Typography>New on our platform?</Typography>
-              <Typography component={Link} href={getLocalizedUrl('/register', locale as Locale)} color='primary'>
-                Create an account
-              </Typography>
-            </div>
-            <Divider className='gap-2'>or</Divider>
+              </Link>
+            </Stack>
+            <div id="recaptcha-container-id"></div>
             <Button
-              color='secondary'
-              className='self-center text-textPrimary'
-              startIcon={<img src='/images/logos/google.png' alt='Google' width={22} />}
-              sx={{ '& .MuiButton-startIcon': { marginInlineEnd: 3 } }}
-              onClick={() => signIn('google')}
+              disabled={!formState.isValid || formState.isSubmitted}
+              onClick={handleSubmit(onSubmit)}
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mb: 2 }}
             >
-              Sign in with Google
+              Log In
             </Button>
-          </form>
-        </div>
-      </div>
-    </div>
-  )
-}
+            {/* <Divider sx={{ my: 3 }}>
+              <Typography variant="body2" sx={{ color: 'primary' }}>
+                Login with
+              </Typography>
+            </Divider>
+            <Box component="form">
+              <Socials />
+            </Box> */}
+          </Box>
+        )}
+        {loginStep === 'enroll-2fa' && (
+          <Box component="form" noValidate sx={{ mt: 1, width: 400 }} onSubmit={handleSubmit(onPhone)}>
+            <Box className={styles.stack} sx={{ my: 3 }}>
+              <Typography variant="h3">Enroll 2FA</Typography>
+            </Box>
+            <Typography variant="h6">Add your phone number for 2FA</Typography>
+            <Controller
+              name="phone"
+              control={control}
+              defaultValue=""
+              render={({ field: { onChange, value }, fieldState: { error } }) => (
+                <MuiTelInput
+                  sx={{ mt: 1, mb: 4 }}
+                  value={value}
+                  onChange={onChange}
+                  error={!!error}
+                  helperText={error ? error.message : null}
+                  required
+                  fullWidth
+                  defaultCountry="US"
+                  id="phone"
+                  label="Phone Number"
+                  autoFocus
+                />
+              )}
+              rules={{ required: 'Verification Code is required' }}
+            />
+            <div id="recaptcha-container-id"></div>
+            <Button
+              disabled={!formState.isValid || formState.isSubmitted}
+              id="add-phone-button"
+              onClick={handleSubmit(onPhone)}
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mb: 2 }}
+            >
+              Add Phone
+            </Button>
+          </Box>
+        )}
+        {(loginStep === 'enroll-2fa-verify' || loginStep === 'verify-2fa') && (
+          <Box component="form" noValidate sx={{ mt: 1, width: 400 }} onSubmit={handleSubmit(onOtp)}>
+            <Box className={styles.stack} sx={{ my: 3 }}>
+              <Typography variant="h3">{loginStep === 'verify-2fa' ? 'Verify 2FA' : 'Enroll 2FA'}</Typography>
+            </Box>
+            <Typography variant="h6">Verification Code Sent To Your Phone</Typography>
+            <Controller
+              name="code"
+              control={control}
+              defaultValue=""
+              render={({ field: { onChange, value }, fieldState: { error } }) => (
+                <TextField
+                  sx={{ mt: 1, mb: 4 }}
+                  value={value}
+                  onChange={onChange}
+                  error={!!error}
+                  helperText={error ? error.message : null}
+                  required
+                  fullWidth
+                  inputProps={{ maxLength: 6, minLength: 6 }}
+                  id="verify-code"
+                  label="Verification Code"
+                  autoFocus
+                />
+              )}
+              rules={{ required: 'Verification Code is required' }}
+            />
+            <Otptimer minutes={0} seconds={59} onResend={handleResend} />
+            <div id="recaptcha-container-id"></div>
+            <Button disabled={!formState.isValid} onClick={handleSubmit(onOtp)} type="submit" fullWidth variant="contained" sx={{ mb: 2 }}>
+              Verify
+            </Button>
+          </Box>
+        )}
+      </Box>
+    </Box>
+  );
+};
 
-export default Login
+export default Login;

@@ -14,7 +14,14 @@ const CardStatsSquare = (props: CardStatsSquareProps) => {
   const { avatarColor, avatarIcon, stats, statsTitle, avatarVariant, avatarSize, avatarSkin } = props
 
   return (
-    <Card>
+    <Card
+      sx={{
+        alignItems: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+        height : '100%'
+      }}
+    >
       <CardContent className='flex flex-col items-center gap-2'>
         <CustomAvatar color={avatarColor} skin={avatarSkin} variant={avatarVariant} size={avatarSize}>
           <i className={avatarIcon} />

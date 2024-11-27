@@ -1,0 +1,13 @@
+.component {
+}
+
+.dashboardLayout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 50px;
+  margin-top: 20px;
+}
+
+.outerDashboardDiv {
+  margin-top: 30px;
+}

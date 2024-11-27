@@ -82,7 +82,7 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
         menuSectionStyles={menuSectionStyles(verticalNavOptions, theme)}
       >
         <MenuSection label='Dashboards'>
-          <MenuItem href={`/${locale}/dashboards/logistics`} icon={<i className='tabler-calendar' />}>
+          {/* <MenuItem href={`/${locale}/dashboards/logistics`} icon={<i className='tabler-calendar' />}> */}
             Dashboard
           </MenuItem>
           <MenuItem href={`/${locale}/dashboards/cro-pr`} icon={<i className='tabler-user-pentagon' />}>
@@ -91,6 +91,16 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
           <MenuItem href={`/${locale}/dashboards/patients`} icon={<i className='tabler-percentage-20' />}>
             Patients Dashboard
           </MenuItem>
+        </MenuSection>
+        <MenuSection label='Patient Story'>
+          <SubMenu label='Patient Story' icon={<i className='tabler-users-group' />}>
+            <MenuItem href={`/${locale}/patient-story/stories`}>Stories</MenuItem>
+            <MenuItem href={`/${locale}/patient-story/patient-story-form`}>Story Form</MenuItem>
+            <MenuItem href={`/${locale}/patient-story/form-templates`}>Form Templates</MenuItem>
+            </SubMenu>
+            <SubMenu label="Patient Chat" icon={<i className='tabler-message-2-code' />}>
+            <MenuItem href={`/${locale}/patient-chat`}>Patients</MenuItem>
+            </SubMenu>
         </MenuSection>
 
         <MenuSection label='Social Search'>
@@ -118,6 +128,20 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
           <SubMenu label='Patient Chat' icon={<i className='tabler-users-group' />}>
             <MenuItem href={`/${locale}/patient-chat`}>Patients</MenuItem>
           </SubMenu>
+        </MenuSection>
+
+        <MenuSection label='Email Assistant'>
+          <SubMenu label="Email Assistant" icon={<i className='tabler-message-chatbot' />}>
+              <MenuItem href={`/${locale}/email-assistant`}>Email Assistant</MenuItem>
+          </SubMenu>
+        </MenuSection>
+
+        <MenuSection label='Content Generation'>
+          <SubMenu label="Content Generation" icon={<i className='tabler-message-chatbot' />}>
+              <MenuItem href={`/${locale}/content-generation`}>Content Generation</MenuItem>
+              <MenuItem href={`/${locale}/content-generation-form`}>Generation Form</MenuItem>
+          </SubMenu>
+        </MenuSection>
 
           {/* <SubMenu label={dictionary['navigation'].orders}>
           </SubMenu>
@@ -291,7 +315,6 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
             <MenuItem href={`/${locale}/pages/widget-examples/charts`}>{dictionary['navigation'].charts}</MenuItem>
             <MenuItem href={`/${locale}/pages/widget-examples/actions`}>{dictionary['navigation'].actions}</MenuItem>
           </SubMenu> */}
-        </MenuSection>
       </Menu>
       {/* <Menu
         popoutMenuOffset={{ mainAxis: 23 }}

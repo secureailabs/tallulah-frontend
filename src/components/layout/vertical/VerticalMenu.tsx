@@ -81,9 +81,9 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
         renderExpandedMenuItemIcon={{ icon: <i className='tabler-circle text-xs' /> }}
         menuSectionStyles={menuSectionStyles(verticalNavOptions, theme)}
       >
-        <MenuItem href={`/${locale}/dashboards/logistics`} icon={<i className='tabler-calendar' />}>
+        {/* <MenuItem href={`/${locale}/dashboards/logistics`} icon={<i className='tabler-calendar' />}>
           Dashboard
-        </MenuItem>
+        </MenuItem> */}
         <MenuItem href={`/${locale}/dashboards`} icon={<i className='tabler-calendar' />}>
           Dashboard
         </MenuItem>

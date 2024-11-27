@@ -16,6 +16,7 @@ import UserDropdown from '@components/layout/shared/UserDropdown'
 
 // Util Imports
 import { verticalLayoutClasses } from '@layouts/utils/layoutClasses'
+import { Box } from '@mui/material'
 
 // Vars
 const shortcuts: ShortcutsType[] = [
@@ -107,19 +108,20 @@ const notifications: NotificationsType[] = [
 
 const NavbarContent = () => {
   return (
-    <div className={classnames(verticalLayoutClasses.navbarContent, 'flex items-center justify-between gap-4 is-full')}>
-      <div className='flex items-center gap-4'>
-        <NavToggle />
-        <NavSearch />
-      </div>
+    <Box sx={{
+      display:'flex',
+      flexDirection : 'row',
+      justifyContent: 'flex-end',
+      width : '100%'
+    }}>
       <div className='flex items-center'>
-        <LanguageDropdown />
-        <ModeDropdown />
-        <ShortcutsDropdown shortcuts={shortcuts} />
-        <NotificationsDropdown notifications={notifications} />
+        {/* <LanguageDropdown /> */}
+        {/* <ModeDropdown /> */}
+        {/* <ShortcutsDropdown shortcuts={shortcuts} /> */}
+        {/* <NotificationsDropdown notifications={notifications} /> */}
         <UserDropdown />
       </div>
-    </div>
+    </Box>
   )
 }
 

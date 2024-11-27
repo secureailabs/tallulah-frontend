@@ -82,7 +82,11 @@ const PieChartItem: React.FC<IPieChartItem> = ({ response, cardHeader,cardSubHea
   };
 
   return (
-    <Card>
+    <Card
+    sx={{
+      height:'100%'
+    }}
+    >
       <CardHeader title={cardHeader} subheader={cardSubHeader} />
       <CardContent>
         <AppReactApexCharts

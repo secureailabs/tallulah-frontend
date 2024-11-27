@@ -122,7 +122,8 @@ const StaticDashboard: React.FC<IStaticDashboard> = ({ sampleTextProp }) => {
             <Typography variant="h5">{dashboard?.name}</Typography> 
             {isLoading && <CircularProgress sx={{ margin: '20px' }} />}
           </Box>
-          <Grid container spacing={3}>
+          <Grid container spacing={4}
+          >
             {/* First Grid Item */}
             <Grid
               item
@@ -134,14 +135,16 @@ const StaticDashboard: React.FC<IStaticDashboard> = ({ sampleTextProp }) => {
                   display: 'flex',
                   height: '100%',
                   flexDirection: 'column',
-                  gap: '20px',
+                  gap: '15px',
                   justifyContent: 'space-between',
 
                 }}
               >
                 {/* Display first 2 widgets here */}
                 {dashboard?.layout?.widgets?.slice(0, 2).map((widget: DashboardWidget, index: number) => (
-                  <Box key={`widget-1-${index}`}>
+                  <Box key={`widget-1-${index}`} sx={{
+                    height: '100%'
+                  }}>
                     <DashboardItem widget={widget} response={getResponseObject(dashboard, widget)} />
                   </Box>
                 ))}

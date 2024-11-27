@@ -19,6 +19,7 @@ const CardStatsSquare = (props: CardStatsSquareProps) => {
         alignItems: 'center',
         display: 'flex',
         justifyContent: 'center',
+        height : '100%'
       }}
     >
       <CardContent className='flex flex-col items-center gap-2'>

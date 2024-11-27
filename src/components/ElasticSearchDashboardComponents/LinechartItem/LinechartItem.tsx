@@ -133,7 +133,11 @@ const Linechartitem: React.FC<ILinechartitem> = ({ response, cardHeader, cardSub
     }
 
     return (
-      <Card>
+      <Card
+      sx={{
+        height:'100%'
+      }}
+      >
         <CardHeader title={cardHeader} subheader={cardSubHeader} />
         <CardContent>
           <AppReactApexCharts

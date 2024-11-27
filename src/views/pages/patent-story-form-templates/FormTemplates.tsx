@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import AppStripedDataGrid from '@/components/AppStripedDataGrid';
 import { GridColDef } from '@mui/x-data-grid';
+import { useRouter } from 'next/navigation';
 // import { useNavigate } from 'react-router-dom';
 
 export interface IFormTemplates {
@@ -17,6 +18,8 @@ const FormTemplates: React.FC<IFormTemplates> = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   // const navigate = useNavigate();
+
+  const router = useRouter()
 
   const fetchFormTemplates = async () => {
     try {
@@ -79,6 +82,10 @@ const FormTemplates: React.FC<IFormTemplates> = () => {
             onClick={() => {
               // TODO
               // navigate(`/form-builder/${params.row.id}`);
+              router.push(
+                `/patient-story/form-builder/${params.row.id}`
+              )
+
             }}
           >
             Edit
@@ -109,15 +116,17 @@ const FormTemplates: React.FC<IFormTemplates> = () => {
   const handleNewFormTemplateClicked = () => {
     // TODO
     // navigate('/form-builder');
+    router.push('/patient-story/form-builder');
   };
 
   return (
-    <Box>
+    <Box
+    >
       <Box
         sx={{
           display: 'flex',
           justifyContent: 'flex-end',
-          marginBottom: '10px'
+          marginBottom: '10px',
         }}
       >
         <Button variant="contained" color="primary" onClick={handleNewFormTemplateClicked}>
@@ -126,7 +135,8 @@ const FormTemplates: React.FC<IFormTemplates> = () => {
       </Box>
       <Box
         sx={{
-          backgroundColor: '#fff'
+          backgroundColor: '#fff',
+          height:'500px'
         }}
       >
         {isLoading && (
@@ -140,14 +150,14 @@ const FormTemplates: React.FC<IFormTemplates> = () => {
               top: 0,
               left: 0,
               width: '100%',
-              height: '100%',
+              height: '10px',
               backgroundColor: 'rgba(255, 255, 255, 0.5)'
             }}
           >
             <Typography variant="h5">Publishing...</Typography>
           </Box>
         )}
-        <AppStripedDataGrid autoHeight rows={formTemplates} columns={columns} />
+        <AppStripedDataGrid autoheight rows={formTemplates} columns={columns} />
       </Box>
     </Box>
   );

@@ -10,6 +10,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import DeleteConfirmationModal from '@/components/DeleteConfirmationModal';
 import PatientDetailEditModal from '../PatientDetailEditModal';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 export interface IPatientDetailViewModal {
   openModal: boolean;
@@ -272,7 +273,14 @@ const PatientDetailViewModal: React.FC<IPatientDetailViewModal> = ({ openModal, 
       <Box className={styles.containerDiv}>
         <Box className={styles.profileImageContainer}>
           {!fetchingProfileImage ? (
-            <img src={profileImageUrl ? profileImageUrl : PatientImage} alt="Patient" className={styles.profileImage} />
+          <Image
+               src={profileImageUrl || PatientImage} // Use profileImageUrl if available, else use default image
+               alt="Patient"
+               className={styles.profileImage}
+               width={100} // Set appropriate width
+               height={100} // Set appropriate height
+             />
+
           ) : (
             <CircularProgress />
           )}

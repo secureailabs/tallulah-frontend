@@ -82,25 +82,15 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
         menuSectionStyles={menuSectionStyles(verticalNavOptions, theme)}
       >
         <MenuSection label='Dashboards'>
-          {/* <MenuItem href={`/${locale}/dashboards/logistics`} icon={<i className='tabler-calendar' />}> */}
+          {/* <MenuItem href={`/${locale}/dashboards/logistics`} icon={<i className='tabler-calendar' />}>
             Dashboard
-          </MenuItem>
+          </MenuItem> */}
           <MenuItem href={`/${locale}/dashboards/cro-pr`} icon={<i className='tabler-user-pentagon' />}>
             CRO / PR Dashboard
           </MenuItem>
           <MenuItem href={`/${locale}/dashboards/patients`} icon={<i className='tabler-percentage-20' />}>
             Patients Dashboard
           </MenuItem>
-        </MenuSection>
-        <MenuSection label='Patient Story'>
-          <SubMenu label='Patient Story' icon={<i className='tabler-users-group' />}>
-            <MenuItem href={`/${locale}/patient-story/stories`}>Stories</MenuItem>
-            <MenuItem href={`/${locale}/patient-story/patient-story-form`}>Story Form</MenuItem>
-            <MenuItem href={`/${locale}/patient-story/form-templates`}>Form Templates</MenuItem>
-            </SubMenu>
-            <SubMenu label="Patient Chat" icon={<i className='tabler-message-2-code' />}>
-            <MenuItem href={`/${locale}/patient-chat`}>Patients</MenuItem>
-            </SubMenu>
         </MenuSection>
 
         <MenuSection label='Social Search'>

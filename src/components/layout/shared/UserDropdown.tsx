@@ -133,13 +133,13 @@ const UserDropdown = () => {
                     </div>
                   </div>
                   <Divider className='mlb-1' />
-                  <MenuItem className='mli-2 gap-3' onClick={e => handleDropdownClose(e, '/pages/user-profile')}>
+                  <MenuItem className='mli-2 gap-3' onClick={e => handleDropdownClose(e, '/en/reset-password')}>
                     <i className='tabler-user' />
-                    <Typography color='text.primary'>My Profile</Typography>
+                    <Typography color='text.primary'>Reset Password</Typography>
                   </MenuItem>
-                  <MenuItem className='mli-2 gap-3' onClick={e => handleDropdownClose(e, '/pages/account-settings')}>
+                  <MenuItem className='mli-2 gap-3' onClick={e => handleDropdownClose(e, '/en/data-export')}>
                     <i className='tabler-settings' />
-                    <Typography color='text.primary'>Settings</Typography>
+                    <Typography color='text.primary'>Export Data</Typography>
                   </MenuItem>
                   {/* <MenuItem className='mli-2 gap-3' onClick={e => handleDropdownClose(e, '/pages/pricing')}>
                     <i className='tabler-currency-dollar' />

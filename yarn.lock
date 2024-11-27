@@ -6102,6 +6102,11 @@ react-onclickoutside@^6.13.0:
   resolved "https://registry.yarnpkg.com/react-onclickoutside/-/react-onclickoutside-6.13.1.tgz#1f5e0241c08784b6e65745d91aca0d700c548a89"
   integrity sha512-LdrrxK/Yh9zbBQdFbMTXPp3dTSN9B+9YJQucdDu3JNKRrbdU+H+/TVONJoWtOwy4II8Sqf1y/DTI6w/vGPYW0w==
 
+react-password-checklist@^1.8.1:
+  version "1.8.1"
+  resolved "https://registry.yarnpkg.com/react-password-checklist/-/react-password-checklist-1.8.1.tgz#f9ac98db2a2624b83fb23bf28c004970951bb468"
+  integrity sha512-QHIU/OejxoH4/cIfYLHaHLb+yYc8mtL0Vr4HTmULxQg3ZNdI9Ni/yYf7pwLBgsUh4sseKCV/GzzYHWpHqejTGw==
+
 react-perfect-scrollbar@1.5.8:
   version "1.5.8"
   resolved "https://registry.yarnpkg.com/react-perfect-scrollbar/-/react-perfect-scrollbar-1.5.8.tgz#380959387a325c5c9d0268afc08b3f73ed5b3078"

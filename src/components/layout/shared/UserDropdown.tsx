@@ -75,7 +75,11 @@ const UserDropdown = () => {
   const handleUserLogout = async () => {
     try {
       // Sign out from the app
-      await signOut({ callbackUrl: process.env.NEXT_PUBLIC_APP_URL })
+      // await signOut({ callbackUrl: process.env.NEXT_PUBLIC_APP_URL })
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      router.push('/login');
+
     } catch (error) {
       console.error(error)
 
@@ -137,14 +141,14 @@ const UserDropdown = () => {
                     <i className='tabler-settings' />
                     <Typography color='text.primary'>Settings</Typography>
                   </MenuItem>
-                  <MenuItem className='mli-2 gap-3' onClick={e => handleDropdownClose(e, '/pages/pricing')}>
+                  {/* <MenuItem className='mli-2 gap-3' onClick={e => handleDropdownClose(e, '/pages/pricing')}>
                     <i className='tabler-currency-dollar' />
                     <Typography color='text.primary'>Pricing</Typography>
                   </MenuItem>
                   <MenuItem className='mli-2 gap-3' onClick={e => handleDropdownClose(e, '/pages/faq')}>
                     <i className='tabler-help-circle' />
                     <Typography color='text.primary'>FAQ</Typography>
-                  </MenuItem>
+                  </MenuItem> */}
                   <div className='flex items-center plb-2 pli-3'>
                     <Button
                       fullWidth

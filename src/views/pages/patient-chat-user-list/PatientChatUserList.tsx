@@ -19,7 +19,7 @@ import user_avatar from '@/assets/images/users/avatar-3.png';
 import SearchBar from '@/components/SearchBar';
 import Sort from '../patient-story/components/Sort';
 import Image from 'next/image';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 
 export interface IPatientChat {
   sampleTextProp?: string;
@@ -72,6 +72,8 @@ const PatientChat: React.FC<IPatientChat> = ({ sampleTextProp }) => {
 
   const params = useParams();
   const id = params.id;
+
+  const router = useRouter()
 
   const getName = (formData: any) => {
     if (formData?.values?.firstName) {
@@ -274,6 +276,7 @@ const PatientChat: React.FC<IPatientChat> = ({ sampleTextProp }) => {
             onClick={() => {
               // TODO
               // navigate(`/patient-chat/${patientData.id}`);
+              router.push(`/patient-chat/${patientData.id}`)
             }}
             className={styles.patientCardGridItem}
           >

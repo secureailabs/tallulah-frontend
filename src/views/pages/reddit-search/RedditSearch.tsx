@@ -11,10 +11,6 @@ import styles from './RedditSearch.module.css'
 import Chip from '@/@core/components/mui/Chip'
 import { SocialSearchService } from '@/tallulah-ts-client/services/SocialSearchService'
 
-export interface IRedditSearch {
-  sampleTextProp?: string
-}
-
 const RedditDetailedText = ({ text }: { text: string }) => {
   const [open, setOpen] = useState(false)
 

@@ -81,22 +81,16 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
         renderExpandedMenuItemIcon={{ icon: <i className='tabler-circle text-xs' /> }}
         menuSectionStyles={menuSectionStyles(verticalNavOptions, theme)}
       >
-        {/* <MenuItem href={`/${locale}/dashboards/logistics`} icon={<i className='tabler-calendar' />}>
-          Dashboard
-        </MenuItem> */}
-        <MenuItem href={`/${locale}/dashboards`} icon={<i className='tabler-calendar' />}>
-          Dashboard
-        </MenuItem>
-
-        <MenuSection label='Patient Story'>
-          <SubMenu label='Patient Story' icon={<i className='tabler-users-group' />}>
-            <MenuItem href={`/${locale}/patient-story/stories`}>Stories</MenuItem>
-            <MenuItem href={`/${locale}/patient-story/patient-story-form`}>Story Form</MenuItem>
-            <MenuItem href={`/${locale}/patient-story/form-templates`}>Form Templates</MenuItem>
-            </SubMenu>
-            <SubMenu label="Patient Chat" icon={<i className='tabler-message-2-code' />}>
-            <MenuItem href={`/${locale}/patient-chat`}>Patients</MenuItem>
-            </SubMenu>
+        <MenuSection label='Dashboards'>
+          {/* <MenuItem href={`/${locale}/dashboards/logistics`} icon={<i className='tabler-calendar' />}>
+            Dashboard
+          </MenuItem> */}
+          <MenuItem href={`/${locale}/dashboards/cro-pr`} icon={<i className='tabler-user-pentagon' />}>
+            CRO / PR Dashboard
+          </MenuItem>
+          <MenuItem href={`/${locale}/dashboards/patients`} icon={<i className='tabler-percentage-20' />}>
+            Patients Dashboard
+          </MenuItem>
         </MenuSection>
 
         <MenuSection label='Social Search'>
@@ -109,6 +103,21 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
           <MenuItem icon={<i className='tabler-brand-reddit' />} href={`/${locale}/social-search/reddit`}>
             Reddit
           </MenuItem>
+        </MenuSection>
+
+        <MenuSection label='Patient Story'>
+          <SubMenu label='Patient Story' icon={<i className='tabler-users-group' />}>
+            <MenuItem href={`/${locale}/patient-story/stories`}>Stories</MenuItem>
+            <MenuItem href={`/${locale}/patient-story/patient-story-form`}>Story Form</MenuItem>
+            <MenuItem href={`/${locale}/patient-story/form-templates`}>Form Templates</MenuItem>
+          </SubMenu>
+          <SubMenu label='Email Assistant' icon={<i className='tabler-users-group' />}>
+            <MenuItem href={`/${locale}/email-assistant`}>Email Assistant</MenuItem>
+          </SubMenu>
+
+          <SubMenu label='Patient Chat' icon={<i className='tabler-users-group' />}>
+            <MenuItem href={`/${locale}/patient-chat`}>Patients</MenuItem>
+          </SubMenu>
         </MenuSection>
 
         <MenuSection label='Email Assistant'>
@@ -124,8 +133,7 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
           </SubMenu>
         </MenuSection>
 
-
-            {/* <SubMenu label={dictionary['navigation'].orders}>
+          {/* <SubMenu label={dictionary['navigation'].orders}>
           </SubMenu>
           {/* <SubMenu label={dictionary['navigation'].orders}>
               <MenuItem href={`/${locale}/apps/ecommerce/orders/list`}>{dictionary['navigation'].list}</MenuItem>

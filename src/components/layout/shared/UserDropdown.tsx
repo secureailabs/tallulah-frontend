@@ -76,10 +76,9 @@ const UserDropdown = () => {
     try {
       // Sign out from the app
       // await signOut({ callbackUrl: process.env.NEXT_PUBLIC_APP_URL })
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
-      router.push('/login');
-
+      localStorage.removeItem('access_token')
+      localStorage.removeItem('refresh_token')
+      router.push('/login')
     } catch (error) {
       console.error(error)
 
@@ -133,6 +132,10 @@ const UserDropdown = () => {
                     </div>
                   </div>
                   <Divider className='mlb-1' />
+                  <MenuItem className='mli-2 gap-3' onClick={e => handleDropdownClose(e, '/en/reset-password')}>
+                    <i className='tabler-user-share' />
+                    <Typography color='text.primary'>Switch User</Typography>
+                  </MenuItem>
                   <MenuItem className='mli-2 gap-3' onClick={e => handleDropdownClose(e, '/en/reset-password')}>
                     <i className='tabler-user' />
                     <Typography color='text.primary'>Reset Password</Typography>

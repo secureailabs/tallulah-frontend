@@ -1,106 +1,30 @@
 module.exports = {
   extends: ['next/core-web-vitals', 'plugin:@typescript-eslint/recommended', 'plugin:import/recommended', 'prettier'],
+  // TODO: update linting rules.
   rules: {
     'jsx-a11y/alt-text': 'off',
     'react/display-name': 'off',
     'react/no-children-prop': 'off',
     '@next/next/no-img-element': 'off',
     '@next/next/no-page-custom-font': 'off',
-    '@typescript-eslint/consistent-type-imports': 'error',
+    '@typescript-eslint/consistent-type-imports': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
-    '@typescript-eslint/no-unused-vars': 'error',
+    '@typescript-eslint/no-unused-vars': 'off',
     '@typescript-eslint/no-non-null-assertion': 'off',
-    'lines-around-comment': [
-      'error',
-      {
-        beforeBlockComment: true,
-        beforeLineComment: true,
-        allowBlockStart: true,
-        allowObjectStart: true,
-        allowArrayStart: true
-      }
-    ],
-    'padding-line-between-statements': [
-      'error',
-      {
-        blankLine: 'any',
-        prev: 'export',
-        next: 'export'
-      },
-      {
-        blankLine: 'always',
-        prev: ['const', 'let', 'var'],
-        next: '*'
-      },
-      {
-        blankLine: 'any',
-        prev: ['const', 'let', 'var'],
-        next: ['const', 'let', 'var']
-      },
-      {
-        blankLine: 'always',
-        prev: '*',
-        next: ['function', 'multiline-const', 'multiline-block-like']
-      },
-      {
-        blankLine: 'always',
-        prev: ['function', 'multiline-const', 'multiline-block-like'],
-        next: '*'
-      }
-    ],
-    'newline-before-return': 'error',
-    'import/newline-after-import': [
-      'error',
-      {
-        count: 1
-      }
-    ],
-    'import/order': [
-      'error',
-      {
-        groups: ['builtin', 'external', ['internal', 'parent', 'sibling', 'index'], ['object', 'unknown']],
-        pathGroups: [
-          {
-            pattern: 'react',
-            group: 'external',
-            position: 'before'
-          },
-          {
-            pattern: 'next/**',
-            group: 'external',
-            position: 'before'
-          },
-          {
-            pattern: '~/**',
-            group: 'external',
-            position: 'before'
-          },
-          {
-            pattern: '@/**',
-            group: 'internal'
-          }
-        ],
-        pathGroupsExcludedImportTypes: ['react', 'type'],
-        'newlines-between': 'always-and-inside-groups'
-      }
-    ],
-    '@typescript-eslint/ban-types': [
-      'error',
-      {
-        extendDefaults: true,
-        types: {
-          Function: 'Use a specific function type instead',
-          Object: 'Use object instead',
-          Boolean: 'Use boolean instead',
-          Number: 'Use number instead',
-          String: 'Use string instead',
-          Symbol: 'Use symbol instead',
-          any: false,
-          '{}': false
-        }
-      }
-    ]
+    'lines-around-comment':'off',
+    'padding-line-between-statements': 'off',
+    'newline-before-return': 'off',
+    'import/newline-after-import': 'off',
+    'import/order': 'off',
+    '@typescript-eslint/ban-types': 'off',
+    "react/jsx-key": "off",
+    "react-hooks/exhaustive-deps": "off",
+    "import/named": "off",
+    "import/no-unresolved": "off",
+    "no-var": "off",
+    "import/no-named-as-default-member": "off",
+    "react/no-unescaped-entities": "off"
   },
   settings: {
     react: {

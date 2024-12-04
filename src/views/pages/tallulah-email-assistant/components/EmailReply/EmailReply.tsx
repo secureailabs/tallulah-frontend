@@ -114,7 +114,7 @@ const EmailReply: React.FC<IEmailReply> = ({ setOpenReplyModal, mailBoxId, selec
           <Button
             variant="outlined"
             onClick={() => {
-              sendAmplitudeData('Email Reply Modal - Choose from response templates button clicked');
+              // sendAmplitudeData('Email Reply Modal - Choose from response templates button clicked');
               setIsTemplateSelectionModalOpen(true);
             }}
           >

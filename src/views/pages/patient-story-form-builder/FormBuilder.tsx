@@ -307,7 +307,7 @@ const FormBuilder: React.FC<IFormBuilder> = () => {
               margin="normal"
             />
             <Droppable droppableId={`${groupIndex}`} key={groupIndex}>
-              {(provided) => (
+              {(provided:any) => (
                 <Box
                   {...provided.droppableProps}
                   ref={provided.innerRef}
@@ -317,7 +317,7 @@ const FormBuilder: React.FC<IFormBuilder> = () => {
                 >
                   {group.fields.map((field: any, fieldIndex: any) => (
                     <Draggable draggableId={`${groupIndex}-${fieldIndex}`} index={fieldIndex} key={fieldIndex}>
-                      {(provided) => (
+                      {(provided:any) => (
                         <Box
                           ref={provided.innerRef}
                           {...provided.draggableProps}

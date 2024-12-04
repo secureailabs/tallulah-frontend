@@ -60,7 +60,7 @@ const Template2: React.FC<ICard> = ({ data, formTemplate }) => {
           </Box>
           <Box>
             {/* display image  */}
-            <img src={profileImageUrl ? profileImageUrl : PatientImage} alt="Patient Image" className={styles.image} />
+            {/* <img src={profileImageUrl ? profileImageUrl : PatientImage} alt="Patient Image" className={styles.image} /> */}
           </Box>
         </Box>
         {/* Display fields */}

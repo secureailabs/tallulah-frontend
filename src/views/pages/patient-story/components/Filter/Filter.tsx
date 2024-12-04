@@ -3,7 +3,7 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { MenuItemData, NestedDropdown } from 'mui-nested-menu';
 import { useEffect, useState } from 'react';
-import { PatientStoryFilter } from '@/views/pages/PatientStory/PatientStory';
+import { PatientStoryFilter } from '@/views/pages/patient-story/PatientStory';
 import { convertcamelCaseToTitleCase } from '@/utils/helper';
 
 interface IFilterProps {
@@ -28,7 +28,7 @@ const Filter: React.FC<IFilterProps> = ({ filterObjects, setSelectedFilter, sele
       return {
         label: convertcamelCaseToTitleCase(filterObject.name),
         rightIcon: <ChevronRightIcon />,
-        items: filterObject.options.map((option) => {
+        items: filterObject.options.map((option:any) => {
           return {
             label: option,
             sx: {

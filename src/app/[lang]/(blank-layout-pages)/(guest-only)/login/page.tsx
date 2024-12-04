@@ -16,7 +16,7 @@ const LoginPage = () => {
   // Vars
   const mode = getServerMode()
 
-  return <Login mode={mode} />
+  return <Login />
 }
 
 export default LoginPage

@@ -2,7 +2,7 @@
 import Button from '@mui/material/Button'
 
 // Type Imports
-import type { ChildrenType } from '@core/types'
+import type { ChildrenType, Mode, SystemMode } from '@core/types'
 import type { Locale } from '@configs/i18n'
 
 // Layout Imports
@@ -26,14 +26,14 @@ import { i18n } from '@configs/i18n'
 
 // Util Imports
 import { getDictionary } from '@/utils/getDictionary'
-import { getMode, getSystemMode } from '@core/utils/serverHelpers'
+//import { getMode, getSystemMode } from '@core/utils/serverHelpers'
 
 const Layout = async ({ children, params }: ChildrenType & { params: { lang: Locale } }) => {
   // Vars
   const direction = i18n.langDirection[params.lang]
   const dictionary = await getDictionary(params.lang)
-  const mode = getMode()
-  const systemMode = getSystemMode()
+  const mode = 'light' as Mode //getMode()
+  const systemMode = 'light' as SystemMode //getSystemMode()
 
   return (
     <Providers direction={direction}>

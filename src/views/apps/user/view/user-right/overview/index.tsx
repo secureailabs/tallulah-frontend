@@ -7,7 +7,7 @@ import UserActivityTimeLine from './UserActivityTimeline'
 import InvoiceListTable from './InvoiceListTable'
 
 // Data Imports
-import { getInvoiceData } from '@/app/server/actions'
+// import { getInvoiceData } from '@/app/server/actions'
 
 /**
  * ! If you need data using an API call, uncomment the below API code, update the `process.env.API_URL` variable in the
@@ -16,7 +16,7 @@ import { getInvoiceData } from '@/app/server/actions'
  * ! because we've used the server action for getting our static data.
  */
 
-/* const getInvoiceData = async () => {
+const getInvoiceData = async () => {
   const res = await fetch(`${process.env.API_URL}/apps/invoice`)
 
   if (!res.ok) {
@@ -24,7 +24,7 @@ import { getInvoiceData } from '@/app/server/actions'
   }
 
   return res.json()
-} */
+}
 
 const OverViewTab = async () => {
   // Vars

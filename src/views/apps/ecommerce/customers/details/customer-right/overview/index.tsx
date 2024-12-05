@@ -6,7 +6,7 @@ import CustomerStatisticsCard from './CustomerStatisticsCard'
 import OrderListTable from './OrderListTable'
 
 // Data Imports
-import { getStatisticsData, getEcommerceData } from '@/app/server/actions'
+// import { getStatisticsData, getEcommerceData } from '@/app/server/actions'
 
 /**
  * ! If you need data using an API call, uncomment the below API code, update the `process.env.API_URL` variable in the
@@ -15,7 +15,7 @@ import { getStatisticsData, getEcommerceData } from '@/app/server/actions'
  * ! because we've used the server action for getting our static data.
  */
 
-/* const getStatisticsData = async () => {
+const getStatisticsData = async () => {
   // Vars
   const res = await fetch(`${process.env.API_URL}/pages/widget-examples`)
 
@@ -24,7 +24,7 @@ import { getStatisticsData, getEcommerceData } from '@/app/server/actions'
   }
 
   return res.json()
-} */
+}
 
 /**
  * ! If you need data using an API call, uncomment the below API code, update the `process.env.API_URL` variable in the
@@ -33,7 +33,7 @@ import { getStatisticsData, getEcommerceData } from '@/app/server/actions'
  * ! because we've used the server action for getting our static data.
  */
 
-/* const getEcommerceData = async () => {
+const getEcommerceData = async () => {
   // Vars
   const res = await fetch(`${process.env.API_URL}/apps/ecommerce`)
 
@@ -42,7 +42,7 @@ import { getStatisticsData, getEcommerceData } from '@/app/server/actions'
   }
 
   return res.json()
-} */
+}
 
 const Overview = async () => {
   // Vars

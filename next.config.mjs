@@ -12,6 +12,16 @@ const nextConfig = {
   basePath: process.env.BASEPATH,
   output: 'standalone',
   //output: 'export',
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'tallulahstorageuqgmy.blob.core.windows.net',
+        port: '',
+        pathname: '/**'
+      }
+    ]
+  },
   redirects: async () => {
     return [
       {

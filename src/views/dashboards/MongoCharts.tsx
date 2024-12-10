@@ -44,6 +44,7 @@ export const MongoDashboard = ({
   useEffect(() => {
     if (rendered && filter) {
       chart.setFilter(filter).catch(err => console.log('Error while filtering.', err))
+      // chart.refresh().catch(err => console.log('Error while refreshing.', err))
     }
   }, [chart, filter, rendered])
 

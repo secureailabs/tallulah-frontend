@@ -77,8 +77,6 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
 
   const params = useParams();
 
-  console.log("params id", params)
-
   const getCorrespondingLabel = (fieldName: string) => {
     const field = formLayout?.field_groups?.flatMap((fieldGroup: any) => fieldGroup.fields).find((field: any) => field?.name === fieldName);
     return field?.label;
@@ -393,9 +391,7 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
   const fetchFormTemplateById = async (id: string) => {
     setIsFormTemplateFetching(true);
     try {
-      console.log("iddd", id)
       const res: GetFormTemplate_Out = await FormTemplatesService.getPublishedFormTemplate(id);
-      console.log("res 111", res)
       setFormLayout(res);
       // create form data object with empty values
       const formDataObj: any = {};
@@ -645,8 +641,6 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
       </Box>
     );
   };
-
-  console.log("form laypout", formLayout)
 
   return (
     <Box className={styles.container}>

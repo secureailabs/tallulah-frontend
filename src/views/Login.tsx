@@ -233,7 +233,7 @@ const Login: React.FC = () => {
 
     const res2 = await AuthenticationService.getCurrentUserInfo();
     // navigate('/home');
-    router.push('/en/dashboards');
+    router.push('/en/dashboards/patients');
 
     return res;
   }

@@ -19,6 +19,12 @@ const nextConfig = {
         hostname: 'tallulahstorageuqgmy.blob.core.windows.net',
         port: '',
         pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'tallulahstorageiuvew.blob.core.windows.net',
+        port: '',
+        pathname: '/**'
       }
     ]
   },

@@ -25,7 +25,7 @@ const CroPrDashboard = () => {
 
   const [chartSdk, setChartSdk] = useState(
     new ChartsEmbedSDK({
-      baseUrl: 'https://charts.mongodb.com/charts-tallulah-dev-qbykdfm',
+      baseUrl: process.env.NEXT_PUBLIC_MONGODB_CHARTS_BASE_URL ?? '',
       getUserToken: getToken
     })
   )
@@ -135,7 +135,7 @@ const CroPrDashboard = () => {
             width={'100%'}
             height={'800px'}
             filter={selectedTemplateId != 'All' ? { form_template_id: selectedTemplateId } : {}}
-            dashboardId={'673b5e40-a897-4f8f-8060-b78c8f6e6e9a'}
+            dashboardId={process.env.NEXT_PUBLIC_MONGODB_FORMS_DASHBOARD_ID ?? ''}
             chartSdk={chartSdk}
           />
         </Suspense>

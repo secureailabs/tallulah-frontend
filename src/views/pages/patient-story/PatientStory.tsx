@@ -45,7 +45,7 @@ interface TabPanelProps {
 
 const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? ''
 
-const MarkerWithInfoWindow = (props: any) => {
+export const MarkerWithInfoWindow = (props: any) => {
   const [markerRef, marker] = useAdvancedMarkerRef()
   const [infoWindowShown, setInfoWindowShown] = useState(false)
 

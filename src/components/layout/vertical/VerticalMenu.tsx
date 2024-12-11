@@ -26,6 +26,7 @@ import StyledVerticalNavExpandIcon from '@menu/styles/vertical/StyledVerticalNav
 // Style Imports
 import menuItemStyles from '@core/styles/vertical/menuItemStyles'
 import menuSectionStyles from '@core/styles/vertical/menuSectionStyles'
+import { useEffect, useState } from 'react'
 
 // Menu Data Imports
 // import menuData from '@/data/navigation/verticalMenuData'
@@ -57,6 +58,16 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
   const { lang: locale } = params
 
   const ScrollWrapper = isBreakpointReached ? 'div' : PerfectScrollbar
+  const [organization, setOrganization] = useState('')
+
+  useEffect(() => {
+    const user_info = localStorage.getItem('user_info')
+    if (user_info) {
+      const info = JSON.parse(user_info)
+      setOrganization(info.organization_name)
+      console.log('organization', info.organization_name)
+    }
+  }, [])
 
   return (
     // eslint-disable-next-line lines-around-comment
@@ -85,9 +96,11 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
           {/* <MenuItem href={`/${locale}/dashboards/logistics`} icon={<i className='tabler-calendar' />}>
             Dashboard
           </MenuItem> */}
-          <MenuItem href={`/${locale}/dashboards/cro-pr`} icon={<i className='tabler-user-pentagon' />}>
-            CRO / PR Dashboard
-          </MenuItem>
+          {organization == 'Array Insights' && (
+            <MenuItem href={`/${locale}/dashboards/cro-pr`} icon={<i className='tabler-user-pentagon' />}>
+              CRO / PR Dashboard
+            </MenuItem>
+          )}
           <MenuItem href={`/${locale}/dashboards/patients`} icon={<i className='tabler-percentage-20' />}>
             Patients Dashboard
           </MenuItem>
@@ -111,29 +124,29 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
             <MenuItem href={`/${locale}/patient-story/patient-story-form`}>Story Form</MenuItem>
             <MenuItem href={`/${locale}/patient-story/form-templates`}>Form Templates</MenuItem>
           </SubMenu>
-          <SubMenu label='Email Assistant' icon={<i className='tabler-users-group' />}>
-            <MenuItem href={`/${locale}/email-assistant`}>Email Assistant</MenuItem>
-          </SubMenu>
-
           <SubMenu label='Patient Chat' icon={<i className='tabler-users-group' />}>
             <MenuItem href={`/${locale}/patient-chat`}>Patients</MenuItem>
           </SubMenu>
         </MenuSection>
 
-        <MenuSection label='Email Assistant'>
-          <SubMenu label="Email Assistant" icon={<i className='tabler-message-chatbot' />}>
+        {(organization == 'Array Insights' || organization == 'Touch BBCA') && (
+          <MenuSection label='Email Assistant'>
+            <SubMenu label='Email Assistant' icon={<i className='tabler-message-chatbot' />}>
               <MenuItem href={`/${locale}/email-assistant`}>Email Assistant</MenuItem>
-          </SubMenu>
-        </MenuSection>
+            </SubMenu>
+          </MenuSection>
+        )}
 
-        <MenuSection label='Content Generation'>
-          <SubMenu label="Content Generation" icon={<i className='tabler-message-chatbot' />}>
+        {(organization == 'Array Insights' || organization == 'United Mitochondrial Disease Foundation') && (
+          <MenuSection label='Content Generation'>
+            <SubMenu label='Content Generation' icon={<i className='tabler-message-chatbot' />}>
               <MenuItem href={`/${locale}/content-generation`}>Content Generation</MenuItem>
               <MenuItem href={`/${locale}/content-generation-form`}>Generation Form</MenuItem>
-          </SubMenu>
-        </MenuSection>
+            </SubMenu>
+          </MenuSection>
+        )}
 
-          {/* <SubMenu label={dictionary['navigation'].orders}>
+        {/* <SubMenu label={dictionary['navigation'].orders}>
           </SubMenu>
           {/* <SubMenu label={dictionary['navigation'].orders}>
               <MenuItem href={`/${locale}/apps/ecommerce/orders/list`}>{dictionary['navigation'].list}</MenuItem>

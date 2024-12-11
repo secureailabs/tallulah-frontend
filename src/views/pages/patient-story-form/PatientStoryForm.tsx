@@ -25,7 +25,8 @@ import {
   FormMediaTypes,
   FormTemplatesService,
   GetFormTemplate_Out,
-  GetMultipleFormTemplate_Out
+  GetMultipleFormTemplate_Out,
+  OpenAPI
 } from '@/tallulah-ts-client';
 
 import ImageUpload from './components/ImageUpload';
@@ -437,6 +438,9 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
   };
 
   useEffect(() => {
+    // OPENAPI Base is being set here again as this file is also being accessed outside of the general layout.tsx in app dir. This was done in order to provide backward compatibility to the users who have deployed old public form link in their website
+    OpenAPI.BASE = process.env.NEXT_PUBLIC_API_URL || ''
+
     if (params.id === undefined) {
       fetchFormTemplate();
     } else {

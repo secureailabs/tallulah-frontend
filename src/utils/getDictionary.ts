@@ -1,5 +1,5 @@
 // Third-party Imports
-import 'server-only'
+// import 'server-only'
 
 // Type Imports
 import type { Locale } from '@configs/i18n'

@@ -62,7 +62,7 @@ const Filter: React.FC<IFilterProps> = ({ setFilterByTags, filtersByTags, filter
             if (prevFilters.includes(label)) {
               return prevFilters.filter((filter: any) => filter !== label);
             } else {
-              sendAmplitudeData('Email Assistant - Filter by Email Status Clicked');
+              // sendAmplitudeData('Email Assistant - Filter by Email Status Clicked');
               return [...prevFilters, label];
             }
           });

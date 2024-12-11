@@ -7,6 +7,8 @@
       "DOM.Iterable",
       "ESNext"
     ],
+    "strictPropertyInitialization": false,
+    "noUnusedLocals": false,
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -57,7 +59,8 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "dist/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

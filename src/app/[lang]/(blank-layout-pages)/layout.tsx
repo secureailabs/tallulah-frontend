@@ -10,7 +10,7 @@ import BlankLayout from '@layouts/BlankLayout'
 import { i18n } from '@configs/i18n'
 
 // Util Imports
-import { getSystemMode } from '@core/utils/serverHelpers'
+//import { getSystemMode } from '@core/utils/serverHelpers'
 
 type Props = ChildrenType & {
   params: { lang: Locale }
@@ -19,11 +19,11 @@ type Props = ChildrenType & {
 const Layout = ({ children, params }: Props) => {
   // Vars
   const direction = i18n.langDirection[params.lang]
-  const systemMode = getSystemMode()
+  //const systemMode = getSystemMode()
 
   return (
     <Providers direction={direction}>
-      <BlankLayout systemMode={systemMode}>{children}</BlankLayout>
+      <BlankLayout systemMode={'light'}>{children}</BlankLayout>
     </Providers>
   )
 }

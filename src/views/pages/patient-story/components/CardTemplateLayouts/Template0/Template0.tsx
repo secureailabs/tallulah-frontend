@@ -4,6 +4,7 @@ import { FormDataService, FormMediaTypes } from '@/tallulah-ts-client';
 import { Box, Typography } from '@mui/material';
 import styles from './Template0.module.css';
 import PatientImage from '@/assets/images/users/avatar-3.png';
+import Image from 'next/image';
 
 const Template0: React.FC<ICard> = ({ data }) => {
   const [profileImageUrl, setProfileImageUrl] = useState<string>('');
@@ -46,7 +47,14 @@ const Template0: React.FC<ICard> = ({ data }) => {
         </Box>
         <Box>
           {/* display image  */}
-          <img src={profileImageUrl ? profileImageUrl : PatientImage} alt="Patient Image" className={styles.image} />
+          {/* <img src={profileImageUrl ? profileImageUrl : PatientImage} alt="Patient Image" className={styles.image} /> */}
+          <Image
+            src={profileImageUrl ? profileImageUrl : PatientImage}
+            alt="patient image"
+            className={styles.image}
+            width={100}
+            height={100}
+          />
         </Box>
       </Box>
       <Box

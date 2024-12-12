@@ -203,7 +203,7 @@ const OrderListTable = ({ orderData }: { orderData?: OrderType[] }) => {
     [data]
   )
 
-  const table = useReactTable({
+  const table = useReactTable<any>({
     data: data as OrderType[],
     columns,
     filterFns: {

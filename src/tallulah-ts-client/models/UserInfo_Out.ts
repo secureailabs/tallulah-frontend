@@ -13,4 +13,5 @@ export type UserInfo_Out = {
     id: string;
     organization_id: string;
     organization_name: string;
+    super_user_id?: (string | null);
 };

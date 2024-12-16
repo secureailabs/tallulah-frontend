@@ -1,6 +1,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { GetMultipleOrganizations_Out } from '../models/GetMultipleOrganizations_Out';
+import type { GetMultipleUsers_Out } from '../models/GetMultipleUsers_Out';
 import type { GetUsers_Out } from '../models/GetUsers_Out';
 import type { RegisterUser_In } from '../models/RegisterUser_In';
 import type { RegisterUser_Out } from '../models/RegisterUser_Out';
@@ -31,6 +33,28 @@ export class UsersService {
                 400: `Organization not provided`,
                 403: `Unauthorized`,
                 409: `Organization already exists`,
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * Get All Users
+     * Get all users
+     * @param organizationId UUID of the organization
+     * @returns GetMultipleUsers_Out Successful Response
+     * @throws ApiError
+     */
+    public static getAllUsers(
+        organizationId?: (string | null),
+    ): CancelablePromise<GetMultipleUsers_Out> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/users',
+            query: {
+                'organization_id': organizationId,
+            },
+            errors: {
                 422: `Validation Error`,
             },
         });
@@ -105,6 +129,19 @@ export class UsersService {
                 403: `Unauthorized`,
                 422: `Validation Error`,
             },
+        });
+    }
+
+    /**
+     * Get All Organizations
+     * Get all organizations
+     * @returns GetMultipleOrganizations_Out Successful Response
+     * @throws ApiError
+     */
+    public static getAllOrganizations(): CancelablePromise<GetMultipleOrganizations_Out> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/organizations',
         });
     }
 

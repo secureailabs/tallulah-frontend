@@ -303,4 +303,30 @@ export class FormDataService {
         });
     }
 
+    /**
+     * Backfill Metadata
+     * Backfill the metadata
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static backfillMetadata(): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/form-data/test/backfill_metadata',
+        });
+    }
+
+    /**
+     * Generate All Metadata
+     * Backfill the metadata
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static generateAllMetadata(): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/form-data/test/generate-all-metadata',
+        });
+    }
+
 }

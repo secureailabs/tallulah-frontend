@@ -32,6 +32,13 @@ import { useSettings } from '@core/hooks/useSettings'
 
 // Util Imports
 import { getLocalizedUrl } from '@/utils/i18n'
+import { AuthenticationService, OpenAPI } from '@/tallulah-ts-client'
+import { useDispatch } from 'react-redux'
+import { setToken } from '@/redux-store/slices/auth'
+import { toast } from 'react-toastify'
+import { Dialog, DialogActions, DialogContent, DialogTitle, Grid } from '@mui/material'
+import DialogCloseButton from '@/components/dialogs/DialogCloseButton'
+import CustomTextField from '@/@core/components/mui/TextField'
 
 // Styled component for badge content
 const BadgeContentSpan = styled('span')({
@@ -46,6 +53,8 @@ const BadgeContentSpan = styled('span')({
 const UserDropdown = () => {
   // States
   const [open, setOpen] = useState(false)
+  const [switchOpen, setSwitchOpen] = useState(false)
+  const [switchEmail, setSwitchEmail] = useState('')
 
   // Refs
   const anchorRef = useRef<HTMLDivElement>(null)
@@ -55,6 +64,7 @@ const UserDropdown = () => {
   const { data: session } = useSession()
   const { settings } = useSettings()
   const { lang: locale } = useParams()
+  const dispatch = useDispatch()
 
   const handleDropdownOpen = () => {
     !open ? setOpen(true) : setOpen(false)
@@ -72,14 +82,39 @@ const UserDropdown = () => {
     setOpen(false)
   }
 
+  const handleSwitchUser = async () => {
+    const email = switchEmail
+
+    // Switch user and rewrite tokens
+    AuthenticationService.adminLogin(email)
+      .then(res => {
+        // console.log(res)
+        OpenAPI.TOKEN = res.access_token
+        localStorage.setItem('access_token', res.access_token)
+        // localStorage.setItem('refresh_token', res.refresh_token)
+        dispatch(setToken(res))
+
+        return AuthenticationService.getCurrentUserInfo()
+      })
+      .then(res => {
+        setSwitchOpen(false)
+        localStorage.setItem('user_info', JSON.stringify(res))
+        router.push('/en/dashboards/patients')
+        toast.success(`Switched to ${email} successfully`)
+      })
+      .catch(err => {
+        console.log(err)
+        toast.error(`Switching to ${email} failed`)
+      })
+  }
+
   const handleUserLogout = async () => {
     try {
       // Sign out from the app
       // await signOut({ callbackUrl: process.env.NEXT_PUBLIC_APP_URL })
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
-      router.push('/login');
-
+      localStorage.removeItem('access_token')
+      localStorage.removeItem('refresh_token')
+      router.push('/login')
     } catch (error) {
       console.error(error)
 
@@ -105,6 +140,53 @@ const UserDropdown = () => {
           className='cursor-pointer bs-[38px] is-[38px]'
         />
       </Badge>
+      <Dialog
+        open={switchOpen}
+        onClose={() => setSwitchOpen(false)}
+        sx={{ '& .MuiDialog-paper': { overflow: 'visible' } }}
+      >
+        <DialogCloseButton onClick={() => setSwitchOpen(false)} disableRipple>
+          <i className='tabler-x' />
+        </DialogCloseButton>
+        <DialogTitle variant='h4' className='flex flex-col gap-2 text-center p-6 sm:pbs-16 sm:pbe-6 sm:pli-16'>
+          Switch User
+          <Typography component='span' className='flex flex-col text-center'>
+            Email of the user to switch to
+          </Typography>
+        </DialogTitle>
+        <form onSubmit={e => e.preventDefault()}>
+          <DialogContent className='overflow-visible pbs-0 p-6 sm:pli-16'>
+            <Grid container spacing={6}>
+              <Grid item xs={12}>
+                <CustomTextField
+                  fullWidth
+                  name='number'
+                  autoComplete='off'
+                  label='Email'
+                  placeholder=''
+                  value={switchEmail}
+                  onChange={e => setSwitchEmail(e.target.value)}
+                />
+              </Grid>
+            </Grid>
+          </DialogContent>
+          <DialogActions className='justify-center pbs-0 p-6 sm:pbe-16 sm:pli-16'>
+            <Button
+              variant='contained'
+              type='submit'
+              onClick={e => {
+                handleDropdownClose(e)
+                handleSwitchUser()
+              }}
+            >
+              Switch
+            </Button>
+            <Button variant='tonal' type='reset' color='secondary' onClick={() => setSwitchOpen(false)}>
+              Cancel
+            </Button>
+          </DialogActions>
+        </form>
+      </Dialog>
       <Popper
         open={open}
         transition
@@ -133,6 +215,10 @@ const UserDropdown = () => {
                     </div>
                   </div>
                   <Divider className='mlb-1' />
+                  <MenuItem className='mli-2 gap-3' onClick={() => setSwitchOpen(true)}>
+                    <i className='tabler-user-share' />
+                    <Typography color='text.primary'>Switch User</Typography>
+                  </MenuItem>
                   <MenuItem className='mli-2 gap-3' onClick={e => handleDropdownClose(e, '/en/reset-password')}>
                     <i className='tabler-user' />
                     <Typography color='text.primary'>Reset Password</Typography>

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react';
-import { Box, Button, CircularProgress, Divider, Menu, MenuItem, Modal, Typography } from '@mui/material';
+import { Box, Button, CircularProgress, Divider, IconButton, Menu, MenuItem, Modal, Tab, Tabs, Typography } from '@mui/material';
 import PatientImage from '@/assets/images/users/avatar-3.png';
 import { formatReceivedTimeFull } from '@/utils/helper';
 import { FormDataService, FormMediaTypes, GetFormData_Out } from '@/tallulah-ts-client';
@@ -11,6 +11,8 @@ import DeleteConfirmationModal from '@/components/DeleteConfirmationModal';
 import PatientDetailEditModal from '../PatientDetailEditModal';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { TabPanelProps } from '@mui/lab/TabPanel';
+import { RefreshOutlined } from '@mui/icons-material';
 
 export interface IPatientDetailViewModal {
   openModal: boolean;
@@ -28,6 +30,8 @@ const PatientDetailViewModal: React.FC<IPatientDetailViewModal> = ({ openModal, 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
+  const [tabIndex, setTabIndex] = useState(0);
+  const metadataPresent = data?.metadata && data?.metadata.structured_data;
 
   const router = useRouter()
 
@@ -140,6 +144,36 @@ const PatientDetailViewModal: React.FC<IPatientDetailViewModal> = ({ openModal, 
     }
   }, [data]);
 
+  interface TabPanelProps {
+    children?: React.ReactNode;
+    index: number;
+    value: number;
+  }
+
+  const a11yProps = (index: number) => {
+    return {
+      id: `simple-tab-${index}`,
+      'aria-controls': `simple-tabpanel-${index}`,
+    };
+  }
+
+  const PatientTabPanel = (props: TabPanelProps) => {
+    const { children, value, index, ...other } = props;
+
+    return (
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`simple-tabpanel-${index}`}
+        aria-labelledby={`simple-tab-${index}`}
+        {...other}
+      >
+        {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+      </div>
+    );
+  }
+
+
   const renderModalCardHeader = (
     <Box
       sx={{
@@ -193,6 +227,25 @@ const PatientDetailViewModal: React.FC<IPatientDetailViewModal> = ({ openModal, 
           }}
         >
           Patient Chat
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleClose();
+            FormDataService.generateMetadata(data.id).then(() => {
+              // sendNotification({
+              //   msg: 'Structured data generation queued successfully',
+              //   variant: 'success'
+              // });
+            }).catch((err) => {
+              console.error(err);
+              // sendNotification({
+              //   msg: 'Failed to generate structured data',
+              //   variant: 'error'
+              // });
+            });
+          }}
+        >
+          {metadataPresent ? 'Regenerate Structured Data' : 'Generate Structured Data'}
         </MenuItem>
       </Menu>
       <CloseIcon
@@ -267,35 +320,45 @@ const PatientDetailViewModal: React.FC<IPatientDetailViewModal> = ({ openModal, 
     );
   };
 
+  const renderMetadataDisplay = (key: any) => {
+    return (
+      <Box className={styles.section1} key={key}>
+        <Box>
+          <Typography variant="body1" className={styles.label}>
+            {key}
+          </Typography>
+          <Typography variant="body1" className={styles.value}>
+            {data.metadata?.structured_data[key] || 'N/A'}
+          </Typography>
+        </Box>
+      </Box>
+    );
+  };
+
+
   const renderModalCardContent = (
     <Box className={styles.container}>
       {/* Patient Details */}
       <Box className={styles.containerDiv}>
         <Box className={styles.profileImageContainer}>
           {!fetchingProfileImage ? (
-          <Image
-               src={profileImageUrl || PatientImage} // Use profileImageUrl if available, else use default image
-               alt="Patient"
-               className={styles.profileImage}
-               width={100} // Set appropriate width
-               height={100} // Set appropriate height
-             />
-
+            <Image src={profileImageUrl ? profileImageUrl : PatientImage} alt="Patient" className={styles.profileImage} />
           ) : (
             <CircularProgress />
           )}
         </Box>
         <Box>
           <Box>
-            {data.values.firstName ? (
-              <Typography variant="h6" className={styles.name}>
-                {data.values.firstName?.value} {data.values.lastName?.value}
-              </Typography>
-            ) : data.values.name ? (
-              <Typography variant="h6" className={styles.name}>
-                {data.values?.name?.value}
-              </Typography>
-            ) : null}
+            <Typography variant="h6" className={styles.name}>
+              {data.values.firstName ? (
+                  data.values.firstName?.value + " " + data.values.lastName?.value
+              ) : data.values.name ? (
+                  data.values?.name?.value
+              ) : null}
+              <IconButton onClick={handleRefresh}>
+                <RefreshOutlined />
+              </IconButton>
+            </Typography>
           </Box>
           <Box>Date Of Data Use Consent: {formatReceivedTimeFull(data?.creation_time as string)}</Box>
           {data?.values && 'tags' in data?.values ? (
@@ -341,15 +404,37 @@ const PatientDetailViewModal: React.FC<IPatientDetailViewModal> = ({ openModal, 
               <Typography>{data?.values?.gender?.value}</Typography>
             </Box>
           </Box>
-          <Divider sx={{ marginTop: '1rem' }} />
-          {Object.keys(rest).map((key: any) =>
-            mediaTypes.includes(data.values[key].type) ? renderMediaDisplay(key) : renderDataDisplay(key)
+          {metadataPresent ? (
+            <>
+              <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <Tabs value={tabIndex} onChange={(event: React.SyntheticEvent, newValue: number) => setTabIndex(newValue)}>
+                  <Tab label="Form Data" {...a11yProps(0)} />
+                  <Tab label="Structured Data" {...a11yProps(1)} />
+                </Tabs>
+              </Box>
+              <PatientTabPanel value={tabIndex} index={0}>
+                {Object.keys(rest).map((key: any) =>
+                  mediaTypes.includes(data.values[key].type) ? renderMediaDisplay(key) : renderDataDisplay(key)
+                )}
+              </PatientTabPanel>
+              <PatientTabPanel value={tabIndex} index={1}>
+                {Object.keys(data.metadata?.structured_data).map((key: any) =>
+                  renderMetadataDisplay(key)
+                )}
+              </PatientTabPanel>
+            </>
+          ) : (
+            <>
+              <Divider sx={{ marginTop: '1rem' }} />
+              {Object.keys(rest).map((key: any) =>
+                mediaTypes.includes(data.values[key].type) ? renderMediaDisplay(key) : renderDataDisplay(key)
+              )}
+            </>
           )}
         </Box>
       </Box>
     </Box>
   );
-
   return (
     <Modal open={openModal} onClose={handleCloseModal}>
       <Box

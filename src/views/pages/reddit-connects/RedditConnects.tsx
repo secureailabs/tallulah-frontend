@@ -1,6 +1,18 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import { Card, Link, TablePagination, Typography } from '@mui/material'
+import {
+  Button,
+  Card,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  IconButton,
+  Link,
+  TablePagination,
+  Typography
+} from '@mui/material'
 
 import type { ColumnDef, FilterFn } from '@tanstack/react-table'
 import {
@@ -31,6 +43,10 @@ import Chip from '@/@core/components/mui/Chip'
 import { SocialSearchService } from '@/tallulah-ts-client/services/SocialSearchService'
 import type { PostTagResponse } from '@/tallulah-ts-client/models/PostTagResponse'
 import { PostState } from '@/tallulah-ts-client/models/PostState'
+import DeleteConfirmationModal from '@/components/DeleteConfirmationModal'
+import DialogCloseButton from '@/components/dialogs/DialogCloseButton'
+import CustomTextField from '@/@core/components/mui/TextField'
+import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
 
 export interface IRedditSearch {
   sampleTextProp?: string
@@ -69,6 +85,10 @@ const ConnectsTable = ({ connectsData, refresh }: { connectsData?: PostTagRespon
   // States
   const [status, setStatus] = useState<PostTagResponse['status'] | 'All'>('All')
   const [rowSelection, setRowSelection] = useState({})
+  const [openDeleteModal, setOpenDeleteModal] = useState(false)
+  const [openEditModal, setOpenEditModal] = useState(false)
+  const [editRow, setEditRow] = useState<PostTagResponse | null>(null)
+  const [deleteId, setDeleteId] = useState('')
   const [allData, setAllData] = useState(...[connectsData])
   const [data, setData] = useState(allData)
   const [globalFilter, setGlobalFilter] = useState('')
@@ -78,7 +98,9 @@ const ConnectsTable = ({ connectsData, refresh }: { connectsData?: PostTagRespon
   }
 
   const updateStatus = (id: string, status: PostState) => {
-    SocialSearchService.redditUpdateTagStatus(id, status)
+    SocialSearchService.redditUpdateTag(id, {
+      status: status
+    })
       .then(response => {
         console.log(response)
         toast.success('Post status updated to ' + status)
@@ -87,6 +109,23 @@ const ConnectsTable = ({ connectsData, refresh }: { connectsData?: PostTagRespon
       .catch(error => {
         console.log(error)
         toast.error('Failed updating the post status.')
+      })
+  }
+
+  const updateTag = (row: PostTagResponse) => {
+    SocialSearchService.redditUpdateTag(row.id, {
+      contact_method: row.contact_method,
+      contacted_at: row.contacted_at,
+      contacted_by: row.contacted_by
+    })
+      .then(response => {
+        console.log(response)
+        toast.success('Post updated.')
+        refresh()
+      })
+      .catch(error => {
+        console.log(error)
+        toast.error('Failed updating the post.')
       })
   }
 
@@ -198,6 +237,47 @@ const ConnectsTable = ({ connectsData, refresh }: { connectsData?: PostTagRespon
           return <Typography>{date}</Typography>
         }
       }),
+      columnHelper.accessor('contacted_by', {
+        header: 'By',
+
+        // sortingFn: (rowA, rowB) => rowA.original.review - rowB.original.review,
+        cell: ({ row }) => (
+          <div className='flex items-center gap-2'>
+            {/* <CustomAvatar src={row.original.avatar} size={34} /> */}
+            <div className='flex flex-col items-start'>
+              <Typography color='primary' className='font-medium'>
+                {row.original.contacted_by ?? '-'}
+              </Typography>
+              <Typography variant='body2'>
+                {row.original.contact_method ? 'Via ' + row.original.contact_method : '-'}
+              </Typography>
+            </div>
+          </div>
+        )
+      }),
+      columnHelper.accessor('contacted_at', {
+        header: 'Contacted At',
+        sortingFn: (rowA, rowB) => {
+          const dateA = new Date(rowA.original.contacted_at ?? 0)
+          const dateB = new Date(rowB.original.contacted_at ?? 0)
+
+          return dateA.getTime() - dateB.getTime()
+        },
+        cell: ({ row }) => {
+          if (!row.original.contacted_at) {
+            return <Typography>-</Typography>
+          }
+          const date = new Date(row.original.contacted_at).toLocaleDateString('en-US', {
+            month: 'short',
+            day: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          })
+
+          return <Typography>{date}</Typography>
+        }
+      }),
       columnHelper.accessor('status', {
         header: 'Status',
         cell: ({ row }) => (
@@ -216,47 +296,65 @@ const ConnectsTable = ({ connectsData, refresh }: { connectsData?: PostTagRespon
       columnHelper.accessor('actions', {
         header: 'Update',
         cell: ({ row }) => (
-          <OptionMenu
-            iconButtonProps={{ size: 'medium' }}
-            iconClassName='text-textSecondary'
-            options={[
-              {
-                text: 'Requested',
-                icon: 'tabler-message-question',
-                linkProps: { className: 'flex items-center gap-2 is-full plb-2 pli-4' },
-                menuItemProps: {
-                  className: 'flex items-center',
-                  onClick: () => updateStatus(row.original.id, PostState.REQUESTED)
+          <div className='flex items-center'>
+            <OptionMenu
+              iconButtonProps={{ size: 'medium' }}
+              iconClassName='text-textSecondary'
+              options={[
+                {
+                  text: 'Requested',
+                  icon: 'tabler-message-question',
+                  linkProps: { className: 'flex items-center gap-2 is-full plb-2 pli-4' },
+                  menuItemProps: {
+                    className: 'flex items-center',
+                    onClick: () => updateStatus(row.original.id, PostState.REQUESTED)
+                  }
+                },
+                {
+                  text: 'In Progress',
+                  icon: 'tabler-eye',
+                  linkProps: { className: 'flex items-center gap-2 is-full plb-2 pli-4' },
+                  menuItemProps: {
+                    className: 'flex items-center',
+                    onClick: () => updateStatus(row.original.id, PostState.IN_PROGRESS)
+                  }
+                },
+                {
+                  text: 'Approved',
+                  icon: 'tabler-check',
+                  linkProps: { className: 'flex items-center gap-2 is-full plb-2 pli-4' },
+                  menuItemProps: {
+                    className: 'flex items-center',
+                    onClick: () => updateStatus(row.original.id, PostState.APPROVED)
+                  }
+                },
+                {
+                  text: 'Denied',
+                  icon: 'tabler-x',
+                  menuItemProps: {
+                    className: 'flex items-center',
+                    onClick: () => updateStatus(row.original.id, PostState.DENIED)
+                  }
                 }
-              },
-              {
-                text: 'In Progress',
-                icon: 'tabler-eye',
-                linkProps: { className: 'flex items-center gap-2 is-full plb-2 pli-4' },
-                menuItemProps: {
-                  className: 'flex items-center',
-                  onClick: () => updateStatus(row.original.id, PostState.IN_PROGRESS)
-                }
-              },
-              {
-                text: 'Approved',
-                icon: 'tabler-check',
-                linkProps: { className: 'flex items-center gap-2 is-full plb-2 pli-4' },
-                menuItemProps: {
-                  className: 'flex items-center',
-                  onClick: () => updateStatus(row.original.id, PostState.APPROVED)
-                }
-              },
-              {
-                text: 'Denied',
-                icon: 'tabler-x',
-                menuItemProps: {
-                  className: 'flex items-center',
-                  onClick: () => updateStatus(row.original.id, PostState.DENIED)
-                }
-              }
-            ]}
-          />
+              ]}
+            />
+            <IconButton
+              onClick={() => {
+                setDeleteId(row.original.id)
+                setOpenDeleteModal(true)
+              }}
+            >
+              <i className='tabler-trash text-textSecondary' />
+            </IconButton>
+            <IconButton
+              onClick={() => {
+                setEditRow(row.original)
+                setOpenEditModal(true)
+              }}
+            >
+              <i className='tabler-edit text-textSecondary' />
+            </IconButton>
+          </div>
         ),
         enableSorting: false
       })
@@ -313,6 +411,86 @@ const ConnectsTable = ({ connectsData, refresh }: { connectsData?: PostTagRespon
     <>
       <Card>
         <div className='overflow-x-auto'>
+          <Dialog
+            open={openEditModal}
+            onClose={() => setOpenEditModal(false)}
+            sx={{ '& .MuiDialog-paper': { overflow: 'visible' } }}
+          >
+            <DialogCloseButton onClick={() => setOpenEditModal(false)} disableRipple>
+              <i className='tabler-x' />
+            </DialogCloseButton>
+            <DialogTitle variant='h4' className='flex flex-col gap-2 text-center p-6 sm:pbs-16 sm:pbe-6 sm:pli-16'>
+              Update
+              <Typography component='span' className='flex flex-col text-center'>
+                Update Contact Status
+              </Typography>
+            </DialogTitle>
+            <form onSubmit={e => e.preventDefault()}>
+              <DialogContent className='overflow-visible pbs-0 p-6 sm:pli-16'>
+                <Grid container spacing={6}>
+                  <Grid item xs={12}>
+                    <CustomTextField
+                      fullWidth
+                      name='contacted_by'
+                      autoComplete='on'
+                      label='Contacted By'
+                      placeholder='John Doe'
+                      value={editRow?.contacted_by}
+                      onChange={e => (editRow ? setEditRow({ ...editRow, contacted_by: e.target.value }) : {})}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <AppReactDatepicker
+                      showTimeSelect
+                      timeFormat='HH:mm'
+                      timeIntervals={15}
+                      selected={editRow?.contacted_at ? new Date(editRow.contacted_at) : null}
+                      id='contacted_on'
+                      dateFormat='MM/dd/yyyy h:mm aa'
+                      onChange={(date: Date | null) =>
+                        editRow && date ? setEditRow({ ...editRow, contacted_at: date.toISOString() }) : {}
+                      }
+                      customInput={<CustomTextField label='Contact Date/Time' fullWidth />}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <CustomTextField
+                      fullWidth
+                      name='contact_method'
+                      autoComplete='on'
+                      label='Contacted Via'
+                      placeholder='Reddit'
+                      value={editRow?.contact_method}
+                      onChange={e => (editRow ? setEditRow({ ...editRow, contact_method: e.target.value }) : {})}
+                    />
+                  </Grid>
+                </Grid>
+              </DialogContent>
+              <DialogActions className='justify-center pbs-0 p-6 sm:pbe-16 sm:pli-16'>
+                <Button
+                  variant='contained'
+                  type='submit'
+                  onClick={() => {
+                    setOpenEditModal(false)
+                    if (editRow) updateTag(editRow)
+                  }}
+                >
+                  Update
+                </Button>
+                <Button variant='tonal' type='reset' color='secondary' onClick={() => setOpenEditModal(false)}>
+                  Cancel
+                </Button>
+              </DialogActions>
+            </form>
+          </Dialog>
+          <DeleteConfirmationModal
+            openDeleteModal={openDeleteModal}
+            handleCloseDeleteModal={() => setOpenDeleteModal(false)}
+            handleDelete={() => {
+              setOpenDeleteModal(false)
+              updateStatus(deleteId, PostState.DELETED)
+            }}
+          />
           <table className={tableStyles.table}>
             <thead>
               {table.getHeaderGroups().map(headerGroup => (

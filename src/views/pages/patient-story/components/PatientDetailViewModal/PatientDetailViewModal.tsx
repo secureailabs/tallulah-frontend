@@ -1,110 +1,138 @@
 'use client'
 
-import { useEffect, useState } from 'react';
-import { Box, Button, CircularProgress, Divider, Menu, MenuItem, Modal, Typography } from '@mui/material';
-import PatientImage from '@/assets/images/users/avatar-3.png';
-import { formatReceivedTimeFull } from '@/utils/helper';
-import { FormDataService, FormMediaTypes, GetFormData_Out } from '@/tallulah-ts-client';
-import styles from './PatientDetailViewModal.module.css';
-import CloseIcon from '@mui/icons-material/Close';
-import DeleteConfirmationModal from '@/components/DeleteConfirmationModal';
-import PatientDetailEditModal from '../PatientDetailEditModal';
-import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+import { useEffect, useState } from 'react'
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Divider,
+  IconButton,
+  Menu,
+  MenuItem,
+  Modal,
+  Tab,
+  Tabs,
+  Typography
+} from '@mui/material'
+import PatientImage from '@/assets/images/users/avatar-3.png'
+import { formatReceivedTimeFull } from '@/utils/helper'
+import { FormDataService, FormMediaTypes, GetFormData_Out } from '@/tallulah-ts-client'
+import styles from './PatientDetailViewModal.module.css'
+import CloseIcon from '@mui/icons-material/Close'
+import DeleteConfirmationModal from '@/components/DeleteConfirmationModal'
+import PatientDetailEditModal from '../PatientDetailEditModal'
+import { useRouter } from 'next/navigation'
+import Image from 'next/image'
+import { TabPanelProps } from '@mui/lab/TabPanel'
+import { RefreshOutlined } from '@mui/icons-material'
+import { toast } from 'react-toastify'
 
 export interface IPatientDetailViewModal {
-  openModal: boolean;
-  handleCloseModal: () => void;
-  data: GetFormData_Out;
-  handleRefresh: () => void;
+  openModal: boolean
+  handleCloseModal: () => void
+  data: GetFormData_Out
+  handleRefresh: () => void
 }
 
-const mediaTypes = ['FILE', 'IMAGE', 'VIDEO'];
+const mediaTypes = ['FILE', 'IMAGE', 'VIDEO']
 
-const PatientDetailViewModal: React.FC<IPatientDetailViewModal> = ({ openModal, handleCloseModal, data, handleRefresh }) => {
-  const [profileImageUrl, setProfileImageUrl] = useState<string>('');
-  const [fetchingProfileImage, setFetchingProfileImage] = useState<boolean>(false);
-  const [mediaDetails, setMediaDetails] = useState<any>({});
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
-  const [showEditModal, setShowEditModal] = useState<boolean>(false);
+const PatientDetailViewModal: React.FC<IPatientDetailViewModal> = ({
+  openModal,
+  handleCloseModal,
+  data,
+  handleRefresh
+}) => {
+  const [profileImageUrl, setProfileImageUrl] = useState<string>('')
+  const [fetchingProfileImage, setFetchingProfileImage] = useState<boolean>(false)
+  const [mediaDetails, setMediaDetails] = useState<any>({})
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
+  const [showEditModal, setShowEditModal] = useState<boolean>(false)
+  const [tabIndex, setTabIndex] = useState(0)
+  const metadataPresent = data?.metadata && data?.metadata.structured_data
 
   const router = useRouter()
 
   const profileImageId =
-    data?.values.profilePicture?.value && data?.values.profilePicture?.value.length > 0 ? data?.values.profilePicture.value[0].id : null;
+    data?.values.profilePicture?.value && data?.values.profilePicture?.value.length > 0
+      ? data?.values.profilePicture.value[0].id
+      : null
 
   const convertTagsStringToArray = (tags: string | undefined) => {
-    if (!tags) return { visibleTags: [], additionalTagsCount: 0 };
-    const allTags = tags.split(',');
-    const visibleTags = allTags;
-    const additionalTagsCount = allTags.length - visibleTags.length;
-    return { visibleTags, additionalTagsCount };
-  };
+    if (!tags) return { visibleTags: [], additionalTagsCount: 0 }
+    const allTags = tags.split(',')
+    const visibleTags = allTags
+    const additionalTagsCount = allTags.length - visibleTags.length
+    return { visibleTags, additionalTagsCount }
+  }
 
   const handleCloseDeleteModal = () => {
-    setOpenDeleteModal(false);
-  };
+    setOpenDeleteModal(false)
+  }
 
   const handleCloseEditModal = () => {
-    setShowEditModal(false);
-  };
+    setShowEditModal(false)
+  }
 
   const handleDelete = async () => {
-    setOpenDeleteModal(false);
+    setOpenDeleteModal(false)
     try {
-      await FormDataService.deleteFormData(data.id);
-      // sendNotification({
-      //   msg: 'Story removed successfully',
-      //   variant: 'success'
-      // });
-      handleRefresh();
+      await FormDataService.deleteFormData(data.id)
+      toast.success('Story removed successfully')
+      handleRefresh()
     } catch (error) {
-      console.log(error);
-      // sendNotification({
-      //   msg: 'Failed to remove story',
-      //   variant: 'error'
-      // });
+      console.log(error)
+      toast.error('Failed to remove story')
     }
 
-    handleCloseModal();
-    handleCloseDeleteModal();
-  };
+    handleCloseModal()
+    handleCloseDeleteModal()
+  }
 
-  const openOptionsMenu = Boolean(anchorEl);
+  const openOptionsMenu = Boolean(anchorEl)
   const handleClose = () => {
-    setAnchorEl(null);
-  };
+    setAnchorEl(null)
+  }
 
   const handleOptionsMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+    setAnchorEl(event.currentTarget)
+  }
 
   const handleDeleteClick = () => {
-    handleClose();
-    setOpenDeleteModal(true);
-  };
+    handleClose()
+    setOpenDeleteModal(true)
+  }
 
-  const { firstName, lastName, storyTags, profilePicture, consent, 'gender-other': genderOther, tags, ...rest } = data?.values;
+  const {
+    firstName,
+    lastName,
+    storyTags,
+    profilePicture,
+    consent,
+    'gender-other': genderOther,
+    tags,
+    ...rest
+  } = data?.values
 
-  const skipFieldNames = ['firstName', 'lastName', 'name', 'tags', 'profilePicture', 'consent'];
+  const skipFieldNames = ['firstName', 'lastName', 'name', 'tags', 'profilePicture', 'consent']
 
   const fetchProfileImage = async (id: any, type: string) => {
-    setFetchingProfileImage(true);
-    const mediaType = type === 'FILE' ? FormMediaTypes.FILE : type === 'IMAGE' ? FormMediaTypes.IMAGE : FormMediaTypes.VIDEO;
+    setFetchingProfileImage(true)
+    const mediaType =
+      type === 'FILE' ? FormMediaTypes.FILE : type === 'IMAGE' ? FormMediaTypes.IMAGE : FormMediaTypes.VIDEO
     try {
-      const res = await FormDataService.getDownloadUrl(id, mediaType);
-      setProfileImageUrl(res.url);
+      const res = await FormDataService.getDownloadUrl(id, mediaType)
+      setProfileImageUrl(res.url)
     } catch (err) {
-      setProfileImageUrl('');
-      console.log(err);
+      setProfileImageUrl('')
+      console.log(err)
     }
-    setFetchingProfileImage(false);
-  };
+    setFetchingProfileImage(false)
+  }
 
   useEffect(() => {
     async function fetchMediaUrls() {
-      const newMediaDetails: any = {};
+      const newMediaDetails: any = {}
 
       // Fetch and store media URLs in newMediaDetails
       for (const key of Object.keys(rest)) {
@@ -114,31 +142,60 @@ const PatientDetailViewModal: React.FC<IPatientDetailViewModal> = ({ openModal, 
               data.values[key].type === 'FILE'
                 ? FormMediaTypes.FILE
                 : data.values[key].type === 'IMAGE'
-                ? FormMediaTypes.IMAGE
-                : FormMediaTypes.VIDEO;
+                  ? FormMediaTypes.IMAGE
+                  : FormMediaTypes.VIDEO
             try {
-              const res = await FormDataService.getDownloadUrl(media.id, mediaType);
+              const res = await FormDataService.getDownloadUrl(media.id, mediaType)
               newMediaDetails[media.id] = {
                 url: res.url,
                 type: data.values[key].type,
                 name: media.name
-              };
+              }
             } catch (err) {
-              console.error(err);
+              console.error(err)
             }
           }
         }
       }
 
-      setMediaDetails(newMediaDetails);
+      setMediaDetails(newMediaDetails)
     }
 
-    fetchMediaUrls();
+    fetchMediaUrls()
 
     if (profileImageId) {
-      fetchProfileImage(profileImageId, 'IMAGE');
+      fetchProfileImage(profileImageId, 'IMAGE')
     }
-  }, [data]);
+  }, [data])
+
+  interface TabPanelProps {
+    children?: React.ReactNode
+    index: number
+    value: number
+  }
+
+  const a11yProps = (index: number) => {
+    return {
+      id: `simple-tab-${index}`,
+      'aria-controls': `simple-tabpanel-${index}`
+    }
+  }
+
+  const PatientTabPanel = (props: TabPanelProps) => {
+    const { children, value, index, ...other } = props
+
+    return (
+      <div
+        role='tabpanel'
+        hidden={value !== index}
+        id={`simple-tabpanel-${index}`}
+        aria-labelledby={`simple-tab-${index}`}
+        {...other}
+      >
+        {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+      </div>
+    )
+  }
 
   const renderModalCardHeader = (
     <Box
@@ -151,17 +208,17 @@ const PatientDetailViewModal: React.FC<IPatientDetailViewModal> = ({ openModal, 
       }}
     >
       <Button
-        id="basic-button"
+        id='basic-button'
         aria-controls={openOptionsMenu ? 'basic-menu' : undefined}
-        aria-haspopup="true"
+        aria-haspopup='true'
         aria-expanded={openOptionsMenu ? 'true' : undefined}
         onClick={handleOptionsMenuClick}
-        variant="outlined"
+        variant='outlined'
       >
         Actions
       </Button>
       <Menu
-        id="basic-menu"
+        id='basic-menu'
         anchorEl={anchorEl}
         open={openOptionsMenu}
         MenuListProps={{
@@ -171,16 +228,16 @@ const PatientDetailViewModal: React.FC<IPatientDetailViewModal> = ({ openModal, 
       >
         <MenuItem
           onClick={() => {
-            setShowEditModal(true);
-            handleClose();
+            setShowEditModal(true)
+            handleClose()
           }}
         >
           Edit
         </MenuItem>
         <MenuItem
           onClick={() => {
-            handleDeleteClick();
-            handleClose();
+            handleDeleteClick()
+            handleClose()
           }}
         >
           Delete
@@ -194,6 +251,21 @@ const PatientDetailViewModal: React.FC<IPatientDetailViewModal> = ({ openModal, 
         >
           Patient Chat
         </MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleClose()
+            FormDataService.generateMetadata(data.id)
+              .then(() => {
+                toast.success('Structured data generation queued successfully')
+              })
+              .catch(err => {
+                console.error(err)
+                toast.error('Failed to generate structured data')
+              })
+          }}
+        >
+          {metadataPresent ? 'Regenerate Structured Data' : 'Generate Structured Data'}
+        </MenuItem>
       </Menu>
       <CloseIcon
         onClick={handleCloseModal}
@@ -202,12 +274,12 @@ const PatientDetailViewModal: React.FC<IPatientDetailViewModal> = ({ openModal, 
         }}
       />
     </Box>
-  );
+  )
 
   const renderMediaDisplay = (key: any) => (
     <Box className={styles.section1} key={key}>
       <Box>
-        <Typography variant="body1" className={styles.label}>
+        <Typography variant='body1' className={styles.label}>
           {rest[key].label}
         </Typography>
         <Box>
@@ -221,18 +293,18 @@ const PatientDetailViewModal: React.FC<IPatientDetailViewModal> = ({ openModal, 
               }}
             >
               {data.values[key]?.type === 'IMAGE' ? (
-                <img src={mediaDetails[media.id]?.url} alt="Patient Media" className={styles.image} />
+                <img src={mediaDetails[media.id]?.url} alt='Patient Media' className={styles.image} />
               ) : data.values[key]?.type === 'VIDEO' ? (
                 <video src={mediaDetails[media.id]?.url} controls className={styles.video} />
               ) : (
                 <Typography
-                  variant="body1"
+                  variant='body1'
                   className={styles.value}
                   sx={{
                     marginY: '5px'
                   }}
                 >
-                  <a href={mediaDetails[media.id]?.url} target="_blank" rel="noreferrer">
+                  <a href={mediaDetails[media.id]?.url} target='_blank' rel='noreferrer'>
                     {mediaDetails[media.id]?.name}
                   </a>
                 </Typography>
@@ -242,30 +314,46 @@ const PatientDetailViewModal: React.FC<IPatientDetailViewModal> = ({ openModal, 
         </Box>
       </Box>
     </Box>
-  );
+  )
 
   const renderDataDisplay = (key: any) => {
     if (skipFieldNames.includes(key)) {
-      return null;
+      return null
     }
     return (
       <Box className={styles.section1} key={key}>
         <Box>
-          <Typography variant="body1" className={styles.label}>
+          <Typography variant='body1' className={styles.label}>
             {rest[key].label}
           </Typography>
-          <Typography variant="body1" className={styles.value}>
+          <Typography variant='body1' className={styles.value}>
             {rest[key].value || 'N/A'}
           </Typography>
           {key === 'gender' && genderOther && genderOther?.value && (
-            <Typography variant="body1" className={styles.value}>
+            <Typography variant='body1' className={styles.value}>
               ( {genderOther?.value} )
             </Typography>
           )}
         </Box>
       </Box>
-    );
-  };
+    )
+  }
+
+  const renderMetadataDisplay = (key: any) => {
+    return (
+      <Box className={styles.section1} key={key}>
+        <Box>
+          <Typography variant='body1' className={styles.label}>
+            {key}
+          </Typography>
+          <Typography variant='body1' className={styles.value}>
+            {/* @ts-ignore */}
+            {data.metadata?.structured_data[key] || 'N/A'}
+          </Typography>
+        </Box>
+      </Box>
+    )
+  }
 
   const renderModalCardContent = (
     <Box className={styles.container}>
@@ -273,29 +361,27 @@ const PatientDetailViewModal: React.FC<IPatientDetailViewModal> = ({ openModal, 
       <Box className={styles.containerDiv}>
         <Box className={styles.profileImageContainer}>
           {!fetchingProfileImage ? (
-          <Image
-               src={profileImageUrl || PatientImage} // Use profileImageUrl if available, else use default image
-               alt="Patient"
-               className={styles.profileImage}
-               width={100} // Set appropriate width
-               height={100} // Set appropriate height
-             />
-
+            <Image
+              src={profileImageUrl ? profileImageUrl : PatientImage}
+              alt='Patient'
+              className={styles.profileImage}
+            />
           ) : (
             <CircularProgress />
           )}
         </Box>
         <Box>
           <Box>
-            {data.values.firstName ? (
-              <Typography variant="h6" className={styles.name}>
-                {data.values.firstName?.value} {data.values.lastName?.value}
-              </Typography>
-            ) : data.values.name ? (
-              <Typography variant="h6" className={styles.name}>
-                {data.values?.name?.value}
-              </Typography>
-            ) : null}
+            <Typography variant='h6' className={styles.name}>
+              {data.values.firstName
+                ? data.values.firstName?.value + ' ' + data.values.lastName?.value
+                : data.values.name
+                  ? data.values?.name?.value
+                  : null}
+              <IconButton onClick={handleRefresh}>
+                <RefreshOutlined />
+              </IconButton>
+            </Typography>
           </Box>
           <Box>Date Of Data Use Consent: {formatReceivedTimeFull(data?.creation_time as string)}</Box>
           {data?.values && 'tags' in data?.values ? (
@@ -314,7 +400,9 @@ const PatientDetailViewModal: React.FC<IPatientDetailViewModal> = ({ openModal, 
                 </Box>
               ))}
               {convertTagsStringToArray(data?.values?.tags?.value).additionalTagsCount > 0 && (
-                <Box className={styles.tag2}>+{convertTagsStringToArray(data?.values?.tags?.value).additionalTagsCount} tags</Box>
+                <Box className={styles.tag2}>
+                  +{convertTagsStringToArray(data?.values?.tags?.value).additionalTagsCount} tags
+                </Box>
               )}
             </Box>
           ) : null}
@@ -341,15 +429,39 @@ const PatientDetailViewModal: React.FC<IPatientDetailViewModal> = ({ openModal, 
               <Typography>{data?.values?.gender?.value}</Typography>
             </Box>
           </Box>
-          <Divider sx={{ marginTop: '1rem' }} />
-          {Object.keys(rest).map((key: any) =>
-            mediaTypes.includes(data.values[key].type) ? renderMediaDisplay(key) : renderDataDisplay(key)
+          {metadataPresent ? (
+            <>
+              <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <Tabs
+                  value={tabIndex}
+                  onChange={(event: React.SyntheticEvent, newValue: number) => setTabIndex(newValue)}
+                >
+                  <Tab label='Form Data' {...a11yProps(0)} />
+                  <Tab label='Structured Data' {...a11yProps(1)} />
+                </Tabs>
+              </Box>
+              <PatientTabPanel value={tabIndex} index={0}>
+                {Object.keys(rest).map((key: any) =>
+                  mediaTypes.includes(data.values[key].type) ? renderMediaDisplay(key) : renderDataDisplay(key)
+                )}
+              </PatientTabPanel>
+              <PatientTabPanel value={tabIndex} index={1}>
+                {/* @ts-ignore */}
+                {Object.keys(data.metadata?.structured_data).map((key: any) => renderMetadataDisplay(key))}
+              </PatientTabPanel>
+            </>
+          ) : (
+            <>
+              <Divider sx={{ marginTop: '1rem' }} />
+              {Object.keys(rest).map((key: any) =>
+                mediaTypes.includes(data.values[key].type) ? renderMediaDisplay(key) : renderDataDisplay(key)
+              )}
+            </>
           )}
         </Box>
       </Box>
     </Box>
-  );
-
+  )
   return (
     <Modal open={openModal} onClose={handleCloseModal}>
       <Box
@@ -385,7 +497,7 @@ const PatientDetailViewModal: React.FC<IPatientDetailViewModal> = ({ openModal, 
         />
       </Box>
     </Modal>
-  );
-};
+  )
+}
 
-export default PatientDetailViewModal;
+export default PatientDetailViewModal

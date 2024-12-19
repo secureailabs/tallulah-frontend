@@ -13,4 +13,7 @@ export type PostTagResponse = {
     added_time: string;
     user_name: string;
     job_title: string;
+    contact_method?: (string | null);
+    contacted_at?: (string | null);
+    contacted_by?: (string | null);
 };

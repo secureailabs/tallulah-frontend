@@ -1,8 +1,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { PostState } from '../models/PostState';
 import type { PostTagResponse } from '../models/PostTagResponse';
+import type { PostTagUpdate } from '../models/PostTagUpdate';
 import type { RedditPost } from '../models/RedditPost';
 import type { SearchHistoryResponse } from '../models/SearchHistoryResponse';
 
@@ -129,16 +129,16 @@ export class SocialSearchService {
     }
 
     /**
-     * Reddit Update Tag Status
-     * Reddit Tagged Post Status Update
+     * Reddit Update Tag
+     * Reddit Tagged Post Update
      * @param postId Post ID
-     * @param postStatus Post status
+     * @param requestBody
      * @returns void
      * @throws ApiError
      */
-    public static redditUpdateTagStatus(
+    public static redditUpdateTag(
         postId: string,
-        postStatus: PostState,
+        requestBody: PostTagUpdate,
     ): CancelablePromise<void> {
         return __request(OpenAPI, {
             method: 'PUT',
@@ -146,9 +146,8 @@ export class SocialSearchService {
             path: {
                 'post_id': postId,
             },
-            query: {
-                'post_status': postStatus,
-            },
+            body: requestBody,
+            mediaType: 'application/json',
             errors: {
                 422: `Validation Error`,
             },

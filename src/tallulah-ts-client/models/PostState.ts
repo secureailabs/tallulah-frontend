@@ -8,4 +8,5 @@ export enum PostState {
     IN_PROGRESS = 'IN PROGRESS',
     APPROVED = 'APPROVED',
     DENIED = 'DENIED',
+    DELETED = 'DELETED',
 }

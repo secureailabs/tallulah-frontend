@@ -328,6 +328,7 @@ const PatientDetailViewModal: React.FC<IPatientDetailViewModal> = ({ openModal, 
             {key}
           </Typography>
           <Typography variant="body1" className={styles.value}>
+            {/* @ts-ignore */}
             {data.metadata?.structured_data[key] || 'N/A'}
           </Typography>
         </Box>
@@ -418,6 +419,7 @@ const PatientDetailViewModal: React.FC<IPatientDetailViewModal> = ({ openModal, 
                 )}
               </PatientTabPanel>
               <PatientTabPanel value={tabIndex} index={1}>
+                {/* @ts-ignore */}
                 {Object.keys(data.metadata?.structured_data).map((key: any) =>
                   renderMetadataDisplay(key)
                 )}

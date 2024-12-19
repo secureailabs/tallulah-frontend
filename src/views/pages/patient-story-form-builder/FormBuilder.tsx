@@ -394,7 +394,8 @@ const FormBuilder: React.FC<IFormBuilder> = () => {
                                   name="options"
                                   value={field.options.join(', ')}
                                   onChange={(e) => {
-                                    const options = e.target.value.split(',').map((opt) => opt.trim());
+                                    const input = e.target.value // Trim the overall string input
+                                    const options = input.split(',').map((opt) => opt.trimStart()); // Trim only leading spaces
                                     handleFieldChange({ target: { name: 'options', value: options } }, groupIndex, fieldIndex);
                                   }}
                                   fullWidth

@@ -85,6 +85,7 @@ export { PatientProfileState } from './models/PatientProfileState';
 export type { PatientRequests } from './models/PatientRequests';
 export { PostState } from './models/PostState';
 export type { PostTagResponse } from './models/PostTagResponse';
+export type { PostTagUpdate } from './models/PostTagUpdate';
 export type { RedditPost } from './models/RedditPost';
 export type { RefreshToken_In } from './models/RefreshToken_In';
 export type { RegisterContentGeneration_In } from './models/RegisterContentGeneration_In';

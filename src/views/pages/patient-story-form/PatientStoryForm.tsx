@@ -38,6 +38,7 @@ import VideoUpload from './components/VideoUpload';
 import Lottie from 'lottie-react';
 import checkMarkAnimation from '@/assets/lottie/check_mark.json';
 import { useParams, useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 export interface IPatientStoryForm {}
 
@@ -726,11 +727,51 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
               }}
               onClick={() => {
                 navigator.clipboard.writeText(formPublicLink + formLayout?.id);
+                toast.info('Copied Successfully')
                 // TODO
                 // sendNotification({
                 //   msg: 'Copied to clipboard',
                 //   variant: 'success'
                 // });
+              }}
+            />
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              width: '100%',
+              marginTop:'20px'
+            }}
+          >
+           <Typography>
+              Form Embedded Code -{' '}
+              <code>
+                {`<iframe
+                  src="${formPublicLink}${formLayout?.id}"
+                  title="Embedded Form"
+                  width="100%"
+                  height="500"
+                  style="border:none;"
+                ></iframe>`}
+              </code>
+            </Typography>
+
+            <ContentCopyIcon
+              sx={{
+                cursor: 'pointer'
+              }}
+              onClick={() => {
+                const iframeCode = `<iframe
+                  src="${formPublicLink}${formLayout?.id}"
+                  title="Embedded Form"
+                  width="100%"
+                  height="500"
+                  style="border:none;"
+                ></iframe>`;
+                navigator.clipboard.writeText(iframeCode);
+                toast.info('Copied Successfully')
               }}
             />
           </Box>

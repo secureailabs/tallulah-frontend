@@ -364,6 +364,8 @@ const PatientDetailViewModal: React.FC<IPatientDetailViewModal> = ({
             <Image
               src={profileImageUrl ? profileImageUrl : PatientImage}
               alt='Patient'
+              width={200}
+              height={240}
               className={styles.profileImage}
             />
           ) : (

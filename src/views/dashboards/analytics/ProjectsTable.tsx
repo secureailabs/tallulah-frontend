@@ -28,7 +28,7 @@ import {
   getPaginationRowModel,
   getSortedRowModel
 } from '@tanstack/react-table'
-import type { ColumnDef, FilterFn } from '@tanstack/react-table'
+import type { ColumnDef, FilterFn, Table } from '@tanstack/react-table'
 import type { RankingInfo } from '@tanstack/match-sorter-utils'
 
 // Type Imports
@@ -275,7 +275,7 @@ const ProjectTables = ({ projectTable, className }: { projectTable?: ProjectTabl
       </div>
       <TablePagination
         rowsPerPageOptions={[5, 7, 10]}
-        component={() => <TablePaginationComponent table={table} />}
+        component={() => <TablePaginationComponent table={table as Table<unknown>} />}
         count={table.getFilteredRowModel().rows.length}
         rowsPerPage={table.getState().pagination.pageSize}
         page={table.getState().pagination.pageIndex}

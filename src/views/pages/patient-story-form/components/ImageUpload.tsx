@@ -1,6 +1,5 @@
-import { Box, Button, Stack } from '@mui/material';
+import { Box, Button, Stack , Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { Typography } from '@mui/material';
 import { TImageFileUpload } from '../PatientStoryForm';
 import { Dropzone, FileMosaic } from '@dropzone-ui/react';
 

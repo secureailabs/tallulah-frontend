@@ -101,7 +101,6 @@ export default function AppStripedDataGrid(props: any) {
   return (
     <StripedDataGrid
       getRowClassName={(params: any) => {
-        console.log('params', params.indexRelativeToCurrentPage)
         return params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
       }}
       components={{

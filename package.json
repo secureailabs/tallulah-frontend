@@ -40,7 +40,7 @@
     "@mui/material": "5.16.4",
     "@mui/material-nextjs": "5.16.4",
     "@mui/x-charts": "6.0.0-alpha.11",
-    "@mui/x-data-grid": "5.8.0",
+    "@mui/x-data-grid": "5.17.26",
     "@prisma/client": "5.17.0",
     "@reduxjs/toolkit": "2.2.6",
     "@segment/snippet": "^5.2.1",

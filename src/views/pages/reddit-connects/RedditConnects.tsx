@@ -14,7 +14,7 @@ import {
   Typography
 } from '@mui/material'
 
-import type { ColumnDef, FilterFn } from '@tanstack/react-table'
+import type { ColumnDef, FilterFn, Table } from '@tanstack/react-table'
 import {
   createColumnHelper,
   flexRender,
@@ -546,7 +546,7 @@ const ConnectsTable = ({ connectsData, refresh }: { connectsData?: PostTagRespon
           </table>
         </div>
         <TablePagination
-          component={() => <TablePaginationComponent table={table} />}
+          component={() => <TablePaginationComponent table={table as Table<unknown>} />}
           count={table.getFilteredRowModel().rows.length}
           rowsPerPage={table.getState().pagination.pageSize}
           page={table.getState().pagination.pageIndex}

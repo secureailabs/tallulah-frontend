@@ -146,6 +146,14 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
           </MenuSection>
         )}
 
+        {organization == 'Array Insights' && (
+          <MenuSection label='Admin'>
+            <SubMenu label='Users' icon={<i className='tabler-users' />}>
+              <MenuItem href={`/${locale}/add-user`}>Add User</MenuItem>
+            </SubMenu>
+          </MenuSection>
+        )}
+
         {/* <SubMenu label={dictionary['navigation'].orders}>
           </SubMenu>
           {/* <SubMenu label={dictionary['navigation'].orders}>

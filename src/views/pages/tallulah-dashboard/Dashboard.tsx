@@ -24,7 +24,7 @@ const Dashboard: React.FC<IDashboard> = ({}) => {
       .catch(err => {
         console.log(err)
         // If token expired, redirect to login page
-        if (err.response.status === 401) {
+        if (!err.response || err.response.status === 401) {
           window.location.href = '/login'
         }
       })

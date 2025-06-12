@@ -416,6 +416,7 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
         })
       console.log(res)
       if (res?.organization_id === 'bec79956-4c54-401b-94e8-3a643668600d') {
+        // @ts-ignore
         import('./dtrf-style.css')
       }
       setFormData(formDataObj)

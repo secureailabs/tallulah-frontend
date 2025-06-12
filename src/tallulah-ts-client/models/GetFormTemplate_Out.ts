@@ -13,6 +13,7 @@ export type GetFormTemplate_Out = {
     card_layout?: (CardLayout | null);
     logo?: (string | null);
     id: string;
+    organization_id: string;
     creation_time?: string;
     state: FormTemplateState;
     last_edit_time?: string;

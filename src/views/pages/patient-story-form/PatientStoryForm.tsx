@@ -1,7 +1,7 @@
-'use client';
+'use client'
 
-import { useEffect, useState } from 'react';
-import styles from './PatientStoryForm.module.css';
+import { useEffect, useState } from 'react'
+import styles from './PatientStoryForm.module.css'
 import {
   TextField,
   FormControl,
@@ -17,8 +17,8 @@ import {
   Typography,
   CircularProgress,
   Divider
-} from '@mui/material';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+} from '@mui/material'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 
 import {
   FormDataService,
@@ -27,84 +27,88 @@ import {
   GetFormTemplate_Out,
   GetMultipleFormTemplate_Out,
   OpenAPI
-} from '@/tallulah-ts-client';
+} from '@/tallulah-ts-client'
 
-import ImageUpload from './components/ImageUpload';
-import DocumentUpload from './components/DocumentUpload';
+import ImageUpload from './components/ImageUpload'
+import DocumentUpload from './components/DocumentUpload'
 // import { useParams } from 'react-router-dom';
-import axios from 'axios';
-import VideoUpload from './components/VideoUpload';
+import axios from 'axios'
+import VideoUpload from './components/VideoUpload'
 // import useNotification from '@/hooks/useNotification';
-import Lottie from 'lottie-react';
-import checkMarkAnimation from '@/assets/lottie/check_mark.json';
-import { useParams, useRouter } from 'next/navigation';
-import { toast } from 'react-toastify';
+import Lottie from 'lottie-react'
+import checkMarkAnimation from '@/assets/lottie/check_mark.json'
+import { useParams, useRouter } from 'next/navigation'
+import { toast } from 'react-toastify'
 
 export interface IPatientStoryForm {}
 
 export type TImageFileUpload = {
-  fieldName: string;
-  files: File[];
-};
+  fieldName: string
+  files: File[]
+}
 
 export type TDocumentFileUpload = {
-  fieldName: string;
-  files: File[];
-};
+  fieldName: string
+  files: File[]
+}
 
 export type TVideoUpload = {
-  fieldName: string;
-  files: File[];
-};
+  fieldName: string
+  files: File[]
+}
 
 const spanFullWidth = (field: any) => {
-  const fullWidthTypes = ['TEXTAREA', 'FILE', 'IMAGE', 'VIDEO', 'CHECKBOX', 'RADIO', 'CONSENT_CHECKBOX'];
-  return fullWidthTypes.includes(field.type);
-};
+  const fullWidthTypes = ['TEXTAREA', 'FILE', 'IMAGE', 'VIDEO', 'CHECKBOX', 'RADIO', 'CONSENT_CHECKBOX']
+  return fullWidthTypes.includes(field.type)
+}
 
 const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
-  const [formLayout, setFormLayout] = useState<GetFormTemplate_Out>();
-  const [formData, setFormData] = useState<any>({});
-  const [imageFiles, setImageFiles] = useState<TImageFileUpload[]>([]);
-  const [documentFiles, setDocumentFiles] = useState<TDocumentFileUpload[]>([]);
-  const [videoFiles, setVideoFiles] = useState<TDocumentFileUpload[]>([]);
-  const [uploading, setUploading] = useState<boolean>(false);
-  const [uploaded, setUploaded] = useState<boolean>(false);
-  const [isFormTemplateFetching, setIsFormTemplateFetching] = useState<boolean>(false);
-  const [selectedGender, setSelectedGender] = useState('');
-  const [formTemplates, setFormTemplates] = useState<GetFormTemplate_Out[]>();
+  const [formLayout, setFormLayout] = useState<GetFormTemplate_Out>()
+  const [formData, setFormData] = useState<any>({})
+  const [imageFiles, setImageFiles] = useState<TImageFileUpload[]>([])
+  const [documentFiles, setDocumentFiles] = useState<TDocumentFileUpload[]>([])
+  const [videoFiles, setVideoFiles] = useState<TDocumentFileUpload[]>([])
+  const [uploading, setUploading] = useState<boolean>(false)
+  const [uploaded, setUploaded] = useState<boolean>(false)
+  const [isFormTemplateFetching, setIsFormTemplateFetching] = useState<boolean>(false)
+  const [selectedGender, setSelectedGender] = useState('')
+  const [formTemplates, setFormTemplates] = useState<GetFormTemplate_Out[]>()
 
   // const [sendNotification] = useNotification();
 
-  const params = useParams();
+  const params = useParams()
 
   const getCorrespondingLabel = (fieldName: string) => {
-    const field = formLayout?.field_groups?.flatMap((fieldGroup: any) => fieldGroup.fields).find((field: any) => field?.name === fieldName);
-    return field?.label;
-  };
+    const field = formLayout?.field_groups
+      ?.flatMap((fieldGroup: any) => fieldGroup.fields)
+      .find((field: any) => field?.name === fieldName)
+    return field?.label
+  }
 
   const getCorrespondingType = (fieldName: string) => {
-    const field = formLayout?.field_groups?.flatMap((fieldGroup: any) => fieldGroup.fields).find((field: any) => field?.name === fieldName);
-    return field?.type;
-  };
+    const field = formLayout?.field_groups
+      ?.flatMap((fieldGroup: any) => fieldGroup.fields)
+      .find((field: any) => field?.name === fieldName)
+    return field?.type
+  }
 
   const handleFormDataChange = (event: any) => {
-    const newFormData = { ...formData };
+    const newFormData = { ...formData }
     // if event.target.type is number then convert the value to number
-    const value = event.target.type === 'number' ? Number(event.target.value) : event.target.value;
+    const value = event.target.type === 'number' ? Number(event.target.value) : event.target.value
 
     newFormData[event.target.name] = {
       value: value,
       label: getCorrespondingLabel(event.target.name),
       type: getCorrespondingType(event.target.name)
-    };
-    setFormData(newFormData);
-  };
+    }
+    setFormData(newFormData)
+  }
 
   const handleGenderChange = (event: any) => {
-    setSelectedGender(event.target.value);
-    handleFormDataChange(event);
-  };
+    setSelectedGender(event.target.value)
+    handleFormDataChange(event)
+  }
 
   const handleRadioFormDataChange = (event: any) => {
     setFormData({
@@ -114,11 +118,11 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
         label: getCorrespondingLabel(event.target.name),
         type: getCorrespondingType(event.target.name)
       }
-    });
-  };
+    })
+  }
 
   const handleCheckboxFormDataChange = (event: any) => {
-    const keyName = event.target.name;
+    const keyName = event.target.name
     if (event.target.checked) {
       setFormData({
         ...formData,
@@ -127,7 +131,7 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
           label: getCorrespondingLabel(keyName),
           type: getCorrespondingType(keyName)
         }
-      });
+      })
     } else {
       setFormData({
         ...formData,
@@ -136,9 +140,9 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
           label: getCorrespondingLabel(keyName),
           type: getCorrespondingType(keyName)
         }
-      });
+      })
     }
-  };
+  }
 
   const renderField = (field: any) => {
     switch (field.type) {
@@ -152,65 +156,65 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
             name={field.name}
             fullWidth
             className={styles.inputStyle}
-            type="text"
+            type='text'
             placeholder={field.place_holder}
             required={field.required}
-            variant="outlined"
+            variant='outlined'
             onChange={handleFormDataChange}
             label={field.description}
           />
-        );
+        )
       case 'NUMBER':
         return (
           <TextField
             name={field.name}
             fullWidth
-            type="number"
+            type='number'
             placeholder={field.place_holder}
             required={field.required}
-            variant="outlined"
+            variant='outlined'
             onChange={handleFormDataChange}
             label={field.description}
           />
-        );
+        )
       case 'DATE':
         return (
           <TextField
             name={field.name}
             fullWidth
-            type="date"
+            type='date'
             required={field.required}
-            variant="outlined"
+            variant='outlined'
             onChange={handleFormDataChange}
             label={field.description}
             InputLabelProps={{ shrink: true }}
           />
-        );
+        )
       case 'TIME':
         return (
           <TextField
             name={field.name}
             fullWidth
-            type="time"
+            type='time'
             required={field.required}
-            variant="outlined"
+            variant='outlined'
             onChange={handleFormDataChange}
             label={field.description}
             InputLabelProps={{ shrink: true }}
           />
-        );
+        )
       case 'DATETIME':
         return (
           <TextField
             fullWidth
-            type="datetime-local"
+            type='datetime-local'
             required={field.required}
-            variant="outlined"
+            variant='outlined'
             onChange={handleFormDataChange}
             label={field.description}
             InputLabelProps={{ shrink: true }}
           />
-        );
+        )
       case 'TEXTAREA':
         return (
           <>
@@ -228,7 +232,7 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
               }}
             />
           </>
-        );
+        )
       case 'SELECT':
         if (field.name === 'gender') {
           return (
@@ -258,10 +262,10 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
               {selectedGender === 'Other' && (
                 <TextField
                   fullWidth
-                  type="text"
+                  type='text'
                   name={`${field.name}-other`}
-                  variant="outlined"
-                  placeholder="Please specify (optional)"
+                  variant='outlined'
+                  placeholder='Please specify (optional)'
                   onChange={handleFormDataChange}
                   sx={{
                     marginTop: '10px'
@@ -269,7 +273,7 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
                 />
               )}
             </FormControl>
-          );
+          )
         } else {
           return (
             <FormControl fullWidth>
@@ -282,7 +286,12 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
               >
                 {field.place_holder}
               </InputLabel>
-              <Select required={field.required} onChange={handleFormDataChange} labelId={field.place_holder} name={field.name}>
+              <Select
+                required={field.required}
+                onChange={handleFormDataChange}
+                labelId={field.place_holder}
+                name={field.name}
+              >
                 {field.options.map((option: any) => (
                   <MenuItem key={option} value={option}>
                     {option}
@@ -290,7 +299,7 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
                 ))}
               </Select>
             </FormControl>
-          );
+          )
         }
       case 'RADIO':
         return (
@@ -302,9 +311,9 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
               }}
             >
               <Typography dangerouslySetInnerHTML={{ __html: field.description }} />
-              {field.required ? <Typography color="red"> &nbsp; (*Required)</Typography> : null}
+              {field.required ? <Typography color='red'> &nbsp; (*Required)</Typography> : null}
             </Box>
-            <FormControl component="fieldset">
+            <FormControl component='fieldset'>
               <RadioGroup aria-label={field.name} onChange={handleRadioFormDataChange} row name={field.name}>
                 {field.options.map((option: any) => (
                   <FormControlLabel key={option} value={option} control={<Radio />} label={option} />
@@ -312,7 +321,7 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
               </RadioGroup>
             </FormControl>
           </>
-        );
+        )
       case 'CHECKBOX':
         return (
           <>
@@ -323,7 +332,7 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
               }}
             >
               <Typography dangerouslySetInnerHTML={{ __html: field.description }} />
-              {field.required ? <Typography color="red"> &nbsp; (*Required)</Typography> : null}
+              {field.required ? <Typography color='red'> &nbsp; (*Required)</Typography> : null}
             </Box>
             {field.options.map((option: any) => (
               <FormControlLabel
@@ -336,7 +345,7 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
               />
             ))}
           </>
-        );
+        )
       case 'CONSENT_CHECKBOX':
         return (
           <>
@@ -348,7 +357,7 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
               }}
             >
               <Typography dangerouslySetInnerHTML={{ __html: field.description }} />
-              {field.required ? <Typography color="red"> &nbsp; (*Required)</Typography> : null}
+              {field.required ? <Typography color='red'> &nbsp; (*Required)</Typography> : null}
             </Box>
 
             {field.options.map((option: any) => (
@@ -362,40 +371,40 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
               />
             ))}
           </>
-        );
+        )
       case 'FILE':
         return (
           <>
             <Typography>{field.description}</Typography>
             <DocumentUpload fieldName={field.name} setDocumentFiles={setDocumentFiles} />
           </>
-        );
+        )
       case 'IMAGE':
         return (
           <>
             <Typography>{field.description}</Typography>
             <ImageUpload fieldName={field.name} setImageFiles={setImageFiles} />
           </>
-        );
+        )
       case 'VIDEO':
         return (
           <>
             <Typography>{field.description}</Typography>
             <VideoUpload fieldName={field.name} setVideoFiles={setVideoFiles} />
           </>
-        );
+        )
       default:
-        return null;
+        return null
     }
-  };
+  }
 
   const fetchFormTemplateById = async (id: string) => {
-    setIsFormTemplateFetching(true);
+    setIsFormTemplateFetching(true)
     try {
-      const res: GetFormTemplate_Out = await FormTemplatesService.getPublishedFormTemplate(id);
-      setFormLayout(res);
+      const res: GetFormTemplate_Out = await FormTemplatesService.getPublishedFormTemplate(id)
+      setFormLayout(res)
       // create form data object with empty values
-      const formDataObj: any = {};
+      const formDataObj: any = {}
       res?.field_groups
         ?.flatMap((fieldGroup: any) => fieldGroup.fields)
         .forEach((field: any) => {
@@ -403,25 +412,29 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
             value: '',
             label: field.label,
             type: field.type
-          };
-        });
-      setFormData(formDataObj);
+          }
+        })
+      console.log(res)
+      if (res?.organization_id === 'bec79956-4c54-401b-94e8-3a643668600d') {
+        import('./dtrf-style.css')
+      }
+      setFormData(formDataObj)
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
-    setIsFormTemplateFetching(false);
-  };
+    setIsFormTemplateFetching(false)
+  }
 
   const fetchFormTemplate = async () => {
-    setIsFormTemplateFetching(true);
+    setIsFormTemplateFetching(true)
     try {
-      const res: GetMultipleFormTemplate_Out = await FormTemplatesService.getAllFormTemplates();
-      const filteredData = res.templates.filter((formTemplate: any) => formTemplate.state === 'PUBLISHED');
-      setFormTemplates(filteredData);
-      const formTemplate = filteredData[0];
-      setFormLayout(formTemplate);
+      const res: GetMultipleFormTemplate_Out = await FormTemplatesService.getAllFormTemplates()
+      const filteredData = res.templates.filter((formTemplate: any) => formTemplate.state === 'PUBLISHED')
+      setFormTemplates(filteredData)
+      const formTemplate = filteredData[0]
+      setFormLayout(formTemplate)
       // create form data object with empty values
-      const formDataObj: any = {};
+      const formDataObj: any = {}
       formTemplate?.field_groups
         ?.flatMap((fieldGroup: any) => fieldGroup.fields)
         .forEach((field: any) => {
@@ -429,88 +442,91 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
             value: '',
             label: field.label,
             type: field.type
-          };
-        });
-      setFormData(formDataObj);
+          }
+        })
+      setFormData(formDataObj)
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
-    setIsFormTemplateFetching(false);
-  };
+    setIsFormTemplateFetching(false)
+  }
 
   useEffect(() => {
     // OPENAPI Base is being set here again as this file is also being accessed outside of the general layout.tsx in app dir. This was done in order to provide backward compatibility to the users who have deployed old public form link in their website
     OpenAPI.BASE = process.env.NEXT_PUBLIC_API_URL || ''
 
     if (params.id === undefined) {
-      fetchFormTemplate();
+      fetchFormTemplate()
     } else {
-      fetchFormTemplateById(params.id as string);
+      fetchFormTemplateById(params.id as string)
     }
 
-    const viewportMeta = document.createElement('meta');
-    viewportMeta.name = 'viewport';
-    viewportMeta.content = 'width=device-width, initial-scale=1';
-    document.head.appendChild(viewportMeta);
+    const viewportMeta = document.createElement('meta')
+    viewportMeta.name = 'viewport'
+    viewportMeta.content = 'width=device-width, initial-scale=1'
+    document.head.appendChild(viewportMeta)
 
     return () => {
-      document.head.removeChild(viewportMeta);
-    };
-  }, []);
+      document.head.removeChild(viewportMeta)
+    }
+  }, [])
 
   const handleSubmit = async (event: any) => {
-    event.preventDefault();
+    event.preventDefault()
 
-    const form: any = {};
+    const form: any = {}
 
-    const mediaUploadPromises: any[] = [];
+    const mediaUploadPromises: any[] = []
 
-    Object.keys(formData).forEach((key) => {
-      form[key] = formData[key];
-    });
+    Object.keys(formData).forEach(key => {
+      form[key] = formData[key]
+    })
 
     imageFiles?.forEach((imageFile: TImageFileUpload) => {
       form[imageFile.fieldName] = {
         value: [],
         label: imageFile.fieldName,
         type: 'IMAGE'
-      };
+      }
       imageFile.files.forEach((file: any) => {
-        mediaUploadPromises.push(handleMediaUpload(file.file, 'IMAGE', imageFile.fieldName));
-      });
-    });
+        mediaUploadPromises.push(handleMediaUpload(file.file, 'IMAGE', imageFile.fieldName))
+      })
+    })
 
     videoFiles?.forEach((videoFile: TDocumentFileUpload) => {
       form[videoFile.fieldName] = {
         value: [],
         label: videoFile.fieldName,
         type: 'VIDEO'
-      };
+      }
       videoFile.files.forEach((file: any) => {
-        mediaUploadPromises.push(handleMediaUpload(file.file, 'VIDEO', videoFile.fieldName));
-      });
-    });
+        mediaUploadPromises.push(handleMediaUpload(file.file, 'VIDEO', videoFile.fieldName))
+      })
+    })
 
     documentFiles?.forEach((documentFile: TDocumentFileUpload) => {
       form[documentFile.fieldName] = {
         value: [],
         label: documentFile.fieldName,
         type: 'FILE'
-      };
+      }
       documentFile.files.forEach((file: any) => {
-        mediaUploadPromises.push(handleMediaUpload(file.file, 'FILE', documentFile.fieldName));
-      });
-    });
+        mediaUploadPromises.push(handleMediaUpload(file.file, 'FILE', documentFile.fieldName))
+      })
+    })
 
     // check if all the required fields are present in the form and the values are not empty or if array then length is not 0
     const requiredFields = formLayout?.field_groups
       ?.flatMap((fieldGroup: any) => fieldGroup.fields)
-      .filter((field: any) => field.required && field.type !== 'IMAGE' && field.type !== 'VIDEO' && field.type !== 'FILE');
+      .filter(
+        (field: any) => field.required && field.type !== 'IMAGE' && field.type !== 'VIDEO' && field.type !== 'FILE'
+      )
 
     const requiredFieldsMissing = requiredFields?.filter(
       (requiredField: any) =>
-        !form[requiredField.name]?.value || (Array.isArray(form[requiredField.name]?.value) && form[requiredField.name]?.value.length === 0)
-    );
+        !form[requiredField.name]?.value ||
+        (Array.isArray(form[requiredField.name]?.value) && form[requiredField.name]?.value.length === 0)
+    )
 
     if (requiredFieldsMissing?.length) {
       // TODO
@@ -518,55 +534,56 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
       //   msg: 'Please fill all the required fields.',
       //   variant: 'error'
       // });
-      return;
+      return
     }
 
     try {
-      setUploading(true);
+      setUploading(true)
       if (mediaUploadPromises.length === 0) {
-        await new Promise((resolve) => setTimeout(resolve, 3000));
+        await new Promise(resolve => setTimeout(resolve, 3000))
       }
 
-      const mediaUploadResults = await Promise.all(mediaUploadPromises);
+      const mediaUploadResults = await Promise.all(mediaUploadPromises)
 
       mediaUploadResults.forEach((mediaUploadResult: any) => {
         form[mediaUploadResult.fieldName].value.push({
           id: mediaUploadResult.id,
           type: mediaUploadResult.fileType,
           name: mediaUploadResult.fileName
-        });
-      });
+        })
+      })
 
       await FormDataService.addFormData({
         form_template_id: formLayout?.id as string,
         values: form
-      });
+      })
       // TODO
       // sendNotification({
       //   msg: "Patient's story submitted successfully.",
       //   variant: 'success'
       // });
-      setUploaded(true);
+      setUploaded(true)
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error('Error submitting form:', error)
     }
-    setUploading(false);
-  };
+    setUploading(false)
+  }
 
   useEffect(() => {
     if (uploaded) {
       setTimeout(() => {
-        setUploaded(false);
-        window.location.reload();
-      }, 5000);
+        setUploaded(false)
+        window.location.reload()
+      }, 5000)
     }
-  }, [uploaded]);
+  }, [uploaded])
 
   const handleMediaUpload = async (file: any, type: string, fieldName: string) => {
-    const typeEnum = type === 'FILE' ? FormMediaTypes.FILE : type === 'IMAGE' ? FormMediaTypes.IMAGE : FormMediaTypes.VIDEO;
+    const typeEnum =
+      type === 'FILE' ? FormMediaTypes.FILE : type === 'IMAGE' ? FormMediaTypes.IMAGE : FormMediaTypes.VIDEO
 
-    const response = await FormDataService.getUploadUrl(typeEnum);
-    const { id, url } = response;
+    const response = await FormDataService.getUploadUrl(typeEnum)
+    const { id, url } = response
 
     const uploadResponse = await axios({
       method: 'PUT',
@@ -576,14 +593,14 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
         'x-ms-blob-type': 'BlockBlob',
         'Content-Type': file.type
       }
-    });
+    })
 
     if (!uploadResponse) {
-      throw new Error('Failed to upload media');
+      throw new Error('Failed to upload media')
     }
 
-    return { id, fieldName, fileType: file.type, fileName: file.name }; // or any other relevant data from the response
-  };
+    return { id, fieldName, fileType: file.type, fileName: file.name } // or any other relevant data from the response
+  }
 
   if (isFormTemplateFetching) {
     return (
@@ -597,24 +614,24 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
         }}
       >
         <CircularProgress />
-        <Typography variant="h6">Loading...</Typography>
+        <Typography variant='h6'>Loading...</Typography>
       </Box>
-    );
+    )
   }
 
-  const formPublicLink = window.location.origin + '/form/';
+  const formPublicLink = window.location.origin + '/form/'
 
   const TemplateSelector = () => {
     return (
       <Box className={styles.templateSelectorDiv}>
         <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
+          labelId='demo-simple-select-label'
+          id='demo-simple-select'
           value={formLayout?.id}
           onChange={(event: any) => {
-            const selectedFormTemplate = formTemplates?.find((template) => template.id === event.target.value);
-            setFormLayout(selectedFormTemplate);
-            const formDataObj: any = {};
+            const selectedFormTemplate = formTemplates?.find(template => template.id === event.target.value)
+            setFormLayout(selectedFormTemplate)
+            const formDataObj: any = {}
             selectedFormTemplate?.field_groups
               ?.flatMap((fieldGroup: any) => fieldGroup.fields)
               .forEach((field: any) => {
@@ -622,9 +639,9 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
                   value: '',
                   label: field.label,
                   type: field.type
-                };
-              });
-            setFormData(formDataObj);
+                }
+              })
+            setFormData(formDataObj)
           }}
           fullWidth
           sx={{
@@ -633,15 +650,15 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
             marginTop: '1rem'
           }}
         >
-          {formTemplates?.map((template) => (
+          {formTemplates?.map(template => (
             <MenuItem key={template.id} value={template.id}>
               {template.name}
             </MenuItem>
           ))}
         </Select>
       </Box>
-    );
-  };
+    )
+  }
 
   return (
     <Box className={styles.container}>
@@ -661,10 +678,10 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
             justifyContent: 'center'
           }}
         >
-          <Typography variant="h4" color="white">
+          <Typography variant='h4' color='white'>
             Uploading. Please wait ...
           </Typography>
-          <Typography variant="h5" color="white">
+          <Typography variant='h5' color='white'>
             It may take a while, kindly do not refresh the page.
           </Typography>
         </Box>
@@ -716,7 +733,7 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
           >
             <Typography>
               Form Public Link -{' '}
-              <a href={formPublicLink + formLayout?.id} target="_blank" rel="noreferrer">
+              <a href={formPublicLink + formLayout?.id} target='_blank' rel='noreferrer'>
                 {formPublicLink + formLayout?.id}
               </a>
             </Typography>
@@ -726,7 +743,7 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
                 cursor: 'pointer'
               }}
               onClick={() => {
-                navigator.clipboard.writeText(formPublicLink + formLayout?.id);
+                navigator.clipboard.writeText(formPublicLink + formLayout?.id)
                 toast.info('Copied Successfully')
                 // TODO
                 // sendNotification({
@@ -742,10 +759,10 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
               alignItems: 'center',
               justifyContent: 'space-between',
               width: '100%',
-              marginTop:'20px'
+              marginTop: '20px'
             }}
           >
-           <Typography>
+            <Typography>
               Form Embedded Code -{' '}
               <code>
                 {`<iframe
@@ -769,8 +786,8 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
                   width="100%"
                   height="500"
                   style="border:none;"
-                ></iframe>`;
-                navigator.clipboard.writeText(iframeCode);
+                ></iframe>`
+                navigator.clipboard.writeText(iframeCode)
                 toast.info('Copied Successfully')
               }}
             />
@@ -779,7 +796,7 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
       ) : null}
       {params.id !== undefined && formLayout?.logo && (
         <Box className={styles.logoContainer}>
-          <img src={formLayout?.logo} alt="logo" className={styles.logo} />
+          <img src={formLayout?.logo} alt='logo' className={styles.logo} />
         </Box>
       )}
       <Divider
@@ -791,9 +808,9 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
       <form onSubmit={handleSubmit}>
         <div>
           {formLayout?.field_groups?.map((field: any) => {
-            const nonPrivateFields = field.fields.filter((field: any) => !field.private);
+            const nonPrivateFields = field.fields.filter((field: any) => !field.private)
             if (nonPrivateFields.length === 0) {
-              return null;
+              return null
             }
             return (
               <Box
@@ -803,7 +820,7 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
                 }}
               >
                 <Typography
-                  variant="h5"
+                  variant='h5'
                   sx={{
                     marginBottom: '20px'
                   }}
@@ -825,17 +842,17 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
                   ))}
                 </Box>
               </Box>
-            );
+            )
           })}
         </div>
         {formLayout ? (
-          <Button type="submit" variant="contained" fullWidth>
+          <Button type='submit' variant='contained' fullWidth>
             Submit
           </Button>
         ) : null}
       </form>
     </Box>
-  );
-};
+  )
+}
 
-export default PatientStoryForm;
+export default PatientStoryForm

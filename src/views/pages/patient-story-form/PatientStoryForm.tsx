@@ -73,6 +73,7 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
   const [isFormTemplateFetching, setIsFormTemplateFetching] = useState<boolean>(false)
   const [selectedGender, setSelectedGender] = useState('')
   const [formTemplates, setFormTemplates] = useState<GetFormTemplate_Out[]>()
+  const [customStyle, setCustomStyle] = useState<string>('')
 
   // const [sendNotification] = useNotification();
 
@@ -418,6 +419,7 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
       if (res?.organization_id === 'bec79956-4c54-401b-94e8-3a643668600d') {
         // @ts-ignore
         import('./dtrf-style.css')
+        setCustomStyle('dtrf')
       }
       setFormData(formDataObj)
     } catch (err) {
@@ -847,7 +849,24 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
           })}
         </div>
         {formLayout ? (
-          <Button type='submit' variant='contained' fullWidth>
+          <Button
+            type='submit'
+            variant='contained'
+            onMouseOver={e => {
+              if (customStyle === 'dtrf') {
+                e.currentTarget.style.backgroundColor = '#008bab'
+                e.currentTarget.style.color = '#fff'
+              }
+            }}
+            onMouseOut={e => {
+              if (customStyle === 'dtrf') {
+                e.currentTarget.style.backgroundColor = '#004454'
+                e.currentTarget.style.color = '#ffbc00'
+              }
+            }}
+            style={customStyle == 'dtrf' ? { backgroundColor: '#004454', color: '#ffbc00', fontWeight: 'bold' } : {}}
+            fullWidth
+          >
             Submit
           </Button>
         ) : null}

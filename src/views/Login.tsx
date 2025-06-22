@@ -37,6 +37,7 @@ import { Router } from 'next/router'
 import { useDispatch } from 'react-redux'
 import { setToken } from '@/redux-store/slices/auth'
 import { useRouter } from 'next/navigation'
+import { toast } from 'react-toastify'
 
 export interface IEmailAndPassword {
   username: string
@@ -92,36 +93,24 @@ const Login: React.FC = () => {
   }
 
   const showInfoNotification = () => {
-    // sendNotification({
-    //   msg: 'Please contact your administrator',
-    //   variant: 'info'
-    // });
+    toast.info(`Please contact your administrator`)
   }
 
   async function forgotPassword() {
     const { username } = getValues()
     if (!username) {
-      // sendNotification({
-      //   msg: 'Email is empty',
-      //   variant: 'error'
-      // });
+      toast.error(`Fill in the email address in the email field to reset your password.`)
       return
     }
     sendPasswordResetEmail(auth, username)
       .then(() => {
-        // sendNotification({
-        //   msg: 'Password reset email sent',
-        //   variant: 'success'
-        // });
+        toast.success(`Password reset email sent to ${username}. Please check your inbox.`)
       })
       .catch(error => {
         const errorCode = error.code
         const errorMessage = error.message
         console.log(errorCode, errorMessage)
-        // sendNotification({
-        //   msg: 'Invalid email or password',
-        //   variant: 'error'
-        // });
+        toast.error(`Invalid email: ${username}. Please check your email address.`)
       })
   }
 

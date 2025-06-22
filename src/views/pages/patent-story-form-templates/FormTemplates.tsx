@@ -3,10 +3,11 @@
 import { FormTemplatesService, GetFormTemplate_Out } from '@/tallulah-ts-client'
 import styles from './FormTemplates.module.css'
 import { useEffect, useState } from 'react'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button, Typography, useRadioGroup } from '@mui/material'
 import AppStripedDataGrid from '@/components/AppStripedDataGrid'
 import { GridColDef } from '@mui/x-data-grid'
 import { useRouter } from 'next/navigation'
+import { set } from 'date-fns'
 // import { useNavigate } from 'react-router-dom';
 
 export interface IFormTemplates {
@@ -16,6 +17,16 @@ export interface IFormTemplates {
 const FormTemplates: React.FC<IFormTemplates> = () => {
   const [formTemplates, setFormTemplates] = useState<GetFormTemplate_Out[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [userId, setUserId] = useState<string>('')
+
+  // get logged in user data
+  useEffect(() => {
+    const user_info = localStorage.getItem('user_info')
+    if (user_info) {
+      const info = JSON.parse(user_info)
+      setUserId(info.id)
+    }
+  }, [])
 
   // const navigate = useNavigate();
 
@@ -91,6 +102,7 @@ const FormTemplates: React.FC<IFormTemplates> = () => {
             <Button
               variant='text'
               color='primary'
+              disabled={isLoading}
               onClick={async () => {
                 setIsLoading(true)
                 try {
@@ -105,6 +117,29 @@ const FormTemplates: React.FC<IFormTemplates> = () => {
               Publish
             </Button>
           )}
+          <Button
+            variant='text'
+            color='primary'
+            disabled={isLoading}
+            onClick={async () => {
+              setIsLoading(true)
+              try {
+                if (params.row.email_subscription && params.row.email_subscription.includes(userId)) {
+                  await FormTemplatesService.unsubscribeFormTemplate(params.row.id)
+                } else {
+                  await FormTemplatesService.subscribeFormTemplate(params.row.id)
+                }
+                fetchFormTemplates()
+              } catch (err) {
+                console.log(err)
+              }
+              setIsLoading(false)
+            }}
+          >
+            {params.row.email_subscription && params.row.email_subscription.includes(userId)
+              ? 'Unsubscribe'
+              : 'Subscribe'}
+          </Button>
         </Box>
       )
     }

@@ -532,11 +532,7 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
     )
 
     if (requiredFieldsMissing?.length) {
-      // TODO
-      // sendNotification({
-      //   msg: 'Please fill all the required fields.',
-      //   variant: 'error'
-      // });
+      toast.error('Please fill all the required fields.')
       return
     }
 
@@ -560,11 +556,7 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
         form_template_id: formLayout?.id as string,
         values: form
       })
-      // TODO
-      // sendNotification({
-      //   msg: "Patient's story submitted successfully.",
-      //   variant: 'success'
-      // });
+      toast.success("Patient's story submitted successfully.")
       setUploaded(true)
     } catch (error) {
       console.error('Error submitting form:', error)
@@ -572,14 +564,14 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
     setUploading(false)
   }
 
-  useEffect(() => {
-    if (uploaded) {
-      setTimeout(() => {
-        setUploaded(false)
-        window.location.reload()
-      }, 5000)
-    }
-  }, [uploaded])
+  // useEffect(() => {
+  //   if (uploaded) {
+  //     setTimeout(() => {
+  //       setUploaded(false)
+  //       window.location.reload()
+  //     }, 5000)
+  //   }
+  // }, [uploaded])
 
   const handleMediaUpload = async (file: any, type: string, fieldName: string) => {
     const typeEnum =
@@ -797,80 +789,88 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
           </Box>
         </Box>
       ) : null}
-      {params.id !== undefined && formLayout?.logo && (
-        <Box className={styles.logoContainer}>
-          <img src={formLayout?.logo} alt='logo' className={styles.logo} />
-        </Box>
-      )}
-      <Divider
-        sx={{
-          marginY: '10px',
-          width: '100%'
-        }}
-      />
-      <form onSubmit={handleSubmit}>
-        <div>
-          {formLayout?.field_groups?.map((field: any) => {
-            const nonPrivateFields = field.fields.filter((field: any) => !field.private)
-            if (nonPrivateFields.length === 0) {
-              return null
-            }
-            return (
-              <Box
-                key={field.name}
-                sx={{
-                  marginY: '30px'
-                }}
-              >
-                <Typography
-                  variant='h5'
-                  sx={{
-                    marginBottom: '20px'
-                  }}
-                >
-                  {field.description}
-                </Typography>
+      {!uploading && !uploaded && (
+        <>
+          {params.id !== undefined && formLayout?.logo && (
+            <Box className={styles.logoContainer}>
+              <img src={formLayout?.logo} alt='logo' className={styles.logo} />
+            </Box>
+          )}
 
-                <Box className={styles.gridContainer}>
-                  {field.fields.map((field: any) => (
-                    <Box
-                      key={field.name}
-                      className={`${styles.gridItem} ${spanFullWidth(field) ? styles.fullWidth : ''}`}
+          <Divider
+            sx={{
+              marginY: '10px',
+              width: '100%'
+            }}
+          />
+          <form onSubmit={handleSubmit}>
+            <div>
+              {formLayout?.field_groups?.map((field: any) => {
+                const nonPrivateFields = field.fields.filter((field: any) => !field.private)
+                if (nonPrivateFields.length === 0) {
+                  return null
+                }
+                return (
+                  <Box
+                    key={field.name}
+                    sx={{
+                      marginY: '30px'
+                    }}
+                  >
+                    <Typography
+                      variant='h5'
                       sx={{
-                        width: '100%'
+                        marginBottom: '20px'
                       }}
                     >
-                      {renderField(field)}
+                      {field.description}
+                    </Typography>
+
+                    <Box className={styles.gridContainer}>
+                      {field.fields.map((field: any) => (
+                        <Box
+                          key={field.name}
+                          className={`${styles.gridItem} ${spanFullWidth(field) ? styles.fullWidth : ''}`}
+                          sx={{
+                            width: '100%'
+                          }}
+                        >
+                          {renderField(field)}
+                        </Box>
+                      ))}
                     </Box>
-                  ))}
-                </Box>
-              </Box>
-            )
-          })}
-        </div>
-        {formLayout ? (
-          <Button
-            type='submit'
-            variant='contained'
-            onMouseOver={e => {
-              if (customStyle === 'dtrf') {
-                e.currentTarget.style.backgroundColor = '#008bab'
-                e.currentTarget.style.color = '#fff'
-              }
-            }}
-            onMouseOut={e => {
-              if (customStyle === 'dtrf') {
-                e.currentTarget.style.backgroundColor = '#004454'
-                e.currentTarget.style.color = '#ffbc00'
-              }
-            }}
-            style={customStyle == 'dtrf' ? { backgroundColor: '#004454', color: '#ffbc00', fontWeight: 'bold' } : {}}
-            fullWidth
-          >
-            Submit
-          </Button>
-        ) : null}
-      </form>
+                  </Box>
+                )
+              })}
+            </div>
+            {formLayout ? (
+              <Button
+                type='submit'
+                variant='contained'
+                disabled={uploading || uploaded}
+                onMouseOver={e => {
+                  if (customStyle === 'dtrf') {
+                    e.currentTarget.style.backgroundColor = '#008bab'
+                    e.currentTarget.style.color = '#fff'
+                  }
+                }}
+                onMouseOut={e => {
+                  if (customStyle === 'dtrf') {
+                    e.currentTarget.style.backgroundColor = '#004454'
+                    e.currentTarget.style.color = '#ffbc00'
+                  }
+                }}
+                style={
+                  customStyle == 'dtrf' ? { backgroundColor: '#004454', color: '#ffbc00', fontWeight: 'bold' } : {}
+                }
+                fullWidth
+              >
+                Submit
+              </Button>
+            ) : null}
+          </form>
+        </>
+      )}
     </Box>
   )
 }

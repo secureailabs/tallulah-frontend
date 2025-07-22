@@ -43,6 +43,40 @@ const Template0: React.FC<ICard> = ({ data }) => {
     return defValue
   }
 
+  function findClosestWholeValue(name: string, defValue: string, values: any): string {
+    const regex = new RegExp(`\\b${name}\\b`, 'i') // 'i' makes it case-insensitive
+    for (const key in values) {
+      // Find full word match
+      if (regex.test(key)) {
+        return values[key].value
+      }
+    }
+    return defValue
+  }
+
+  function findAge(values: any): string {
+    const ageValue = findClosestWholeValue('age', 'n/a', values)
+    if (ageValue != 'n/a') {
+      return ageValue
+    }
+    let birthDate = findClosestWholeValue('birth', '', values)
+    if (!birthDate || birthDate === 'n/a') {
+      birthDate = findClosestWholeValue('dob', '', values)
+    }
+
+    if (birthDate && birthDate !== 'n/a') {
+      const birthDateObj = new Date(birthDate)
+      const today = new Date()
+      let age = today.getFullYear() - birthDateObj.getFullYear()
+      const monthDiff = today.getMonth() - birthDateObj.getMonth()
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDateObj.getDate())) {
+        age--
+      }
+      return age.toString()
+    }
+    return 'n/a'
+  }
+
   return (
     <Box className={styles.container}>
       {/* Patient Details */}
@@ -52,7 +86,7 @@ const Template0: React.FC<ICard> = ({ data }) => {
             {findClosestValue('first', '', data.values ?? [])} {findClosestValue('last', '', data.values ?? [])}
           </Typography>
           <Typography variant='body1' className={styles.age}>
-            Age : {findClosestValue('age', 'n/a', data.values ?? [])} years
+            Age : {findAge(data.values ?? [])} years
             <Typography>Location : {findClosestValue('zip', 'n/a', data.values ?? [])}</Typography>
             <Typography>{findClosestValue('disease', '', data.values ?? [], 'Disease Type: ')}</Typography>
           </Typography>

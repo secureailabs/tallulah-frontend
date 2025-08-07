@@ -1,9 +1,14 @@
 'use client'
 
-import { useEffect, useState } from 'react';
-import { FormDataService, FormMediaTypes, FormTemplatesService, GetMultipleFormTemplate_Out } from '@/tallulah-ts-client';
-import styles from './PatientDetailEditModal.module.css';
-import CloseIcon from '@mui/icons-material/Close';
+import { useEffect, useState } from 'react'
+import {
+  FormDataService,
+  FormMediaTypes,
+  FormTemplatesService,
+  GetMultipleFormTemplate_Out
+} from '@/tallulah-ts-client'
+import styles from './PatientDetailEditModal.module.css'
+import CloseIcon from '@mui/icons-material/Close'
 import {
   TextField,
   FormControl,
@@ -19,18 +24,19 @@ import {
   Typography,
   CircularProgress,
   Modal
-} from '@mui/material';
-import { TMediaFileUpload } from '@/components/ImageEditComponent/ImageUpload';
-import ImageEditComponent from '@/components/ImageEditComponent';
-import { set } from 'react-hook-form';
-import axios from 'axios';
+} from '@mui/material'
+import { TMediaFileUpload } from '@/components/ImageEditComponent/ImageUpload'
+import ImageEditComponent from '@/components/ImageEditComponent'
+import { set } from 'react-hook-form'
+import axios from 'axios'
+import { toast } from 'react-toastify'
 
 export interface IPatientDetailEditModal {
-  openModal: boolean;
-  handleCloseModal: () => void;
-  data: any;
-  handleParentClose: () => void;
-  formDataId: string;
+  openModal: boolean
+  handleCloseModal: () => void
+  data: any
+  handleParentClose: (refresh: boolean) => void
+  formDataId: string
 }
 
 const PatientDetailEditModal: React.FC<IPatientDetailEditModal> = ({
@@ -40,47 +46,47 @@ const PatientDetailEditModal: React.FC<IPatientDetailEditModal> = ({
   formDataId,
   handleParentClose
 }) => {
-  const [formData, setFormData] = useState<any>({ ...data });
-  const [isLoading, setIsLoading] = useState(false);
-  const [privateFields, setPrivateFields] = useState<any>([]);
-  const [imageFiles, setImageFiles] = useState<TMediaFileUpload[]>([]);
-  const [savedPhotosList, setSavedPhotosList] = useState<any[]>([]);
-  const [newProfilePicture, setNewProfilePicture] = useState<any[]>([]);
-
+  const [formData, setFormData] = useState<any>({ ...data })
+  const [isLoading, setIsLoading] = useState(false)
+  const [privateFields, setPrivateFields] = useState<any>([])
+  const [imageFiles, setImageFiles] = useState<TMediaFileUpload[]>([])
+  const [savedPhotosList, setSavedPhotosList] = useState<any[]>([])
+  const [newProfilePicture, setNewProfilePicture] = useState<any[]>([])
 
   const getCorrespondingLabel = (fieldName: string) => {
-    const field = privateFields.find((field: any) => field?.name === fieldName);
-    return field?.label;
-  };
+    const field = privateFields.find((field: any) => field?.name === fieldName)
+    return field?.label
+  }
 
   const getCorrespondingType = (fieldName: string) => {
-    const field = privateFields.find((field: any) => field?.name === fieldName);
-    return field?.type;
-  };
+    const field = privateFields.find((field: any) => field?.name === fieldName)
+    return field?.type
+  }
 
   const handleFormDataChange = (event: any, privateField = false) => {
-    const name = event.target.name;
-    const value = event.target.value;
-    const newFormData = { ...formData };
+    const name = event.target.name
+    const value = event.target.value
+    const newFormData = { ...formData }
     if (name in newFormData) {
-      newFormData[name] = { ...newFormData[name], value: value };
+      newFormData[name] = { ...newFormData[name], value: value }
     } else {
       newFormData[name] = {
         value: value,
         type: getCorrespondingType(event.target.name),
         private: privateField,
         label: getCorrespondingLabel(event.target.name)
-      };
+      }
     }
 
-    setFormData(newFormData);
-  };
+    setFormData(newFormData)
+  }
 
   const handleMediaUpload = async (file: any, type: string, fieldName: string) => {
-    const typeEnum = type === 'FILE' ? FormMediaTypes.FILE : type === 'IMAGE' ? FormMediaTypes.IMAGE : FormMediaTypes.VIDEO;
+    const typeEnum =
+      type === 'FILE' ? FormMediaTypes.FILE : type === 'IMAGE' ? FormMediaTypes.IMAGE : FormMediaTypes.VIDEO
 
-    const response = await FormDataService.getUploadUrl(typeEnum);
-    const { id, url } = response;
+    const response = await FormDataService.getUploadUrl(typeEnum)
+    const { id, url } = response
 
     const uploadResponse = await axios({
       method: 'PUT',
@@ -90,90 +96,85 @@ const PatientDetailEditModal: React.FC<IPatientDetailEditModal> = ({
         'x-ms-blob-type': 'BlockBlob',
         'Content-Type': file.type
       }
-    });
+    })
 
     if (!uploadResponse) {
-      throw new Error('Failed to upload media');
+      throw new Error('Failed to upload media')
     }
 
-    return { id, fieldName, fileType: file.type, fileName: file.name }; // or any other relevant data from the response
-  };
+    return { id, fieldName, fileType: file.type, fileName: file.name } // or any other relevant data from the response
+  }
 
   const handleSubmit = async () => {
-    if (isLoading) return;
-    setIsLoading(true);
+    if (isLoading) return
+    setIsLoading(true)
 
-    const newFormData = { ...formData };
+    const newFormData = { ...formData }
     // check if there is a field named 'Images' in the form data
-    const isImagesFieldExist = Object.keys(newFormData).includes('photos');
+    const isImagesFieldExist = Object.keys(newFormData).includes('photos')
     if (isImagesFieldExist) {
-        // remove the 'Images' field from the form data
-        delete newFormData['photos'];
-        newFormData['photos'] = { value: savedPhotosList, type: 'IMAGE', label: 'Photos' };
-        const mediaUploadPromises: any[] = [];
+      // remove the 'Images' field from the form data
+      delete newFormData['photos']
+      newFormData['photos'] = { value: savedPhotosList, type: 'IMAGE', label: 'Photos' }
+      const mediaUploadPromises: any[] = []
 
-        imageFiles?.forEach((imageFile: any) => {
-          imageFile.files.forEach((file: any) => {
-            mediaUploadPromises.push(handleMediaUpload(file.file, 'IMAGE', imageFile.fieldName));
-          });
-        });
+      imageFiles?.forEach((imageFile: any) => {
+        imageFile.files.forEach((file: any) => {
+          mediaUploadPromises.push(handleMediaUpload(file.file, 'IMAGE', imageFile.fieldName))
+        })
+      })
 
-        // filter the
+      // filter the
 
-        const mediaUploadResults = await Promise.all(mediaUploadPromises);
+      const mediaUploadResults = await Promise.all(mediaUploadPromises)
 
-        mediaUploadResults.forEach((mediaUploadResult: any) => {
-          newFormData[mediaUploadResult.fieldName].value.push({
-            id: mediaUploadResult.id,
-            type: mediaUploadResult.fileType,
-            name: mediaUploadResult.fileName
-          });
-        });
+      mediaUploadResults.forEach((mediaUploadResult: any) => {
+        newFormData[mediaUploadResult.fieldName].value.push({
+          id: mediaUploadResult.id,
+          type: mediaUploadResult.fileType,
+          name: mediaUploadResult.fileName
+        })
+      })
     }
 
-    const isProfilePictureFieldExist = Object.keys(newFormData).includes('profilePicture');
+    const isProfilePictureFieldExist = Object.keys(newFormData).includes('profilePicture')
     if (isProfilePictureFieldExist && newProfilePicture.length > 0) {
-      delete newFormData['profilePicture'];
-      newFormData['profilePicture'] = { value: [], type: 'IMAGE', label: 'Profile Picture' };
-      const mediaUploadPromises: any[] = [];
+      delete newFormData['profilePicture']
+      newFormData['profilePicture'] = { value: [], type: 'IMAGE', label: 'Profile Picture' }
+      const mediaUploadPromises: any[] = []
 
       newProfilePicture?.forEach((imageFile: any) => {
         imageFile.files.forEach((file: any) => {
-          mediaUploadPromises.push(handleMediaUpload(file.file, 'IMAGE', 'profilePicture'));
-        });
-      });
+          mediaUploadPromises.push(handleMediaUpload(file.file, 'IMAGE', 'profilePicture'))
+        })
+      })
 
-      const mediaUploadResults = await Promise.all(mediaUploadPromises);
+      const mediaUploadResults = await Promise.all(mediaUploadPromises)
 
       mediaUploadResults.forEach((mediaUploadResult: any) => {
         newFormData['profilePicture'].value.push({
           id: mediaUploadResult.id,
           type: mediaUploadResult.fileType,
           name: mediaUploadResult.fileName
-        });
-      });
+        })
+      })
     }
-
 
     try {
-      await FormDataService.updateFormData(formDataId, { values: newFormData });
-      handleCloseModal();
-      handleParentClose();
+      await FormDataService.updateFormData(formDataId, { values: newFormData })
+      handleCloseModal()
+      handleParentClose(true)
     } catch (error) {
-      console.log(error);
-      // TODO
-      // sendNotification({
-      //   msg: 'Failed to edit story',
-      //   variant: 'error'
-      // });
+      console.log(error)
+      toast.error('Failed to edit story')
     }
-    setIsLoading(false);
-  };
+    setIsLoading(false)
+  }
 
   const handleRemovSavedPhoto = (photoId: string) => {
-    const newSavedPhotosList = savedPhotosList.filter((image) => image.id !== photoId);
-    setSavedPhotosList(newSavedPhotosList);
-  };
+    const newSavedPhotosList = savedPhotosList.filter(image => image.id !== photoId)
+    setSavedPhotosList(newSavedPhotosList)
+  }
 
   const renderField = (fieldName: any, field: any) => {
     switch (field.type) {
@@ -193,7 +194,7 @@ const PatientDetailEditModal: React.FC<IPatientDetailEditModal> = ({
               }}
             />
           </>
-        );
+        )
       case 'IMAGE':
         return (
           <Box
@@ -201,20 +202,27 @@ const PatientDetailEditModal: React.FC<IPatientDetailEditModal> = ({
               width: '100%'
             }}
           >
-            {fieldName === "profilePicture" ? (
-              <ImageEditComponent type="profilePicture" setImageFiles={setNewProfilePicture} imageFileIds={field.value} handleRemovePhoto={
-                (photoId: string) => {
-                  setNewProfilePicture([]);
-                }
-              } />
+            {fieldName === 'profilePicture' ? (
+              <ImageEditComponent
+                type='profilePicture'
+                setImageFiles={setNewProfilePicture}
+                imageFileIds={field.value}
+                handleRemovePhoto={(photoId: string) => {
+                  setNewProfilePicture([])
+                }}
+              />
             ) : (
-              <ImageEditComponent setImageFiles={setImageFiles} imageFileIds={savedPhotosList} handleRemovePhoto={handleRemovSavedPhoto} />
+              <ImageEditComponent
+                setImageFiles={setImageFiles}
+                imageFileIds={savedPhotosList}
+                handleRemovePhoto={handleRemovSavedPhoto}
+              />
             )}
           </Box>
-        );
+        )
       case 'FILE':
       case 'VIDEO':
-        return null;
+        return null
       default:
         return (
           <TextField
@@ -222,14 +230,14 @@ const PatientDetailEditModal: React.FC<IPatientDetailEditModal> = ({
             defaultValue={field.value}
             fullWidth
             className={styles.inputStyle}
-            type="text"
-            variant="outlined"
+            type='text'
+            variant='outlined'
             onChange={handleFormDataChange}
             label={field.label}
           />
-        );
+        )
     }
-  };
+  }
 
   const renderPrivateField = (field: any) => {
     switch (field.type) {
@@ -242,15 +250,15 @@ const PatientDetailEditModal: React.FC<IPatientDetailEditModal> = ({
             name={field.name}
             fullWidth
             className={styles.inputStyle}
-            type="text"
+            type='text'
             placeholder={field.place_holder}
             required={field.required}
-            variant="outlined"
-            onChange={(e) => handleFormDataChange(e, true)}
+            variant='outlined'
+            onChange={e => handleFormDataChange(e, true)}
             label={field.description}
             defaultValue={data[field.name]?.value}
           />
-        );
+        )
       case 'TEXTAREA':
         return (
           <>
@@ -262,18 +270,18 @@ const PatientDetailEditModal: React.FC<IPatientDetailEditModal> = ({
               rows={6}
               placeholder={field.place_holder}
               required={field.required}
-              onChange={(e) => handleFormDataChange(e, true)}
+              onChange={e => handleFormDataChange(e, true)}
               sx={{
                 width: '100%'
               }}
               defaultValue={data[field.name]?.value}
             />
           </>
-        );
+        )
       default:
-        return null;
+        return null
     }
-  };
+  }
 
   const renderEditablePrivateFields = (
     <Box>
@@ -287,36 +295,37 @@ const PatientDetailEditModal: React.FC<IPatientDetailEditModal> = ({
         </Box>
       ))}
     </Box>
-  );
+  )
 
   const fetchFormTemplate = async () => {
     try {
-      const res: GetMultipleFormTemplate_Out = await FormTemplatesService.getAllFormTemplates();
-      const filteredData = res.templates.filter((formTemplate: any) => formTemplate.state === 'PUBLISHED');
-      const formTemplate = filteredData[0];
-      const allFields = formTemplate?.field_groups?.flatMap((group: any) => group.fields);
-      const privateFields = allFields?.filter((field: any) => 'private' in field && field.private);
-      setPrivateFields(privateFields);
+      const res: GetMultipleFormTemplate_Out = await FormTemplatesService.getAllFormTemplates()
+      const filteredData = res.templates.filter((formTemplate: any) => formTemplate.state === 'PUBLISHED')
+      const formTemplate = filteredData[0]
+      const allFields = formTemplate?.field_groups?.flatMap((group: any) => group.fields)
+      const privateFields = allFields?.filter((field: any) => 'private' in field && field.private)
+      setPrivateFields(privateFields)
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
-  };
+  }
 
   const isPrivateField = (fieldName: string) => {
-    return privateFields.some((field: any) => field.name === fieldName);
-  };
+    return privateFields.some((field: any) => field.name === fieldName)
+  }
 
   useEffect(() => {
-    fetchFormTemplate();
-    try{
-      const savedPhotos:any = Object.entries(data).filter(([key, value]: [string,any]) => value.type === 'IMAGE' && key !== 'profilePicture');
-      const savedPhotosList = savedPhotos[0][1].value;
-      setSavedPhotosList(savedPhotosList);
+    fetchFormTemplate()
+    try {
+      const savedPhotos: any = Object.entries(data).filter(
+        ([key, value]: [string, any]) => value.type === 'IMAGE' && key !== 'profilePicture'
+      )
+      const savedPhotosList = savedPhotos[0][1].value
+      setSavedPhotosList(savedPhotosList)
+    } catch (err) {
+      console.log(err)
     }
-    catch(err){
-      console.log(err);
-    }
-  }, []);
+  }, [])
 
   return (
     <Modal open={openModal} onClose={handleCloseModal}>
@@ -352,7 +361,7 @@ const PatientDetailEditModal: React.FC<IPatientDetailEditModal> = ({
               width: '100%'
             }}
           >
-            <Typography variant="h4" sx={{ margin: '1rem', textAlign: 'center' }}>
+            <Typography variant='h4' sx={{ margin: '1rem', textAlign: 'center' }}>
               Edit Patient Story Details
             </Typography>
           </Box>
@@ -362,12 +371,12 @@ const PatientDetailEditModal: React.FC<IPatientDetailEditModal> = ({
             }}
           >
             {Object.entries(data).map((field: any) => {
-              if (isPrivateField(field[0])) return null;
+              if (isPrivateField(field[0])) return null
               return (
                 <Box key={field[1].name} sx={{ margin: '1rem' }}>
                   {renderField(field[0], field[1])}
                 </Box>
-              );
+              )
             })}
             {renderEditablePrivateFields}
           </Box>
@@ -397,13 +406,13 @@ const PatientDetailEditModal: React.FC<IPatientDetailEditModal> = ({
               <CircularProgress />
             </Box>
           )}
-          <Button variant="contained" color="primary" sx={{ margin: '1rem' }} fullWidth onClick={handleSubmit}>
+          <Button variant='contained' color='primary' sx={{ margin: '1rem' }} fullWidth onClick={handleSubmit}>
             Save
           </Button>
         </Box>
       </Box>
     </Modal>
-  );
-};
+  )
+}
 
-export default PatientDetailEditModal;
+export default PatientDetailEditModal

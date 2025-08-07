@@ -495,7 +495,12 @@ const PatientDetailViewModal: React.FC<IPatientDetailViewModal> = ({
           handleCloseModal={handleCloseEditModal}
           formDataId={data.id}
           data={data.values}
-          handleParentClose={handleCloseModal}
+          handleParentClose={(refresh: boolean) => {
+            handleCloseModal()
+            if (refresh) {
+              handleRefresh()
+            }
+          }}
         />
       </Box>
     </Modal>

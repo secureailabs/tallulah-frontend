@@ -119,7 +119,7 @@ const Template0: React.FC<ICard> = ({ data }) => {
       <Box className={styles.section1}>
         <Box>
           <Typography variant='body1' className={styles.label}>
-            Journey
+            {data.form_template_id == 'f48e03d0-8ed0-4c5d-b93e-71c48d5b5b94' ? 'Additional thoughts...' : 'Journey'}
           </Typography>
           <Typography
             variant='body1'
@@ -131,7 +131,9 @@ const Template0: React.FC<ICard> = ({ data }) => {
               WebkitLineClamp: 3
             }}
           >
-            {findClosestValue('story', 'n/a', data.values ?? [])}
+            {data.form_template_id == 'f48e03d0-8ed0-4c5d-b93e-71c48d5b5b94'
+              ? data.values['Additional thoughts...'].value
+              : findClosestValue('story', 'n/a', data.values ?? [])}
           </Typography>
         </Box>
       </Box>

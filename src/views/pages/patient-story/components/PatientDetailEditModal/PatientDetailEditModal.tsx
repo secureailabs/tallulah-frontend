@@ -37,6 +37,7 @@ export interface IPatientDetailEditModal {
   data: any
   handleParentClose: (refresh: boolean) => void
   formDataId: string
+  formTemplateId: string
 }
 
 const PatientDetailEditModal: React.FC<IPatientDetailEditModal> = ({
@@ -44,14 +45,27 @@ const PatientDetailEditModal: React.FC<IPatientDetailEditModal> = ({
   handleCloseModal,
   data,
   formDataId,
+  formTemplateId,
   handleParentClose
 }) => {
   const [formData, setFormData] = useState<any>({ ...data })
+  const [formTemplate, setFormTemplate] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [privateFields, setPrivateFields] = useState<any>([])
   const [imageFiles, setImageFiles] = useState<TMediaFileUpload[]>([])
   const [savedPhotosList, setSavedPhotosList] = useState<any[]>([])
   const [newProfilePicture, setNewProfilePicture] = useState<any[]>([])
+
+  useEffect(() => {
+    const fetchFormTemplate = async () => {
+      const template = await FormTemplatesService.getFormTemplate(formTemplateId)
+      setFormTemplate(template)
+    }
+
+    if (formTemplateId && !formTemplate) {
+      fetchFormTemplate()
+    }
+  }, [formTemplateId])
 
   const getCorrespondingLabel = (fieldName: string) => {
     const field = privateFields.find((field: any) => field?.name === fieldName)
@@ -79,6 +93,43 @@ const PatientDetailEditModal: React.FC<IPatientDetailEditModal> = ({
     }
 
     setFormData(newFormData)
+  }
+
+  const handleRadioFormDataChange = (event: any, privateField = false) => {
+    setFormData({
+      ...formData,
+      [event.target.name]: {
+        value: [event.target.value],
+        label: getCorrespondingLabel(event.target.name),
+        type: getCorrespondingType(event.target.name),
+        private: privateField
+      }
+    })
+  }
+
+  const handleCheckboxFormDataChange = (event: any, privateField = false) => {
+    const keyName = event.target.name
+    if (event.target.checked) {
+      setFormData({
+        ...formData,
+        [event.target.name]: {
+          value: [...(formData[keyName]?.value || []), event.target.value],
+          label: getCorrespondingLabel(keyName),
+          type: getCorrespondingType(keyName),
+          private: privateField
+        }
+      })
+    } else {
+      setFormData({
+        ...formData,
+        [event.target.name]: {
+          value: formData[keyName]?.value.filter((value: any) => value !== event.target.value),
+          label: getCorrespondingLabel(keyName),
+          type: getCorrespondingType(keyName),
+          private: privateField
+        }
+      })
+    }
   }
 
   const handleMediaUpload = async (file: any, type: string, fieldName: string) => {
@@ -171,12 +222,12 @@ const PatientDetailEditModal: React.FC<IPatientDetailEditModal> = ({
     setIsLoading(false)
   }
 
-  const handleRemovSavedPhoto = (photoId: string) => {
+  const handleRemoveSavedPhoto = (photoId: string) => {
     const newSavedPhotosList = savedPhotosList.filter(image => image.id !== photoId)
     setSavedPhotosList(newSavedPhotosList)
   }
 
-  const renderField = (fieldName: any, field: any) => {
+  /*const renderField = (fieldName: any, field: any) => {
     switch (field.type) {
       case 'TEXTAREA':
         return (
@@ -215,7 +266,209 @@ const PatientDetailEditModal: React.FC<IPatientDetailEditModal> = ({
               <ImageEditComponent
                 setImageFiles={setImageFiles}
                 imageFileIds={savedPhotosList}
-                handleRemovePhoto={handleRemovSavedPhoto}
+                handleRemovePhoto={handleRemoveSavedPhoto}
+              />
+            )}
+          </Box>
+        )
+      case 'FILE':
+      case 'VIDEO':
+        return null
+      default:
+        return (
+          <TextField
+            name={fieldName}
+            defaultValue={field.value}
+            fullWidth
+            className={styles.inputStyle}
+            type='text'
+            variant='outlined'
+            onChange={handleFormDataChange}
+            label={field.label}
+          />
+        )
+    }
+  }*/
+
+  const findTemplateField = (fieldName: string) => {
+    let field: any = null
+    for (const group in formTemplate?.field_groups) {
+      field = formTemplate?.field_groups[group]['fields'].find((field: any) => field.name === fieldName)
+      if (field) {
+        console.log('Found: ' + fieldName)
+        return field
+      }
+    }
+    return null
+  }
+
+  const renderField = (fieldName: any, field: any, privateField: boolean = false) => {
+    const templateField = findTemplateField(fieldName)
+    switch (field.type) {
+      case 'TEXTAREA':
+        return (
+          <>
+            <Typography>{field.label}</Typography>
+            <TextField
+              name={fieldName}
+              defaultValue={field.value}
+              fullWidth
+              multiline
+              rows={6}
+              onChange={e => handleFormDataChange(e, privateField)}
+              sx={{
+                width: '100%'
+              }}
+            />
+          </>
+        )
+      case 'NUMBER':
+        return (
+          <TextField
+            name={fieldName}
+            defaultValue={field.value}
+            fullWidth
+            type='number'
+            variant='outlined'
+            onChange={e => handleFormDataChange(e, privateField)}
+            label={field.label}
+          />
+        )
+      case 'DATE':
+        return (
+          <TextField
+            name={fieldName}
+            defaultValue={field.value}
+            fullWidth
+            type='date'
+            variant='outlined'
+            onChange={e => handleFormDataChange(e, privateField)}
+            label={field.label}
+            InputLabelProps={{ shrink: true }}
+          />
+        )
+      case 'TIME':
+        return (
+          <TextField
+            name={fieldName}
+            defaultValue={field.value}
+            fullWidth
+            type='time'
+            variant='outlined'
+            onChange={e => handleFormDataChange(e, privateField)}
+            label={field.label}
+            InputLabelProps={{ shrink: true }}
+          />
+        )
+      case 'DATETIME':
+        return (
+          <TextField
+            name={fieldName}
+            defaultValue={field.value}
+            fullWidth
+            type='datetime-local'
+            variant='outlined'
+            onChange={e => handleFormDataChange(e, privateField)}
+            label={field.label}
+            InputLabelProps={{ shrink: true }}
+          />
+        )
+      case 'SELECT':
+        return (
+          <FormControl fullWidth>
+            <InputLabel
+              id={field.label}
+              sx={{
+                backgroundColor: 'white',
+                paddingX: '5px'
+              }}
+            >
+              {field.label}
+            </InputLabel>
+            <Select
+              onChange={e => handleFormDataChange(e, privateField)}
+              labelId={field.label}
+              name={fieldName}
+              defaultValue={field.value}
+            >
+              {templateField?.options.map((option: any) => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        )
+      case 'RADIO':
+        return (
+          <>
+            <Box
+              sx={{
+                display: 'flex',
+                width: '100%'
+              }}
+            >
+              <Typography>{field.label}</Typography>
+            </Box>
+            <FormControl component='fieldset'>
+              <RadioGroup
+                aria-label={fieldName}
+                onChange={e => handleRadioFormDataChange(e, privateField)}
+                row
+                name={fieldName}
+                defaultValue={field.value}
+              >
+                {templateField?.options.map((option: any) => (
+                  <FormControlLabel key={option} value={option} control={<Radio />} label={option} />
+                ))}
+              </RadioGroup>
+            </FormControl>
+          </>
+        )
+      case 'CHECKBOX':
+        return (
+          <>
+            <Box
+              sx={{
+                display: 'flex',
+                width: '100%'
+              }}
+            >
+              <Typography>{field.label}</Typography>
+            </Box>
+            {templateField?.options.map((option: any) => (
+              <FormControlLabel
+                key={option}
+                control={<Checkbox />}
+                label={option}
+                onChange={e => handleCheckboxFormDataChange(e, privateField)}
+                name={fieldName}
+                value={option}
+              />
+            ))}
+          </>
+        )
+      case 'IMAGE':
+        return (
+          <Box
+            sx={{
+              width: '100%'
+            }}
+          >
+            {fieldName === 'profilePicture' ? (
+              <ImageEditComponent
+                type='profilePicture'
+                setImageFiles={setNewProfilePicture}
+                imageFileIds={field.value}
+                handleRemovePhoto={(photoId: string) => {
+                  setNewProfilePicture([])
+                }}
+              />
+            ) : (
+              <ImageEditComponent
+                setImageFiles={setImageFiles}
+                imageFileIds={savedPhotosList}
+                handleRemovePhoto={handleRemoveSavedPhoto}
               />
             )}
           </Box>

@@ -494,6 +494,7 @@ const PatientDetailViewModal: React.FC<IPatientDetailViewModal> = ({
           openModal={showEditModal}
           handleCloseModal={handleCloseEditModal}
           formDataId={data.id}
+          formTemplateId={data.form_template_id}
           data={data.values}
           handleParentClose={(refresh: boolean) => {
             handleCloseModal()

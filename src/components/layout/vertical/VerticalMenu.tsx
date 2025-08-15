@@ -96,7 +96,7 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
           {/* <MenuItem href={`/${locale}/dashboards/logistics`} icon={<i className='tabler-calendar' />}>
             Dashboard
           </MenuItem> */}
-          {organization == 'Array Insights' && (
+          {(organization == 'Array Insights' || organization == 'Saturn Sanofi') && (
             <MenuItem href={`/${locale}/dashboards/cro-pr`} icon={<i className='tabler-user-pentagon' />}>
               CRO / PR Dashboard
             </MenuItem>

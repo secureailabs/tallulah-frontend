@@ -137,7 +137,9 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
           </MenuSection>
         )}
 
-        {(organization == 'Array Insights' || organization == 'United Mitochondrial Disease Foundation') && (
+        {(organization == 'Array Insights' ||
+          organization == 'United Mitochondrial Disease Foundation' ||
+          organization == 'Undiagnosed Diseases Network Foundation') && (
           <MenuSection label='Content Generation'>
             <SubMenu label='Content Generation' icon={<i className='tabler-message-chatbot' />}>
               <MenuItem href={`/${locale}/content-generation`}>Content Generation</MenuItem>

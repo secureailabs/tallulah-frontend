@@ -38,6 +38,99 @@ import { MongoChart, MongoDashboard } from '@/views/dashboards/MongoCharts'
 const projectList = [
   {
     id: 1,
+    title: 'Diabetes Study',
+    subtitle: 'Diet Survey',
+    leader: 'Keni, Sanofi',
+    avatar: '/images/logos/react-bg.png',
+    avatarGroup: ['/images/avatars/1.png', '/images/avatars/2.png', '/images/avatars/3.png', '/images/avatars/4.png'],
+    status: 78
+  },
+  {
+    id: 2,
+    leader: 'Owen, Merck',
+    title: 'Exercise and Asthma',
+    subtitle: '',
+    avatar: '/images/logos/figma-bg.png',
+    avatarGroup: ['/images/avatars/5.png', '/images/avatars/6.png'],
+    status: 18
+  },
+  {
+    id: 3,
+    title: 'Mitochondrial',
+    subtitle: 'Disease Panel',
+    leader: 'Keith',
+    avatar: '/images/logos/vue-bg.png',
+    avatarGroup: ['/images/avatars/7.png', '/images/avatars/8.png', '/images/avatars/1.png', '/images/avatars/2.png'],
+    status: 62
+  },
+  {
+    id: 4,
+    title: 'Heart Disease',
+    subtitle: 'Survey',
+    leader: 'Merline',
+    avatar: '/images/icons/mobile-bg.png',
+    avatarGroup: ['/images/avatars/3.png', '/images/avatars/4.png', '/images/avatars/5.png', '/images/avatars/6.png'],
+    status: 8
+  },
+  {
+    id: 5,
+    leader: 'Harmonia',
+    title: 'Diabetes Registry',
+    subtitle: 'Screening',
+    avatar: '/images/logos/python-bg.png',
+    avatarGroup: ['/images/avatars/7.png', '/images/avatars/8.png', '/images/avatars/1.png'],
+    status: 36
+  },
+  {
+    id: 6,
+    leader: 'Allyson',
+    title: 'Blockchain Website',
+    subtitle: 'Sketch Project',
+    avatar: '/images/logos/sketch-bg.png',
+    avatarGroup: ['/images/avatars/2.png', '/images/avatars/3.png', '/images/avatars/4.png', '/images/avatars/5.png'],
+    status: 92
+  },
+  {
+    id: 7,
+    title: 'Hoffman Website',
+    subtitle: 'HTML Project',
+    leader: 'Georgie',
+    avatar: '/images/logos/html-bg.png',
+    avatarGroup: ['/images/avatars/6.png', '/images/avatars/7.png', '/images/avatars/8.png', '/images/avatars/1.png'],
+    status: 88
+  },
+  {
+    id: 8,
+    title: 'eCommerce Website',
+    subtitle: 'React Project',
+    leader: 'Eileen',
+    avatar: '/images/logos/react-bg.png',
+    avatarGroup: ['/images/avatars/1.png', '/images/avatars/2.png', '/images/avatars/3.png', '/images/avatars/4.png'],
+    status: 78
+  },
+  {
+    id: 9,
+    leader: 'Owen',
+    title: 'Retro Logo Design',
+    subtitle: 'Figma Project',
+    avatar: '/images/logos/figma-bg.png',
+    avatarGroup: ['/images/avatars/5.png', '/images/avatars/6.png'],
+    status: 18
+  },
+  {
+    id: 10,
+    title: 'Admin Dashboard',
+    subtitle: 'VueJs Project',
+    leader: 'Keith',
+    avatar: '/images/logos/vue-bg.png',
+    avatarGroup: ['/images/avatars/7.png', '/images/avatars/8.png', '/images/avatars/1.png', '/images/avatars/2.png'],
+    status: 62
+  }
+]
+
+const projectListOld = [
+  {
+    id: 1,
     title: 'Breast Cancer',
     subtitle: 'Clinical Trial',
     leader: 'Eileen',
@@ -171,19 +264,19 @@ const DiagnosisAgeCard = (props: any) => {
 
   const data: DataType[] = [
     {
-      disease: 'Breast Cancer',
+      disease: 'Diabetes',
       age: 52,
       avatarIcon: 'tabler-users',
       avatarColor: 'success'
     },
     {
-      disease: 'Lung Cancer',
+      disease: 'Asthma',
       age: 63,
       avatarIcon: 'tabler-users',
       avatarColor: 'primary'
     },
     {
-      disease: 'Prostate Cancer',
+      disease: 'Breast Cancer',
       age: 68,
       avatarIcon: 'tabler-users',
       avatarColor: 'warning'
@@ -342,21 +435,21 @@ const TopDiagnosesCard = (props: any) => {
 
   const data: DataType[] = [
     {
-      disease: 'Breast Cancer',
+      disease: 'Diabetes',
       patients: 103142,
       percentage: 34.9,
       avatarIcon: 'tabler-users',
       avatarColor: 'success'
     },
     {
-      disease: 'Lung Cancer',
+      disease: 'Asthma',
       patients: 58734,
       percentage: 19.9,
       avatarIcon: 'tabler-users',
       avatarColor: 'primary'
     },
     {
-      disease: 'Prostate Cancer',
+      disease: 'Breast Cancer',
       patients: 43032,
       percentage: 14.6,
       avatarIcon: 'tabler-users',
@@ -630,6 +723,26 @@ const CroPrDashboard = () => {
     {
       coordinates: [37.7575973, -122.5934864],
       mag: 90
+    },
+    {
+      coordinates: [-32.004051365793835, 115.89147646170217],
+      mag: 75
+    },
+    {
+      coordinates: [-12.958207003332209, 130.62547970430714],
+      mag: 40
+    },
+    {
+      coordinates: [-16.95119801220686, 145.49064987861618],
+      mag: 60
+    },
+    {
+      coordinates: [-33.88998401520078, 151.06523711505199],
+      mag: 90
+    },
+    {
+      coordinates: [-37.77466516992534, 144.97806088007516],
+      mag: 110
     }
   ]
 

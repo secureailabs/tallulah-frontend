@@ -89,6 +89,8 @@ const PatientStory: React.FC<IPatientStory> = ({}) => {
   const [sortDirection, setSortDirection] = useState<number>(-1)
   const [formDataLocation, setFormDataLocation] = useState<FormDataLocation[]>([])
   const [filterHasVideo, setFilterHasVideo] = useState<boolean | null>(null)
+  const [page, setPage] = useState<number>(0)
+  const [showNext, setShowNext] = useState<boolean>(true)
 
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const templateNameString = formTemplate?.card_layout?.name || 'TEMPLATE0'
@@ -119,12 +121,12 @@ const PatientStory: React.FC<IPatientStory> = ({}) => {
     return videoField?.name || ''
   }
 
-  const fetchFormData = async (formId: string) => {
+  const fetchFormData = async (formId: string, page: number = 0) => {
     setIsFormDataFetching(true)
 
     try {
       const filterFormTemplateId = formId
-      const filterSkip = 0
+      const filterSkip = page * 200
       const filterLimit = 200
       const filterSortKey = sortKey
       const filterSortDirection = sortDirection
@@ -143,8 +145,19 @@ const PatientStory: React.FC<IPatientStory> = ({}) => {
         filterRequestBody
       )
 
-      setFormData(res.form_data)
-      setFilteredData(res.form_data)
+      if (res.form_data.length < filterLimit) {
+        setShowNext(false)
+      } else {
+        setShowNext(true)
+      }
+
+      if (page > 0) {
+        setFormData([...formData, ...res.form_data])
+        setFilteredData([...filteredData, ...res.form_data])
+      } else {
+        setFormData(res.form_data)
+        setFilteredData(res.form_data)
+      }
     } catch (err) {
       console.log(err)
     }
@@ -273,6 +286,7 @@ const PatientStory: React.FC<IPatientStory> = ({}) => {
 
             // clear filters
             setSelectedFilter({})
+            setPage(0)
           }}
           fullWidth
           sx={{
@@ -461,6 +475,24 @@ const PatientStory: React.FC<IPatientStory> = ({}) => {
             </Grid>
           ))}
         </Grid>
+        {showNext && !isFormDataFetching ? (
+          <Grid container justifyContent='flex-end'>
+            <Button
+              variant='contained'
+              color='primary'
+              sx={{
+                marginTop: '1rem',
+                marginBottom: '2rem'
+              }}
+              onClick={() => {
+                fetchFormData(selectedTemplateId, page + 1)
+                setPage(page + 1)
+              }}
+            >
+              Show More
+            </Button>
+          </Grid>
+        ) : null}
         {selectedPatientData ? (
           <PatientDetailViewModal
             openModal={openModal}

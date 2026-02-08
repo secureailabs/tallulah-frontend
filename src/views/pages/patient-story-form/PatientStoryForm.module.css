@@ -6,6 +6,11 @@
 .inputStyle {
 }
 
+.sigStyle {
+  font-family: 'Priestacy', cursive;
+  font-size: 24px;
+}
+
 .gridContainer {
   display: grid;
   grid-template-columns: minmax(200px, 1fr) minmax(200px, 1fr);
@@ -19,8 +24,8 @@
 }
 
 .logo {
-  width: 100px;
-  height: 100px;
+  inline-size: 100px;
+  block-size: 100px;
 }
 
 .logoContainer {

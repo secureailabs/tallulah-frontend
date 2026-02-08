@@ -1,10 +1,10 @@
 .container {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
   transform: translate(-50%, -50%);
-  width: 1000px;
-  height: 700px;
+  inline-size: 1000px;
+  block-size: 700px;
   background-color: white;
   border-radius: 10px;
   box-shadow: 0 15px 25px rgba(0, 0, 0, 0.5);
@@ -25,43 +25,42 @@
 }
 
 .profileImage {
-  width: 100px;
-  height: 100px;
+  inline-size: 100px;
+  block-size: 100px;
   border-radius: 50%;
   object-fit: cover;
-  margin-right: 10px;
+  margin-inline-end: 10px;
 }
 
 .image {
-  width: 100px;
-  height: 100px;
+  inline-size: 100px;
+  block-size: 100px;
   object-fit: cover;
-  margin-top: 3px;
-  margin-bottom: 3px;
+  margin-block: 3px;
 }
 
 .video {
-  width: 200px;
-  height: 100px;
+  inline-size: 200px;
+  block-size: 100px;
   object-fit: cover;
 }
 
 .section1 {
-  margin-top: 30px;
+  margin-block-start: 30px;
 }
 
 .section2 {
-  margin-top: 30px;
-  margin-bottom: 30px;
+  margin-block: 30px;
 }
 
 .tag {
   background-color: #fcc69a;
   border-radius: 20px;
-  padding: 5px 10px;
+  padding-block: 5px;
+  padding-inline: 10px;
   font-size: 12px;
   font-weight: 400;
-  margin-right: 10px;
+  margin-inline-end: 10px;
 }
 
 .label {
@@ -76,7 +75,12 @@
 }
 
 .mediaImage {
-  width: 80px;
-  height: 80px;
+  inline-size: 80px;
+  block-size: 80px;
   object-fit: cover;
+}
+
+.sigStyle {
+  font-family: 'Priestacy', serif;
+  font-size: 24px;
 }

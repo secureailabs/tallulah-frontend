@@ -96,8 +96,6 @@ const PatientStory: React.FC<IPatientStory> = ({}) => {
   const templateNameString = formTemplate?.card_layout?.name || 'TEMPLATE0'
   const templateNameEnum = TemplateNames[templateNameString as keyof typeof TemplateNames]
 
-  console.log('test')
-
   const getFilterObjects = () => {
     const fields = formTemplate?.field_groups?.flatMap(fieldGroup => fieldGroup.fields)
     const filterObject: PatientStoryFilter[] = []

@@ -165,6 +165,20 @@ const PatientStoryForm: React.FC<IPatientStoryForm> = ({}) => {
             label={field.description}
           />
         )
+      case 'SIG':
+        return (
+          <TextField
+            name={field.name}
+            fullWidth
+            type='text'
+            placeholder={field.place_holder}
+            required={field.required}
+            variant='outlined'
+            onChange={handleFormDataChange}
+            label={field.description}
+            inputProps={{ className: styles.sigStyle, style: { fontFamily: "'Priestacy', cursive", fontSize: '24px' } }}
+          />
+        )
       case 'NUMBER':
         return (
           <TextField

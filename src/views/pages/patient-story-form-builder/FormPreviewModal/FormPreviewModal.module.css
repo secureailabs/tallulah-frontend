@@ -6,3 +6,8 @@
   grid-template-columns: minmax(200px, 1fr) minmax(200px, 1fr);
   gap: 15px; /* Adjust the gap between grid items */
 }
+
+.sigStyle {
+  font-family: 'Priestacy', cursive;
+  font-size: 24px;
+}

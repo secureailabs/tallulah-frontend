@@ -12,20 +12,20 @@ import {
   Select,
   TextField,
   Typography
-} from '@mui/material';
-import styles from './FormPreviewModal.module.css';
-import CloseIcon from '@mui/icons-material/Close';
+} from '@mui/material'
+import styles from './FormPreviewModal.module.css'
+import CloseIcon from '@mui/icons-material/Close'
 
 export interface IFormPreviewModal {
-  openModal: boolean;
-  handleCloseModal: () => void;
-  form: any;
+  openModal: boolean
+  handleCloseModal: () => void
+  form: any
 }
 
 const spanFullWidth = (field: any) => {
-  const fullWidthTypes = ['TEXTAREA', 'FILE', 'IMAGE', 'VIDEO', 'CHECKBOX', 'RADIO', 'CONSENT_CHECKBOX'];
-  return fullWidthTypes.includes(field.type);
-};
+  const fullWidthTypes = ['TEXTAREA', 'FILE', 'IMAGE', 'VIDEO', 'CHECKBOX', 'RADIO', 'CONSENT_CHECKBOX']
+  return fullWidthTypes.includes(field.type)
+}
 
 const FormPreviewModal: React.FC<IFormPreviewModal> = ({ openModal, handleCloseModal, form }) => {
   const renderField = (field: any) => {
@@ -39,60 +39,73 @@ const FormPreviewModal: React.FC<IFormPreviewModal> = ({ openModal, handleCloseM
             name={field.name}
             fullWidth
             className={styles.inputStyle}
-            type="text"
+            type='text'
             placeholder={field.place_holder}
             required={field.required}
-            variant="outlined"
+            variant='outlined'
             label={field.description}
           />
-        );
+        )
+      case 'SIG':
+        return (
+          <TextField
+            name={field.name}
+            fullWidth
+            className={styles.sigStyle}
+            type='text'
+            placeholder={field.place_holder}
+            required={field.required}
+            variant='outlined'
+            label={field.description}
+          />
+        )
       case 'NUMBER':
         return (
           <TextField
             name={field.name}
             fullWidth
-            type="number"
+            type='number'
             placeholder={field.place_holder}
             required={field.required}
-            variant="outlined"
+            variant='outlined'
             label={field.description}
           />
-        );
+        )
       case 'DATE':
         return (
           <TextField
             name={field.name}
             fullWidth
-            type="date"
+            type='date'
             required={field.required}
-            variant="outlined"
+            variant='outlined'
             label={field.description}
             InputLabelProps={{ shrink: true }}
           />
-        );
+        )
       case 'TIME':
         return (
           <TextField
             name={field.name}
             fullWidth
-            type="time"
+            type='time'
             required={field.required}
-            variant="outlined"
+            variant='outlined'
             label={field.description}
             InputLabelProps={{ shrink: true }}
           />
-        );
+        )
       case 'DATETIME':
         return (
           <TextField
             fullWidth
-            type="datetime-local"
+            type='datetime-local'
             required={field.required}
-            variant="outlined"
+            variant='outlined'
             label={field.description}
             InputLabelProps={{ shrink: true }}
           />
-        );
+        )
       case 'TEXTAREA':
         return (
           <>
@@ -109,7 +122,7 @@ const FormPreviewModal: React.FC<IFormPreviewModal> = ({ openModal, handleCloseM
               }}
             />
           </>
-        );
+        )
       case 'SELECT':
         if (field.name === 'gender') {
           return (
@@ -131,7 +144,7 @@ const FormPreviewModal: React.FC<IFormPreviewModal> = ({ openModal, handleCloseM
                 ))}
               </Select>
             </FormControl>
-          );
+          )
         } else {
           return (
             <FormControl fullWidth>
@@ -152,7 +165,7 @@ const FormPreviewModal: React.FC<IFormPreviewModal> = ({ openModal, handleCloseM
                 ))}
               </Select>
             </FormControl>
-          );
+          )
         }
       case 'RADIO':
         return (
@@ -164,9 +177,9 @@ const FormPreviewModal: React.FC<IFormPreviewModal> = ({ openModal, handleCloseM
               }}
             >
               <Typography dangerouslySetInnerHTML={{ __html: field.description }} />
-              {field.required ? <Typography color="red"> &nbsp; (*Required)</Typography> : null}
+              {field.required ? <Typography color='red'> &nbsp; (*Required)</Typography> : null}
             </Box>
-            <FormControl component="fieldset">
+            <FormControl component='fieldset'>
               <RadioGroup aria-label={field.name} row name={field.name}>
                 {field.options.map((option: any) => (
                   <FormControlLabel key={option} value={option} control={<Radio />} label={option} />
@@ -174,7 +187,7 @@ const FormPreviewModal: React.FC<IFormPreviewModal> = ({ openModal, handleCloseM
               </RadioGroup>
             </FormControl>
           </>
-        );
+        )
       case 'CHECKBOX':
         return (
           <>
@@ -185,13 +198,13 @@ const FormPreviewModal: React.FC<IFormPreviewModal> = ({ openModal, handleCloseM
               }}
             >
               <Typography dangerouslySetInnerHTML={{ __html: field.description }} />
-              {field.required ? <Typography color="red"> &nbsp; (*Required)</Typography> : null}
+              {field.required ? <Typography color='red'> &nbsp; (*Required)</Typography> : null}
             </Box>
             {field.options.map((option: any) => (
               <FormControlLabel key={option} control={<Checkbox />} label={option} name={field.name} value={option} />
             ))}
           </>
-        );
+        )
       case 'CONSENT_CHECKBOX':
         return (
           <>
@@ -203,18 +216,18 @@ const FormPreviewModal: React.FC<IFormPreviewModal> = ({ openModal, handleCloseM
               }}
             >
               <Typography dangerouslySetInnerHTML={{ __html: field.description }} />
-              {field.required ? <Typography color="red"> &nbsp; (*Required)</Typography> : null}
+              {field.required ? <Typography color='red'> &nbsp; (*Required)</Typography> : null}
             </Box>
 
             {field.options.map((option: any) => (
               <FormControlLabel key={option} control={<Checkbox />} label={option} name={field.name} value={option} />
             ))}
           </>
-        );
+        )
       default:
-        return null;
+        return null
     }
-  };
+  }
 
   const renderModalCardHeader = (
     <Box
@@ -233,7 +246,7 @@ const FormPreviewModal: React.FC<IFormPreviewModal> = ({ openModal, handleCloseM
         }}
       />
     </Box>
-  );
+  )
 
   return (
     <Modal open={openModal} onClose={handleCloseModal}>
@@ -257,9 +270,9 @@ const FormPreviewModal: React.FC<IFormPreviewModal> = ({ openModal, handleCloseM
           }}
         >
           {form?.field_groups?.map((field: any) => {
-            const nonPrivateFields = field.fields.filter((field: any) => !field.private);
+            const nonPrivateFields = field.fields.filter((field: any) => !field.private)
             if (nonPrivateFields.length === 0) {
-              return null;
+              return null
             }
             return (
               <Box
@@ -269,7 +282,7 @@ const FormPreviewModal: React.FC<IFormPreviewModal> = ({ openModal, handleCloseM
                 }}
               >
                 <Typography
-                  variant="h5"
+                  variant='h5'
                   sx={{
                     marginBottom: '20px'
                   }}
@@ -291,15 +304,15 @@ const FormPreviewModal: React.FC<IFormPreviewModal> = ({ openModal, handleCloseM
                   ))}
                 </Box>
               </Box>
-            );
+            )
           })}
-          <Button type="submit" variant="contained" fullWidth>
+          <Button type='submit' variant='contained' fullWidth>
             Submit
           </Button>
         </Box>
       </Box>
     </Modal>
-  );
-};
+  )
+}
 
-export default FormPreviewModal;
+export default FormPreviewModal

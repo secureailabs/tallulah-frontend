@@ -493,13 +493,26 @@ const PatientDetailEditModal: React.FC<IPatientDetailEditModal> = ({
       case 'FILE':
       case 'VIDEO':
         return null
+      case 'SIG':
+        return (
+          <TextField
+            name={fieldName}
+            defaultValue={field.value}
+            fullWidth
+            type='text'
+            variant='outlined'
+            onChange={handleFormDataChange}
+            label={field.label}
+            inputProps={{ className: styles.sigField, style: { fontFamily: "'Priestacy', cursive" } }}
+          />
+        )
       default:
         return (
           <TextField
             name={fieldName}
             defaultValue={field.value}
             fullWidth
-            className={styles.inputStyle}
+            className={styles.sigField}
             type='text'
             variant='outlined'
             onChange={handleFormDataChange}
@@ -520,6 +533,21 @@ const PatientDetailEditModal: React.FC<IPatientDetailEditModal> = ({
             name={field.name}
             fullWidth
             className={styles.inputStyle}
+            type='text'
+            placeholder={field.place_holder}
+            required={field.required}
+            variant='outlined'
+            onChange={e => handleFormDataChange(e, true)}
+            label={field.description}
+            defaultValue={data[field.name]?.value}
+          />
+        )
+      case 'SIG':
+        return (
+          <TextField
+            name={field.name}
+            fullWidth
+            className={styles.sigStyle}
             type='text'
             placeholder={field.place_holder}
             required={field.required}

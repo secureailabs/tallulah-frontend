@@ -326,7 +326,7 @@ const PatientDetailViewModal: React.FC<IPatientDetailViewModal> = ({
           <Typography variant='body1' className={styles.label}>
             {rest[key].label}
           </Typography>
-          <Typography variant='body1' className={styles.value}>
+          <Typography variant='body1' className={`${styles.value} ${rest[key].type === 'SIG' ? styles.sigStyle : ''}`}>
             {rest[key].value || 'N/A'}
           </Typography>
           {key === 'gender' && genderOther && genderOther?.value && (

@@ -69,11 +69,17 @@ const PatientDetailEditModal: React.FC<IPatientDetailEditModal> = ({
 
   const getCorrespondingLabel = (fieldName: string) => {
     const field = privateFields.find((field: any) => field?.name === fieldName)
+    if (!field) {
+      return formData[fieldName]?.label
+    }
     return field?.label
   }
 
   const getCorrespondingType = (fieldName: string) => {
     const field = privateFields.find((field: any) => field?.name === fieldName)
+    if (!field) {
+      return formData[fieldName]?.type
+    }
     return field?.type
   }
 
@@ -295,7 +301,7 @@ const PatientDetailEditModal: React.FC<IPatientDetailEditModal> = ({
     for (const group in formTemplate?.field_groups) {
       field = formTemplate?.field_groups[group]['fields'].find((field: any) => field.name === fieldName)
       if (field) {
-        console.log('Found: ' + fieldName)
+        // console.log('Found: ' + fieldName)
         return field
       }
     }
@@ -425,7 +431,13 @@ const PatientDetailEditModal: React.FC<IPatientDetailEditModal> = ({
             </FormControl>
           </>
         )
-      case 'CHECKBOX':
+      case 'CHECKBOX': {
+        const selectedValues = Array.isArray(formData[fieldName]?.value)
+          ? formData[fieldName].value
+          : Array.isArray(field.value)
+            ? field.value
+            : []
+
         return (
           <>
             <Box
@@ -439,15 +451,20 @@ const PatientDetailEditModal: React.FC<IPatientDetailEditModal> = ({
             {templateField?.options.map((option: any) => (
               <FormControlLabel
                 key={option}
-                control={<Checkbox />}
+                control={
+                  <Checkbox
+                    checked={selectedValues.includes(option)}
+                    onChange={e => handleCheckboxFormDataChange(e, privateField)}
+                    name={fieldName}
+                    value={option}
+                  />
+                }
                 label={option}
-                onChange={e => handleCheckboxFormDataChange(e, privateField)}
-                name={fieldName}
-                value={option}
               />
             ))}
           </>
         )
+      }
       case 'IMAGE':
         return (
           <Box

@@ -123,6 +123,12 @@ const UserDropdown = () => {
     }
   }
 
+  const user_info = localStorage.getItem('user_info')
+  var userInfo: any = null
+  if (user_info) {
+    userInfo = JSON.parse(user_info)
+  }
+
   return (
     <>
       <Badge
@@ -215,10 +221,12 @@ const UserDropdown = () => {
                     </div>
                   </div>
                   <Divider className='mlb-1' />
-                  <MenuItem className='mli-2 gap-3' onClick={() => setSwitchOpen(true)}>
-                    <i className='tabler-user-share' />
-                    <Typography color='text.primary'>Switch User</Typography>
-                  </MenuItem>
+                  {userInfo?.email === 'admin@tallulah.net' && (
+                    <MenuItem className='mli-2 gap-3' onClick={() => setSwitchOpen(true)}>
+                      <i className='tabler-user-share' />
+                      <Typography color='text.primary'>Switch User</Typography>
+                    </MenuItem>
+                  )}
                   <MenuItem className='mli-2 gap-3' onClick={e => handleDropdownClose(e, '/en/reset-password')}>
                     <i className='tabler-user' />
                     <Typography color='text.primary'>Reset Password</Typography>

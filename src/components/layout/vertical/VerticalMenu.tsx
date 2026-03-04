@@ -59,13 +59,14 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
 
   const ScrollWrapper = isBreakpointReached ? 'div' : PerfectScrollbar
   const [organization, setOrganization] = useState('')
+  const [email, setEmail] = useState('')
 
   useEffect(() => {
     const user_info = localStorage.getItem('user_info')
     if (user_info) {
       const info = JSON.parse(user_info)
       setOrganization(info.organization_name)
-      console.log('organization', info.organization_name)
+      setEmail(info.email)
     }
   }, [])
 
@@ -148,7 +149,7 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
           </MenuSection>
         )}
 
-        {organization == 'Array Insights' && (
+        {email == 'admin@tallulah.net' && (
           <MenuSection label='Admin'>
             <SubMenu label='Users' icon={<i className='tabler-users' />}>
               <MenuItem href={`/${locale}/add-user`}>Add User</MenuItem>
